@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/platformer1.js') }}"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div id="leftbox"></div>
+    <div id="game"></div>
+    <div id="rightbox"></div>
+    <section class="controls">
+        <img src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="alternatetext">
+    </section>
+{% endblock %}

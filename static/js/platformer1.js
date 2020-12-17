@@ -4,7 +4,7 @@
 var config = {
     type: Phaser.AUTO, //automatically tries to use WebGL, but if the browser or device doesn't support it it'll fall back to Canvas.
     width: 800, //size of the canvas element that Phaser will create.
-    height: 600, //size of the canvas element that Phaser will create.
+    height: 720, //size of the canvas element that Phaser will create.
     physics: { //include physics support. | there are other systems too: Impact Physics and Matter.js Physics.
         default: 'arcade',
         arcade: {
@@ -12,6 +12,7 @@ var config = {
             debug: false
         }
     },
+    parent: 'game',
     scene: {
         preload: preload,
         create: create,
