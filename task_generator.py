@@ -35,24 +35,52 @@ class MathGenerator:
     def build_term_string(self, term_steps, operator_symbol):
         term_string = f"{term_steps[0]}"
         for value in term_steps[1:]:
-            term_string += f" {operator_symbol} {value}"
+            operation = operator_symbol
+            if value < 0 and operator_symbol == "-":
+                operation = "+"
+                value = -value
+            term_string += f" {operation} {value}"
         return term_string + " = ?"
 
     def generate_lvl0(self):
-        numbers = np.arange(start=1, stop=20, step=1)
-        number_count = np.random.choice([2, 3])
+        """
+        Generates a addition term within the postitive numbers up to 20.
+        :return: tuple  (the string of the term with inserted values, the result)
+        """
+        numbers = np.arange(start=0, stop=20, step=1)
+        number_count = 2
         operator_symbol = "+"
         term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
         return self.build_term_string(term[1], operator_symbol), term[0]
 
     def generate_lvl1(self):
-        numbers = np.arange(start=0, stop=100, step=1)
-
-        pass
+        """
+        Generates a addition or subtraction term within the  numbers -20 to 20.
+        :return: tuple  (the string of the term with inserted values, the result)
+        :return:
+        """
+        numbers = np.arange(start=-20, stop=20, step=1)
+        number_count = 2
+        operator_symbol = np.random.choice(["+", "-"])
+        term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
+        return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
 
     def generate_lvl2(self):
-        numbers = np.arange(start=0, stop=100, step=1)
-        pass
+        """
+            Generates a addition or subtraction term within the  numbers -20 to 20.
+            :return: tuple  (the string of the term with inserted values, the result)
+            :return:
+        """
+        operator_symbol = np.random.choice(["+", "-", "*"])
+        if operator_symbol in ["+", "-"]:
+            numbers = np.arange(start=0, stop=100, step=1)
+            number_count = np.random.choice([2, 3])
+            term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
+            return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
+        else:
+            numbers = np.arange(start=-20, stop=50, step=1)
+            term = self.generate_multiplication_value_pair(numbers)
+            return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
 
     def generate_lvl3(self):
         pass
@@ -205,17 +233,18 @@ def validate(tup, operator_symbol):
     return result == tup[0]
 
 
-mg = MathGenerator()
-for i in range(1, 1001):
+#mg = MathGenerator()
+#for i in range(1, 1001):
     #    print(mg.get_task(0))
     # print(mg.generate_addition(2,range(-3,4)))
     # print(mg.generate_subtraction(3, np.arange(start=-10, stop=100, step=1)))
     # mg.generate_mixed_add_sub(4, np.arange(start=-10, stop=100, step=1))
     #res = mg.generate_add_or_sub(2, np.arange(start=-10, stop=100, step=1), "-")
-    res = mg.generate_division_value_pair(np.arange(start=0, stop=10, step=1))
+    #res = mg.generate_division_value_pair(np.arange(start=0, stop=10, step=1))
     #res = mg.generate_multiplication_value_pair(np.arange(start=-10, stop=100, step=1))
     #res = mg.generate_mixed_add_sub(3, np.arange(start=-10, stop=10, step=1))
-    print(res)
+    #res = mg.generate_lvl2()
+    #print(res)
     # print(mg.generate_lvl0())
     #
 

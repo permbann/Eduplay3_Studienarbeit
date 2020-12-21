@@ -1,7 +1,9 @@
 import os
 
 from flask import Flask, render_template
+from Eduplay3_Studienarbeit.task_generator import MathGenerator
 
+mg = MathGenerator()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -32,6 +34,10 @@ def create_app(test_config=None):
     @app.route("/", methods=['GET'])
     def index():
         return render_template('game.html')
+
+    @app.route("/items", methods=['GET', 'POST'])
+    def items():
+        return render_template('game.html', tellme=mg.generate_lvl2()[0])
 
     from . import db
     db.init_app(app)
