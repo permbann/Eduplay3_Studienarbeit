@@ -21,6 +21,11 @@ class MathGenerator:
     operations = ["+", "-", "×", "÷"]
 
     def get_term(self, difficulty):
+        """
+        Generates a term for a given difficulty level.
+        :param difficulty: Term level
+        :return:
+        """
         if difficulty == 0:
             return self.generate_lvl0()
         if difficulty == 1:
@@ -57,7 +62,6 @@ class MathGenerator:
         """
         Generates a addition or subtraction term within the  numbers -20 to 20.
         :return: tuple  (the string of the term with inserted values, the result)
-        :return:
         """
         numbers = np.arange(start=-20, stop=20, step=1)
         number_count = 2
@@ -69,7 +73,6 @@ class MathGenerator:
         """
             Generates a addition or subtraction term within the  numbers -20 to 20.
             :return: tuple  (the string of the term with inserted values, the result)
-            :return:
         """
         operator_symbol = np.random.choice(["+", "-", "*"])
         if operator_symbol in ["+", "-"]:
@@ -89,6 +92,14 @@ class MathGenerator:
         pass
 
     def generate_add_or_sub(self, step_count, num_range, operator_symbol, start=0):
+        """
+        Generates a term for addition or subtraction with a variable number of values that lead to the result.
+        :param step_count: Number of values that will lead to the term result.
+        :param num_range: The number range for which the term will be generated in.
+        :param operator_symbol: + or - operator symbol
+        :param start: defines the first value of the term if not 0
+        :return: dict with { operation_symbol: [result, array of steps]}
+        """
         operation_func = self.ops[operator_symbol]
         steps = np.zeros(step_count, dtype=int)
         steps[0] = start
@@ -119,6 +130,11 @@ class MathGenerator:
         return x
 
     def generate_multiplication_value_pair(self, num_range):
+        """
+        Generates a multiplication term with 2 values.
+        :param num_range: The number range for which the term will be generated in.
+        :return: dict with { operation_symbol: [result, array of steps]}
+        """
         retry = True
         while retry:
             result = 0
