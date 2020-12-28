@@ -29,6 +29,10 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
+    @app.route('/shop')
+    def shop():
+        return render_template('shop.html')
+
     @app.route("/", methods=['GET'])
     def index():
         return render_template('game.html')

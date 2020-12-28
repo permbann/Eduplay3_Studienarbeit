@@ -12,8 +12,10 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
+#table_border{border:5px solid #37354f; border-spacing:5px;}
 #leftbox { float:left; background:Red; width:240px; height:720px; }
 #game{ float:left; align:center;}
 #rightbox{ float:right; background:blue; width:240px; height:720px; }
+#shop{background-color:#7e98ab;}
 
 .controls img { max-width: 100%; height: auto;}
