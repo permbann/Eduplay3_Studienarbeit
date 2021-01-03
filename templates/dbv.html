@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+    {% for value in iii %}
+      <p>{{ value }}</p>
+    {% endfor %}
+
+
+<script>
+    $(document).ready(function() {
+       $('#submit').click(function() {
+           $.post( "/currency/dummy",  $("#my_form").serialize())
+           .done(function( data ) {
+                alert( "Data Loaded: " + data );
+           });
+       });
+    });
+</script>
+
+
+<form id="my_form" method="post">
+    <input type="text" name="itemid" />
+    <input type="button" id="submit" value="ADD Item"/>
+</form>
+
+
+{% endblock %}

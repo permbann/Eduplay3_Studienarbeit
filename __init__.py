@@ -1,7 +1,9 @@
 import os
 
-from flask import Flask, render_template
-from Eduplay3_Studienarbeit.task_generator import MathGenerator
+from flask import Flask, render_template, session
+from MathEngine import MathGenerator
+from Eduplay3_Studienarbeit.db import get_db
+from Eduplay3_Studienarbeit.auth import login_required
 
 mg = MathGenerator()
 
@@ -37,7 +39,15 @@ def create_app(test_config=None):
 
     @app.route("/items", methods=['GET', 'POST'])
     def items():
-        return render_template('game.html', tellme=mg.generate_lvl2()[0])
+        return mg.generate_lvl2()
+
+    @app.route("/dbv", methods=['GET'])
+    @login_required
+    def db_view():
+        res = get_db().execute(f"SELECT * FROM user where id = {session['user_id']}").fetchone()
+        print([x for x in res])
+        return render_template('dbv.html', iii=[x for x in res])
+
 
     from . import db
     db.init_app(app)
@@ -45,5 +55,8 @@ def create_app(test_config=None):
     # Import and register the blueprint from the factory
     from . import auth
     app.register_blueprint(auth.bp)
+
+    from . import currency
+    app.register_blueprint(currency.bp)
 
     return app

@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS inventory;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -6,4 +7,10 @@ CREATE TABLE user (
   password TEXT NOT NULL,
   jumps INTEGER NOT NULL,
   currency INTEGER NOT NULL
+);
+
+CREATE TABLE inventory (
+  user_id VARCHAR(100) NOT NULL,
+  item_id VARCHAR(100) NOT NULL,
+  PRIMARY KEY (user_id, item_id)
 );

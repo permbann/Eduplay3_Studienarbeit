@@ -91,7 +91,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-# Require Authentication in Other Views
+# Require Authentication in Other Views (used as a decorator below route decorator)
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):

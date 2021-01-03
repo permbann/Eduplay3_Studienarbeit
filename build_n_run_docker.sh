@@ -1,4 +1,3 @@
 #!/bin/bash
-docker build -t jnl .
-docker run -p 5000:5000 -d jnl
-google-chrome http://localhost:5000/
+docker build -t eduplay-container .
+docker run -p 5000:5000 -d eduplay-container
