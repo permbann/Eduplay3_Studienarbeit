@@ -1,12 +1,3 @@
-# difficulty levels:
-# Classes: 1, 2, 3, 4
-# Numbers: 0-20, 0-100, 0-1000, 0-1000000
-# Operations: Comparison, Order, Addition, Subtraction, Multiplication, Division
-# Materials: Money, Countable Objects, cm, m, Time, Geometry, g, kg, ml, l
-# lvl2 words: Summ, diff, prod, quotient
-# lvl3 rulez: kommutativ, assoziativ
-# lvl3 words: area
-# lvl4 stuff: zerlegen (pictures / symbols), right angles
 import numpy as np
 import operator
 
@@ -38,12 +29,20 @@ class MathGenerator:
             return self.generate_lvl4()
 
     def build_term_string(self, term_steps, operator_symbol):
+        """
+        Builds a String for a term with the given steps.
+        :param term_steps: Steps to be inserted.
+        :param operator_symbol: operator symbol to be inserted.
+        :return: Term String.
+        """
         term_string = f"{term_steps[0]}"
         for value in term_steps[1:]:
             operation = operator_symbol
-            if value < 0 and operator_symbol == "-":
+            if value < 0 and operator_symbol == "-":  # auto convert  - - to +
                 operation = "+"
                 value = -value
+            if value < 0 and operator_symbol in ["*", "/"]:  # use parentheses for negative values in mult and div
+                value = f"({value})"
             term_string += f" {operation} {value}"
         return term_string + " = ?"
 
@@ -75,15 +74,29 @@ class MathGenerator:
             :return: tuple  (the string of the term with inserted values, the result)
         """
         operator_symbol = np.random.choice(["+", "-", "*"])
+        term_dict = {"term": "", "answers": [], "solution_index": 0}
         if operator_symbol in ["+", "-"]:
             numbers = np.arange(start=0, stop=100, step=1)
             number_count = np.random.choice([2, 3])
             term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
-            return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
+            #return self.build_term_string(term[operator_symbol][1], operator_symbol), \
+            #       self.generate_answers(term[operator_symbol][0], numbers)
+            term_string = self.build_term_string(term[operator_symbol][1], operator_symbol)
+            answers, solution_index = self.generate_answers(term[operator_symbol][0], numbers)
+
         else:
             numbers = np.arange(start=-20, stop=50, step=1)
             term = self.generate_multiplication_value_pair(numbers)
-            return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
+            term_string = self.build_term_string(term[operator_symbol][1], operator_symbol)
+            answers, solution_index = self.generate_answers(term[operator_symbol][0], numbers)
+            #return self.build_term_string(term[operator_symbol][1], operator_symbol), \
+            #       self.generate_answers(term[operator_symbol][0], numbers)
+
+        term_dict["term"] = term_string
+        import json
+        term_dict["answers"] = json.dumps(answers.tolist())  # encoding the np.array to json is possible after tolist()
+        term_dict["solution_index"] = solution_index
+        return term_dict
 
     def generate_lvl3(self):
         pass
@@ -232,36 +245,18 @@ class MathGenerator:
 
         return result, steps, operations
 
-
-ops = {
-    "+": operator.add,
-    "-": operator.sub,
-    "*": operator.mul,
-    "/": operator.truediv
-}
-
-
-def validate(tup, operator_symbol):
-    operation_func = ops[operator_symbol]
-    result = tup[1][0]
-    for value in tup[1][1:]:
-        result = operation_func(result, value)
-    return result == tup[0]
-
-
-#mg = MathGenerator()
-#for i in range(1, 1001):
-    #    print(mg.get_task(0))
-    # print(mg.generate_addition(2,range(-3,4)))
-    # print(mg.generate_subtraction(3, np.arange(start=-10, stop=100, step=1)))
-    # mg.generate_mixed_add_sub(4, np.arange(start=-10, stop=100, step=1))
-    #res = mg.generate_add_or_sub(2, np.arange(start=-10, stop=100, step=1), "-")
-    #res = mg.generate_division_value_pair(np.arange(start=0, stop=10, step=1))
-    #res = mg.generate_multiplication_value_pair(np.arange(start=-10, stop=100, step=1))
-    #res = mg.generate_mixed_add_sub(3, np.arange(start=-10, stop=10, step=1))
-    #res = mg.generate_lvl2()
-    #print(res)
-    # print(mg.generate_lvl0())
-    #
-
-    # print(res)#, validate(res, "/"))
+    def generate_answers(self, solution, num_range):
+        answers = np.zeros(4)
+        indexes = list(range(4))
+        np.random.shuffle(indexes)
+        answers[indexes[0]] = solution
+        for i in [1, 2]:
+            answer = solution + np.random.choice(range(-5, 5))
+            while answer == solution or answer not in num_range:
+                answer = solution + np.random.choice(range(-5, 5))
+            answers[indexes[i]] = int(answer)
+        answer = np.random.choice(num_range)
+        while answer == solution or answer not in num_range:
+            answer = np.random.choice(num_range)
+        answers[indexes[3]] = int(answer)
+        return answers, indexes[0]

@@ -16,6 +16,9 @@ Hostable as Dockercontainer.
 After Script visit localhost:5000 in your browser.
 
 ### Flask commands
-- set FLASK_APP=Eduplay3_Studienarbeit 
-- set FLASK_ENV=development
-- flask run
+```
+set FLASK_APP=Eduplay3_Studienarbeit
+set FLASK_ENV=development 
+flask init-db
+flask run
+```

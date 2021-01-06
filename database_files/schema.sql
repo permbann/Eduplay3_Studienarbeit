@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS inventory;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,3 +23,9 @@ CREATE TABLE IF NOT EXISTS inventory (
     FOREIGN KEY (item_id) references items(item_id)
 );
 
+
+CREATE TABLE inventory (
+  user_id VARCHAR(100) NOT NULL,
+  item_id VARCHAR(100) NOT NULL,
+  PRIMARY KEY (user_id, item_id)
+);
