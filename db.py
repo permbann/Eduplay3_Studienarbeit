@@ -40,6 +40,8 @@ def init_db():
 
     with current_app.open_resource('database_files/schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+    with current_app.open_resource('database_files/define_items.sql') as f:
+        db.executescript(f.read().decode('utf8'))
 
 
 @click.command('init-db')   # defines a command line command called init-db that calls
@@ -54,3 +56,10 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv

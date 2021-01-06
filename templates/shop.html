@@ -32,6 +32,17 @@
         margin-top:105px;
     }
 
+        .purchase_button_grey{
+        width:100%;
+        height:25%;
+        background-color: #586573;
+        padding:6px;
+        font-size: 18px;
+        border:none;
+        text-decoration: none;
+        margin-top:105px;
+    }
+
     .purchase_button:hover{
         background-color: #3fd14b;
     }
@@ -70,109 +81,18 @@
         <h1 style="font-size: 80px; margin:0; padding-left:80px;">Shop</h1>
     </div>
     <div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f">
-        <table id="table_hat" style="width:100%">
-            <tr>
-                <th>
-                    <button class="category_button" id="category_button_hats">Hats</button>
-                </th>
-                <th>
-                    <button class="category_button" id="category_button_shoes">Shoes</button>
-                </th>
-                <th>
-                    <button class="category_button" id="category_button_gloves">Gloves</button>
-                </th>
-                <th>
-                    <button class="category_button" id="category_button_accessories">Accessories</button>
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this);" type="button" id="purchase_button_11">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this);" type="button" id="purchase_button_12">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_13">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_14">5G</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_21">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_22">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_23">5G</button>
-                </td>
-                <td>
-                    <p>Item</p>
-                    <button class="purchase_button" onclick="change_text(this)" type="button" id="purchase_button_24">5G</button>
-                </td>
-            </tr>
-        </table>
+        <p>Item</p>
+        <button class="purchase_button" type="button" id="hat_11">5G</button>
     </div>
 </div>
-
-<script type='text/javascript'>
-var selected = null; //Current Item on confirm status
-var click = 0;      //Amount of clicks on item. 0= no selection 1 = confirm 2= purchased
-var purchased_items = []; //List of ids of purchased items
-
-function change_text(item_id){
-    click += 1;
-    if (selected != item_id && selected != null){
-        select_new_item(item_id, selected);
-        selected = item_id;
-    }else{
-        if (click == 1){
-            item_id.innerHTML = "Confirm?";
-            item_id.style.backgroundColor ="#3fd14b";
-            selected = item_id;
-        }
-        else{
-            purchase_item(item_id)
-            click = 0;
-        }
-    }
+<script>
+    function send(){
+        $("#hat_11").click(function(){
+            $.post("/shop/add_item", {suggest: "hat_11"}, function(data, status){
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+        });
 }
 
-function select_new_item(item_id, selected){
-    //if previously selected item is a purchased one it doesn't need to be reset to basic status but stay on purchased
-    if (purchased_items.includes(selected.id) && !purchased_items.includes(item_id.id)){
-        item_id.innerHTML = "Confirm?";
-        item_id.style.backgroundColor ="#3fd14b";
-    }
-    //if a purchased item is clicked the previously selected one should be unselected
-    else if(purchased_items.includes(item_id.id)){
-        selected.innerHTML = "5G";
-        selected.style.backgroundColor="#2b5a8c";
-    }
-    else if(purchased_items.includes(item_id.id) && purchased_items.includes(selected.id)){}
-    //deselect previously selected item and select new item
-    else{
-        selected.innerHTML = "5G";
-        selected.style.backgroundColor="#2b5a8c";
-        item_id.innerHTML = "Confirm?";
-        item_id.style.backgroundColor ="#3fd14b";
-    }
-}
-
-function purchase_item(item_id){
-        item_id.innerHTML = "Purchased!";
-        item_id.style.backgroundColor ="#586573";
-        purchased_items.push(item_id.id);
-}
 </script>
 {% endblock %}

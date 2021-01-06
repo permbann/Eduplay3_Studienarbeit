@@ -1,7 +1,8 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from Eduplay3_Studienarbeit.task_generator import MathGenerator
+from Eduplay3_Studienarbeit.db import get_db, query_db
 
 mg = MathGenerator()
 
@@ -31,10 +32,6 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
-    @app.route('/shop')
-    def shop():
-        return render_template('shop.html')
-
     @app.route("/", methods=['GET'])
     def index():
         return render_template('game.html')
@@ -43,6 +40,14 @@ def create_app(test_config=None):
     def items():
         return render_template('game.html', tellme=mg.generate_lvl2()[0])
 
+    @app.route('/test', methods=['GET'])
+    def test():
+        for items in query_db('select * from items'):
+            print (items['item_id'], 'has the cost', items['cost'])
+        for inventory in query_db('select * from inventory'):
+            print (inventory['user_id'], 'has the items', inventory['item_id'])
+        return "test"
+
     from . import db
     db.init_app(app)
 
@@ -50,4 +55,8 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import shop
+    app.register_blueprint(shop.bp)
     return app
+
+
