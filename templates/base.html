@@ -1,8 +1,9 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Eduplay3</title>
+<link rel="icon" href="{{ url_for('static', filename='images/star.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <nav>
-  <h1>Eduplay3</h1>
+  <h1><a href="/">Eduplay3</a></h1>
   <ul>
   <!-- g is automatically available in templates. Based on if g.user is set (from load_logged_in_user)
   either the username and a log out link are displayed, or links to register and log in are displayed.-->

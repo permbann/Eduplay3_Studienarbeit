@@ -31,7 +31,7 @@ def register():
 
         if error is None:
             db.execute(
-                'INSERT INTO user (username, password, jumps, currency) VALUES (?, ?, 3, 0)',
+                'INSERT INTO user (username, password, jumps, currency, tries) VALUES (?, ?, 3, 0, 3)',
                 (username, generate_password_hash(password))
             )   # The database library will take care of escaping the values so you
                 # are not vulnerable to a SQL injection attack.

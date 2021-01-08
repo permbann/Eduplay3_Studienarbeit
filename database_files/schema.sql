@@ -6,7 +6,8 @@ CREATE TABLE user (
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   jumps INTEGER NOT NULL,
-  currency INTEGER NOT NULL
+  currency INTEGER NOT NULL,
+  tries DECIMAL(10, 1) NOT NULL
 );
 
 CREATE TABLE inventory (

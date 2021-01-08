@@ -1,0 +1,92 @@
+#rightbox{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#jumps_box{
+  text-align: center;
+  width: inherit;
+  margin-bottom: 5px;
+  background-color: #8f8484;
+  font-size: 20px;
+}
+
+#jumps_label{
+  display: inline;
+  font-size: 35px;
+  font-weight: bold;
+  margin: 5px;
+}
+
+#task_box{
+  width: inherit;
+  margin-bottom: 5px;
+  text-align: center;
+  background-color: slategrey;
+  color: antiquewhite;
+}
+
+#task_field{
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#task_request{
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #68c8fc;
+  border: none;
+  color: #78363d;
+  text-align: center;
+  font-size: 35px;
+  font-weight: bold;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.answer {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #fcf0fc;
+  border: none;
+  color: #151814;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.answer{
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.answer:hover{
+  padding-right: 50px;
+  background-color: #8f8484;
+}
+
+#tries_box{
+  margin-top: auto;
+  text-align: center;
+  width: inherit;
+  background-color: #8f8484;
+  font-size: 20px;
+}
+
+#tries_label{
+  display: inline;
+  font-size: 35px;
+  font-weight: bold;
+  margin: 5px;
+}
