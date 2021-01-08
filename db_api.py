@@ -45,7 +45,7 @@ def update_jumps():
             db.commit()
     except sqlite3.Error as er:
         return er.args
-    return "succ"
+    return "success"
 
 
 @bp.route('/jumps', methods=['GET'])
@@ -60,7 +60,7 @@ def get_tries():
 
 @bp.route('/update_tries', methods=['POST'])
 def update_tries():
-    update_value = int(list(request.form.values())[0])
+    update_value = float(list(request.form.values())[0])
     db = get_db()
     db.execute(
         f"UPDATE user SET tries = MAX(tries + {update_value}, 0) WHERE id = {session['user_id']}"

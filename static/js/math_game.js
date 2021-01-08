@@ -17,6 +17,10 @@ $("#task_request").click(function () {
     {
         if(confirm("Willst du diese Aufgabe wirklich überspringen? Das wird als halbe falsche Antwort gewertet."))
         {
+            $.post( "/db_api/update_tries",  {change: -0.5})
+                .done(function( data ) {
+                    update_tries()
+                });
             update_term_async();
             for (var i = 0; i < answer_elements.length; i++) {
                 answer_elements[i].style.backgroundColor = "#fcf0fc";
@@ -59,7 +63,7 @@ function validate_solution(number) {
     }
     $.post( "/db_api/update_jumps",  {change: change})
             .done(function( data ) {
-                //alert( "Data Loaded: " + data );
+                console.log("updating jumps: " + data);
                 update_jump_count();
                 update_tries();
             });
@@ -80,6 +84,7 @@ function show_correct() {
 
 function update_term_async() {
     $.get("/items", function (data, status) {  // jquery http get request
+        console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
         solution = data["solution_index"];
         answers_texts = JSON.parse(data["answers"]);
