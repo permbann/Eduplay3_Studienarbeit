@@ -19,30 +19,11 @@ def get_balance():
 
 @bp.route('/update_jumps', methods=['POST'])
 def update_jumps():
-    update_value = int(list(request.form.values())[0])
+    update_value = int(request.form['change'])
     db = get_db()
-    print(update_value, type(update_value))
     try:
-        if update_value < 0:
-            if get_tries()['tries'] <= 0:
-                db.execute(
-                    f"UPDATE user SET jumps = MAX(jumps + {update_value}, 0) WHERE id = {session['user_id']}"
-                )
-                db.execute(
-                    f"UPDATE user SET tries = 3 WHERE id = {session['user_id']}"
-                )
-                db.commit()
-            else:
-                db.execute(
-                    f"UPDATE user SET tries = tries - 1 WHERE id = {session['user_id']}"
-                )
-                db.commit()
-        else:
-
-            db.execute(
-                f"UPDATE user SET jumps = MAX(jumps + {update_value}, 0) WHERE id = {session['user_id']}"
-            )
-            db.commit()
+        db.execute(f"UPDATE user SET jumps = MAX(jumps + {update_value}, 0) WHERE id = {session['user_id']}")
+        db.commit()
     except sqlite3.Error as er:
         return er.args
     return "success"
@@ -60,7 +41,7 @@ def get_tries():
 
 @bp.route('/update_tries', methods=['POST'])
 def update_tries():
-    update_value = float(list(request.form.values())[0])
+    update_value = float(request.form['change'])
     db = get_db()
     db.execute(
         f"UPDATE user SET tries = MAX(tries + {update_value}, 0) WHERE id = {session['user_id']}"

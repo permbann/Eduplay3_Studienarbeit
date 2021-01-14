@@ -1,6 +1,7 @@
 var task = "";
 var solution = 0;
 var has_answered = false;
+var tries;
 var answers_texts = ['', '', '', ''];
 var answer_elements = [
     document.getElementById("answer0"),
@@ -19,7 +20,8 @@ $("#task_request").click(function () {
         {
             $.post( "/db_api/update_tries",  {change: -0.5})
                 .done(function( data ) {
-                    update_tries()
+                    console.log("updating tries: " + data);
+                    update_tries();
                 });
             update_term_async();
             for (var i = 0; i < answer_elements.length; i++) {
@@ -53,23 +55,40 @@ $("#answer3").click(function () {
 });
 
 function validate_solution(number) {
-    if(!has_answered)
-    {
-        var change = '';
+    if(has_answered) { return; }
     if (solution === number) {
-        change = 1;
-    } else {
-        change = -1;
-    }
-    $.post( "/db_api/update_jumps",  {change: change})
-            .done(function( data ) {
+        $.post( "/db_api/update_jumps",  {change: 1})
+             .done(function( data ) {
                 console.log("updating jumps: " + data);
                 update_jump_count();
-                update_tries();
-            });
+             });
+    }
+    else
+    {
+        if(tries === 0)
+        {
+            $.post( "/db_api/update_jumps",  {change: -1})
+                .done(function( data ) {
+                    console.log("updating jumps: " + data);
+                    update_jump_count();
+                });
+            $.post( "/db_api/update_tries",  {change: 3})
+                .done(function( data ) {
+                     console.log("updating tries: " + data);
+                     update_tries();
+                });
+        }
+        else
+        {
+             $.post( "/db_api/update_tries",  {change: -1})
+                 .done(function( data ) {
+                     console.log("updating tries: " + data);
+                     update_tries();
+                 });
+        }
+    }
     has_answered = true;
     show_correct();
-    }
 }
 
 function show_correct() {
@@ -109,14 +128,20 @@ function update_answer_text(answers) {
 function update_jump_count() {
     $.get("/db_api/jumps", function (data, status) {  // jquery http get request
         document.getElementById("jumps_label").innerHTML = data["jumps"];
+        update_game_jumps_label();
     });
 }
 
-function update_tries() {
-    $.get("/db_api/tries", function (data, status) {  // jquery http get request
-        document.getElementById("tries_label").innerHTML = data["tries"];
+function update_tries()
+{
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: '/db_api/tries',
+        success: function(response) {
+            tries = parseInt(response['tries']);
+            document.getElementById("tries_label").innerHTML = tries;
+        }
     });
 }
-
-
 //-------------

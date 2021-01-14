@@ -22,13 +22,15 @@ var config = {
 
 var score = 0;
 var scoreText;
+var jump_count;
+var jumps_text;
 
 var game = new Phaser.Game(config);
 
 function preload ()
 {
     //first value here is a key to the loaded resource
-    this.load.image('sky', 'static/assets/sky.png');
+    this.load.image('sky', 'static/assets/181.png');
     this.load.image('ground', 'static/assets/platform.png');
     this.load.image('star', 'static/assets/star.png');
     this.load.image('bomb', 'static/assets/bomb.png');
@@ -42,6 +44,7 @@ function create ()
     this.add.image(0, 0, 'sky').setOrigin(0, 0);
 
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' }); //Text Game Object
+    jumps_text = this.add.text(16, 50, 'Sprünge: ' + get_jumps(), { fontSize: '32px', fill: '#000' })
 
     //In Arcade Physics there are two types of physics bodies: Dynamic and Static.
     platforms = this.physics.add.staticGroup(); //Static Physics Group and assigns it to the local variable.
@@ -139,9 +142,11 @@ function update ()
         player.anims.play('turn');
     }
 
-    if (cursors.up.isDown && player.body.touching.down)
+    if (cursors.up.isDown && player.body.touching.down && jump_count > 0)
     {
         player.setVelocityY(-580);
+        update_jumps();
+        console.log("jumped");
     }
 }
 
@@ -178,4 +183,40 @@ function hitBomb (player, bomb)
     player.anims.play('turn');
 
     gameOver = true;
+}
+
+function get_jumps()
+{
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: '/db_api/jumps',
+        success: function(data) {
+            jump_count = parseInt(data['jumps']);
+        }
+    });
+    return jump_count;
+}
+
+function update_game_jumps_label()
+{
+    jumps_text.setText('Sprünge: ' + get_jumps());
+}
+
+
+function update_jumps()
+{
+    console.log("jumped2");
+    $.ajax({
+        async: false,
+        type: 'POST',
+        data: {change: -1},
+        url: '/db_api/update_jumps',
+        success: function(response) {
+            console.log("updating jumps: " + response);
+            update_game_jumps_label();
+            update_jump_count();
+        }
+    });
+    console.log(get_jumps());
 }
