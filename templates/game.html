@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/math_game.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/platformer1.js') }}"></script>
@@ -11,16 +12,22 @@
     <div id="leftbox"></div>
     <div id="game"></div>
     <div id="rightbox">
-        <p id="task_field"></p>
-        <!--<form action="/items" method="post">
-            <button type="submit" type="button">Getnew</button>
-        </form>-->
+
+        <div id="jumps_box">
+            Du hast <p id="jumps_label"></p> Sprünge
+        </div>
+        <div id="task_box">
+            <p id="task_field"></p>
+        </div>
         <button id="task_request">Neue Aufgabe</button>
         <button id="answer0" class="answer"></button>
         <button id="answer1" class="answer"></button>
         <button id="answer2" class="answer"></button>
         <button id="answer3" class="answer"></button>
-        <script src="{{ url_for('static', filename='js/get_task.js') }}"></script>
+        <div id="tries_box">
+            Du kannst noch <p id="tries_label"></p> Mal falsch antworten bis ein Sprung abgezogen wird.
+        </div>
+        <script src="{{ url_for('static', filename='js/math_game.js') }}"></script>
     </div>
     <section class="controls">
         <img src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="alternatetext">

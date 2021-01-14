@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, send_from_directory
 from MathEngine import MathGenerator
 from Eduplay3_Studienarbeit.db import get_db
 from Eduplay3_Studienarbeit.auth import login_required
@@ -48,7 +48,6 @@ def create_app(test_config=None):
         print([x for x in res])
         return render_template('dbv.html', iii=[x for x in res])
 
-
     from . import db
     db.init_app(app)
 
@@ -56,7 +55,7 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import currency
-    app.register_blueprint(currency.bp)
+    from . import db_api
+    app.register_blueprint(db_api.bp)
 
     return app

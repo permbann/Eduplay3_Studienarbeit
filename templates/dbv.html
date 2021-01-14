@@ -14,7 +14,7 @@
 <script>
     $(document).ready(function() {
        $('#submit').click(function() {
-           $.post( "/currency/dummy",  $("#my_form").serialize())
+           $.post( "/db_api/dummy",  $("#my_form").serialize())
            .done(function( data ) {
                 alert( "Data Loaded: " + data );
            });
@@ -27,6 +27,6 @@
     <input type="text" name="itemid" />
     <input type="button" id="submit" value="ADD Item"/>
 </form>
-
+<img src="{{ url_for('static', filename='images/sky.png') }}">
 
 {% endblock %}
