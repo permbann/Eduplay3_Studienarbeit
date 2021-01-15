@@ -139,7 +139,7 @@ function update_tries()
         type: 'GET',
         url: '/db_api/tries',
         success: function(response) {
-            tries = parseInt(response['tries']);
+            tries = parseFloat(response['tries']);
             document.getElementById("tries_label").innerHTML = tries;
         }
     });

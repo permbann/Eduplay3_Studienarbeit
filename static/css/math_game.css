@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
+    line-height: 1.2;
 }
 
 #jumps_box {
@@ -10,6 +11,8 @@
     text-align: center;
     width: inherit;
     font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #jumps_label {
@@ -25,14 +28,15 @@
     width: 240px;
     margin-bottom: 5px;
     color: antiquewhite;
-    -webkit-box-shadow: inset 0px 0px 0px 10px #532525;
-    -moz-box-shadow: inset 0px 0px 0px 10px #532525;
-    box-shadow: inset 0px 0px 0px 10px #532525;
+    border-style: solid;
+    border-color: #151814;
 }
 
 #task_field {
     font-size: 30px;
     font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #task_request {
@@ -85,6 +89,7 @@
     width: inherit;
     margin-top: auto;
     font-size: 20px;
+    padding-bottom: 20px;
 }
 
 #tries_label {
