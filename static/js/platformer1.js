@@ -190,7 +190,7 @@ function get_jumps()
     $.ajax({
         async: false,
         type: 'GET',
-        url: '/db_api/jumps',
+        url: '/api/jumps',
         success: function(data) {
             jump_count = parseInt(data['jumps']);
         }
@@ -198,25 +198,32 @@ function get_jumps()
     return jump_count;
 }
 
-function update_game_jumps_label()
+function update_game_jumps_label(change=-1)
 {
-    jumps_text.setText('Sprünge: ' + get_jumps());
+    if (jump_count)
+    {
+        jump_count += change;
+        jumps_text.setText('Sprünge: ' + jump_count);
+    }
+    else
+    {
+        jumps_text.setText('Sprünge: ' + get_jumps());
+    }
 }
-
 
 function update_jumps()
 {
-    console.log("jumped2");
     $.ajax({
         async: false,
         type: 'POST',
         data: {change: -1},
-        url: '/db_api/update_jumps',
+        url: '/api/update_jumps',
         success: function(response) {
             console.log("updating jumps: " + response);
             update_game_jumps_label();
-            update_jump_count();
+            document.getElementById("jumps_label").innerHTML =
+                parseInt(document.getElementById("jumps_label").innerHTML) - 1;
         }
     });
-    console.log(get_jumps());
+    console.log(jump_count);
 }

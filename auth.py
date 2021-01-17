@@ -12,7 +12,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 class LoginForm(Form):
     username = StringField("Username", validators=[validators.Length(min=3, max=50),
-                                                validators.DataRequired(message="Please Fill This Field")])
+                                                   validators.DataRequired(message="Please Fill This Field")])
 
     password = PasswordField("Password", validators=[validators.DataRequired(message="Please Fill This Field")])
 
@@ -105,6 +105,7 @@ def load_logged_in_user():
     else:
         g.user = User.query.filter_by(id=user_id).first().username
 
+
 # Require Authentication in Other Views (used as a decorator below route decorator)
 def login_required(view):
     @functools.wraps(view)
@@ -116,4 +117,3 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
-

@@ -1,14 +1,12 @@
 import os
 
 from flask import Flask, render_template, session, flash
-from MathEngine import MathGenerator
-from Eduplay3_Studienarbeit.db import get_db
-from Eduplay3_Studienarbeit.auth import login_required
 
+from Eduplay3_Studienarbeit.auth import login_required
 from Eduplay3_Studienarbeit.database_files.user_model import db, User
 import sqlalchemy
 
-mg = MathGenerator()
+
 
 
 def create_app(test_config=None):
@@ -34,18 +32,10 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     @app.route("/", methods=['GET'])
+    @login_required
     def index():
         return render_template('game.html')
-
-    @app.route("/items", methods=['GET', 'POST'])
-    def items():
-        return mg.generate_lvl2()
 
     app.app_context().push()
     db.init_app(app)
@@ -65,7 +55,7 @@ def create_app(test_config=None):
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import db_api
-    app.register_blueprint(db_api.bp)
+    from . import api
+    app.register_blueprint(api.bp)
 
     return app

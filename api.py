@@ -1,12 +1,17 @@
 import functools
 import sqlite3
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from MathEngine import MathGenerator
 from Eduplay3_Studienarbeit.database_files.user_model import db, User
 
-bp = Blueprint('db_api', __name__, url_prefix='/db_api')
+mg = MathGenerator()
+bp = Blueprint('api', __name__, url_prefix='/api')
+
+
+@bp.route("/get_math", methods=['GET'])
+def items():
+    return mg.get_term(int(request.args.get('difficulty')))
 
 
 @bp.route('/balance', methods=['GET'])
@@ -33,7 +38,6 @@ def get_jumps():
 @bp.route('/tries', methods=['GET'])
 def get_tries():
     user = _get_current_user()
-    print(user.tries, type(user.tries))
     return {'tries': float(user.tries)}
 
 
