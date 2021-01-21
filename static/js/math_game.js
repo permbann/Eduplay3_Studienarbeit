@@ -1,6 +1,7 @@
 var task = "";
 var solution = 0;
 var has_answered = false;
+var jumps;
 var tries;
 var answers_texts = ['', '', '', ''];
 var answer_elements = [
@@ -9,16 +10,29 @@ var answer_elements = [
     document.getElementById("answer2"),
     document.getElementById("answer3")];
 
-update_term_async();
-update_jump_count();
-update_tries();
+$( document ).ready(function() {
+    update_term_async();
+    //load jumps
+    $.get("/api/jumps", function (data, status) {  // jquery http get request
+        jumps = parseInt(data["jumps"]);
+        document.getElementById("jumps_label").innerHTML = jumps;
+
+        update_game_jumps_label();
+    });
+    //load tries
+    $.get("/api/tries", function (data, status) {  // jquery http get request
+        tries = parseFloat(data['tries']);
+        document.getElementById("tries_label").innerHTML = tries;
+    });
+});
+
 
 $("#task_request").click(function () {
     if(!has_answered)
     {
         if(confirm("Willst du diese Aufgabe wirklich überspringen? Das wird als halbe falsche Antwort gewertet."))
         {
-            $.post( "/db_api/update_tries",  {change: -0.5})
+            $.post( "/api/update_tries",  {change: -0.5})
                 .done(function( data ) {
                     console.log("updating tries: " + data);
                     update_tries();
@@ -57,33 +71,33 @@ $("#answer3").click(function () {
 function validate_solution(number) {
     if(has_answered) { return; }
     if (solution === number) {
-        $.post( "/db_api/update_jumps",  {change: 1})
+        $.post( "/api/update_jumps",  {change: 1})
              .done(function( data ) {
                 console.log("updating jumps: " + data);
-                update_jump_count();
+                update_jump_count(1);
              });
     }
     else
     {
         if(tries === 0)
         {
-            $.post( "/db_api/update_jumps",  {change: -1})
+            $.post( "/api/update_jumps",  {change: -1})
                 .done(function( data ) {
                     console.log("updating jumps: " + data);
-                    update_jump_count();
+                    update_jump_count(-1);
                 });
-            $.post( "/db_api/update_tries",  {change: 3})
+            $.post( "/api/update_tries",  {change: 3})
                 .done(function( data ) {
                      console.log("updating tries: " + data);
-                     update_tries();
+                     update_tries(3);
                 });
         }
         else
         {
-             $.post( "/db_api/update_tries",  {change: -1})
+             $.post( "/api/update_tries",  {change: -1})
                  .done(function( data ) {
                      console.log("updating tries: " + data);
-                     update_tries();
+                     update_tries(-1);
                  });
         }
     }
@@ -102,7 +116,7 @@ function show_correct() {
 }
 
 function update_term_async() {
-    $.get("/items", function (data, status) {  // jquery http get request
+    $.get("/api/get_math", {difficulty: 2} , function (data, status) {  // jquery http get request
         console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
         solution = data["solution_index"];
@@ -125,23 +139,15 @@ function update_answer_text(answers) {
     }
 }
 
-function update_jump_count() {
-    $.get("/db_api/jumps", function (data, status) {  // jquery http get request
-        document.getElementById("jumps_label").innerHTML = data["jumps"];
-        update_game_jumps_label();
-    });
+function update_jump_count(change) {
+    jumps += change;
+    document.getElementById("jumps_label").innerHTML = jumps;
+    update_game_jumps_label(change);
 }
 
-function update_tries()
+function update_tries(change)
 {
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: '/db_api/tries',
-        success: function(response) {
-            tries = parseInt(response['tries']);
-            document.getElementById("tries_label").innerHTML = tries;
-        }
-    });
+    tries += change;
+    document.getElementById("tries_label").innerHTML = tries;
 }
-//-------------
+

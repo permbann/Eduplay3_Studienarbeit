@@ -1,18 +1,22 @@
 import os
 
-from flask import Flask, render_template, session, send_from_directory
-from MathEngine import MathGenerator
-from Eduplay3_Studienarbeit.db import get_db
-from Eduplay3_Studienarbeit.auth import login_required
+from flask import Flask, render_template, session, flash
 
-mg = MathGenerator()
+from Eduplay3_Studienarbeit.auth import login_required
+from Eduplay3_Studienarbeit.database_files.user_model import db, User
+import sqlalchemy
+
+
+
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'users.sqlite'),
+        #DATABASE=os.path.join(app.instance_path, 'users.sqlite'),
+        SQLALCHEMY_DATABASE_URI='sqlite:///database_files/users.sqlite',
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
 
     if test_config is None:
@@ -28,34 +32,30 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     @app.route("/", methods=['GET'])
+    @login_required
     def index():
         return render_template('game.html')
 
-    @app.route("/items", methods=['GET', 'POST'])
-    def items():
-        return mg.generate_lvl2()
-
-    @app.route("/dbv", methods=['GET'])
-    @login_required
-    def db_view():
-        res = get_db().execute(f"SELECT * FROM user where id = {session['user_id']}").fetchone()
-        print([x for x in res])
-        return render_template('dbv.html', iii=[x for x in res])
-
-    from . import db
+    app.app_context().push()
     db.init_app(app)
+    db.drop_all()  # comment out if you want to keep data on restart
+    db.create_all()
+
+    try:
+        from werkzeug.security import generate_password_hash
+        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=0, tries=3)
+        db.session.add(admin_user)
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        print("Admin user already present. Skipping creation...")
+        pass
 
     # Import and register the blueprint from the factory
     from . import auth
     app.register_blueprint(auth.bp)
 
-    from . import db_api
-    app.register_blueprint(db_api.bp)
+    from . import api
+    app.register_blueprint(api.bp)
 
     return app

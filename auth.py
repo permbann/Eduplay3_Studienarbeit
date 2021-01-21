@@ -1,78 +1,101 @@
 import functools
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 
-from Eduplay3_Studienarbeit.db import get_db
+from wtforms import Form, StringField, PasswordField, validators
+
+from werkzeug.security import check_password_hash, generate_password_hash
+from Eduplay3_Studienarbeit.database_files.user_model import db, User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@bp.route('/register', methods=('GET', 'POST'))  # associates the URL /register with the register view function.
-def register():
-    if request.method == 'POST':
-        # request.form is a special type of dict mapping submitted form keys and values.
-        # The user will input their username and password.
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
+class LoginForm(Form):
+    username = StringField("Username", validators=[validators.Length(min=3, max=50),
+                                                   validators.DataRequired(message="Please Fill This Field")])
 
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif db.execute(
-            'SELECT id FROM user WHERE username = ?', (username,)
-        ).fetchone() is not None:
-            error = 'User {} is already registered.'.format(username)
-
-        if error is None:
-            db.execute(
-                'INSERT INTO user (username, password, jumps, currency, tries) VALUES (?, ?, 100, 0, 3)',
-                (username, generate_password_hash(password))
-            )   # The database library will take care of escaping the values so you
-                # are not vulnerable to a SQL injection attack.
-            db.commit()
-            return redirect(url_for('auth.login'))
-
-        flash(error)
-
-    return render_template('auth/register.html')
+    password = PasswordField("Password", validators=[validators.DataRequired(message="Please Fill This Field")])
 
 
-@bp.route('/login', methods=('GET', 'POST'))
+class RegisterForm(Form):
+    username = StringField("Username", validators=[validators.Length(min=3, max=25),
+                                                   validators.DataRequired(message="Please Fill This Field")])
+
+    email = StringField("Email", validators=[validators.Length(min=7, max=50),
+                                             validators.DataRequired(message="Please Fill This Field")])
+    password = PasswordField("Password", validators=[
+
+        validators.DataRequired(message="Please Fill This Field"),
+
+        validators.EqualTo(fieldname="confirm", message="Your Passwords Do Not Match")
+    ])
+
+    confirm = PasswordField("Confirm Password", validators=[validators.DataRequired(message="Please Fill This Field")])
+
+
+@bp.route('/login/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
+    form = LoginForm(request.form)
 
-        if user is None:
-            error = 'Incorrect username.'
-        # check_password_hash() hashes the submitted password in the same way
-        # as the stored hash and securely compares them.
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+    if request.method == 'POST' and form.validate:
 
-        if error is None:
-            # session is a dict that stores data across requests.
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+        user = User.query.filter_by(username=form.username.data).first()
 
-        flash(error)
+        if user:
 
-    return render_template('auth/login.html')
+            if check_password_hash(user.password, form.password.data):
+
+                session.clear()
+                session['user_id'] = user.id
+                flash('You have successfully logged in.', "success")
+                return redirect(url_for('index'))
+
+            else:
+
+                flash('Username or Password Incorrect', "Danger")
+
+                return redirect(url_for('auth.login'))
+
+    return render_template('auth/login.html', form=form)
 
 
-# If a user is logged in their information should be loaded and made available to other views. (session id)
+@bp.route('/register/', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+
+        new_user = User(
+
+            username=form.username.data,
+            email=form.email.data,
+            password=hashed_password,
+            jumps=5,
+            currency=0,
+            tries=3
+        )
+        print(new_user.email)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('You have successfully registered', 'success')
+
+        return redirect(url_for('auth.login'))
+
+    else:
+
+        return render_template('auth/register.html', form=form)
+
+
+@bp.route('/logout/')
+def logout():
+    session['logged_in'] = False
+
+    return redirect(url_for('auth.login'))
+
+
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -80,15 +103,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
-
-
-@bp.route('/logout')
-def logout():
-    session.clear()  # remove the user id from the session.
-    return redirect(url_for('index'))
+        g.user = User.query.filter_by(id=user_id).first().username
 
 
 # Require Authentication in Other Views (used as a decorator below route decorator)
@@ -102,4 +117,3 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
-

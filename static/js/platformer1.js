@@ -35,13 +35,77 @@ function preload ()
     this.load.image('star', 'static/assets/star.png');
     this.load.image('bomb', 'static/assets/bomb.png');
     this.load.spritesheet('dude', 'static/assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    this.load.image('matrix0', 'static/assets/matrix_gif/frame_00_delay-0.1s.gif');
+    this.load.image('matrix1', 'static/assets/matrix_gif/frame_01_delay-0.1s.gif');
+    this.load.image('matrix2', 'static/assets/matrix_gif/frame_02_delay-0.1s.gif');
+    this.load.image('matrix3', 'static/assets/matrix_gif/frame_03_delay-0.1s.gif');
+    this.load.image('matrix4', 'static/assets/matrix_gif/frame_04_delay-0.1s.gif');
+    this.load.image('matrix5', 'static/assets/matrix_gif/frame_05_delay-0.1s.gif');
+    this.load.image('matrix6', 'static/assets/matrix_gif/frame_06_delay-0.1s.gif');
+    this.load.image('matrix7', 'static/assets/matrix_gif/frame_07_delay-0.1s.gif');
+    this.load.image('matrix8', 'static/assets/matrix_gif/frame_08_delay-0.1s.gif');
+    this.load.image('matrix9', 'static/assets/matrix_gif/frame_09_delay-0.1s.gif');
+    this.load.image('matrix10', 'static/assets/matrix_gif/frame_10_delay-0.1s.gif');
+    this.load.image('matrix11', 'static/assets/matrix_gif/frame_11_delay-0.1s.gif');
+    this.load.image('matrix12', 'static/assets/matrix_gif/frame_12_delay-0.1s.gif');
+    this.load.image('matrix13', 'static/assets/matrix_gif/frame_13_delay-0.1s.gif');
+    this.load.image('matrix14', 'static/assets/matrix_gif/frame_14_delay-0.1s.gif');
+    this.load.image('matrix15', 'static/assets/matrix_gif/frame_15_delay-0.1s.gif');
+    this.load.image('matrix16', 'static/assets/matrix_gif/frame_16_delay-0.1s.gif');
+    this.load.image('matrix17', 'static/assets/matrix_gif/frame_17_delay-0.1s.gif');
+    this.load.image('matrix18', 'static/assets/matrix_gif/frame_18_delay-0.1s.gif');
+    this.load.image('matrix19', 'static/assets/matrix_gif/frame_19_delay-0.1s.gif');
+    this.load.image('matrix20', 'static/assets/matrix_gif/frame_20_delay-0.1s.gif');
+    this.load.image('matrix21', 'static/assets/matrix_gif/frame_21_delay-0.1s.gif');
+    this.load.image('matrix22', 'static/assets/matrix_gif/frame_22_delay-0.1s.gif');
+    this.load.image('matrix23', 'static/assets/matrix_gif/frame_23_delay-0.1s.gif');
+    this.load.image('matrix24', 'static/assets/matrix_gif/frame_24_delay-0.1s.gif');
+    this.load.image('matrix25', 'static/assets/matrix_gif/frame_25_delay-0.1s.gif');
+    this.load.image('matrix26', 'static/assets/matrix_gif/frame_26_delay-0.1s.gif');
     //creating a new Image Game Object and adding it to the current Scenes display list. This list is where all of your Game Objects live.
 }
 
 function create ()
 {
     //this.add.image(400, 300, 'sky');
-    this.add.image(0, 0, 'sky').setOrigin(0, 0);
+    //this.add.image(0, 0, 'sky').setOrigin(0, 0);
+
+    this.anims.create({
+        key: 'matrix_bg',
+        frames: [
+            { key: 'matrix0' },
+            { key: 'matrix1' },
+            { key: 'matrix2' },
+            { key: 'matrix3' },
+            { key: 'matrix4' },
+            { key: 'matrix5' },
+            { key: 'matrix6' },
+            { key: 'matrix7' },
+            { key: 'matrix8' },
+            { key: 'matrix9' },
+            { key: 'matrix10' },
+            { key: 'matrix11' },
+            { key: 'matrix12' },
+            { key: 'matrix13' },
+            { key: 'matrix14' },
+            { key: 'matrix15' },
+            { key: 'matrix16' },
+            { key: 'matrix17' },
+            { key: 'matrix18' },
+            { key: 'matrix19' },
+            { key: 'matrix20' },
+            { key: 'matrix21' },
+            { key: 'matrix22' },
+            { key: 'matrix23' },
+            { key: 'matrix24' },
+            { key: 'matrix25' },
+            { key: 'matrix26' }
+        ],
+        frameRate: 20,
+        repeat: -1
+    });
+
+    this.add.sprite(800/2, 720/2, 'matrix0').anims.play('matrix_bg', false);
 
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' }); //Text Game Object
     jumps_text = this.add.text(16, 50, 'Sprünge: ' + get_jumps(), { fontSize: '32px', fill: '#000' })
@@ -190,7 +254,7 @@ function get_jumps()
     $.ajax({
         async: false,
         type: 'GET',
-        url: '/db_api/jumps',
+        url: '/api/jumps',
         success: function(data) {
             jump_count = parseInt(data['jumps']);
         }
@@ -198,25 +262,32 @@ function get_jumps()
     return jump_count;
 }
 
-function update_game_jumps_label()
+function update_game_jumps_label(change=-1)
 {
-    jumps_text.setText('Sprünge: ' + get_jumps());
+    if (jump_count)
+    {
+        jump_count += change;
+        jumps_text.setText('Sprünge: ' + jump_count);
+    }
+    else
+    {
+        jumps_text.setText('Sprünge: ' + get_jumps());
+    }
 }
-
 
 function update_jumps()
 {
-    console.log("jumped2");
     $.ajax({
         async: false,
         type: 'POST',
         data: {change: -1},
-        url: '/db_api/update_jumps',
+        url: '/api/update_jumps',
         success: function(response) {
             console.log("updating jumps: " + response);
             update_game_jumps_label();
-            update_jump_count();
+            document.getElementById("jumps_label").innerHTML =
+                parseInt(document.getElementById("jumps_label").innerHTML) - 1;
         }
     });
-    console.log(get_jumps());
+    console.log(jump_count);
 }
