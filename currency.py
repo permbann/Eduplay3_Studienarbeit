@@ -10,20 +10,29 @@ from Eduplay3_Studienarbeit.db import get_db
 
 bp = Blueprint('currency', __name__, url_prefix='/currency')
 
+def update_currency():
+    update_value = int(request.form['change'])
+    db = get_db()
+    try:
+        db.execute(f"UPDATE user SET currency = MAX({update_value}, 0) WHERE id = {session['user_id']}")
+        db.commit()
+    except sqlite3.Error as er:
+        return er.args
+    return "success"
 
-@bp.route('/balance', methods=['GET'])
-def get_balance():
+
+@bp.route('/get', methods=['GET'])
+def get_currency():
     res = get_db().execute(f"SELECT currency FROM user where id = {session['user_id']}").fetchone()
     return dict(zip(res.keys(), res))
 
-#TODO Update balance on post
 
 @bp.route('/dummy', methods=['POST'])
 def insert_dummy():
-
+    item = list(request.form.keys())[0]
     try:
         db = get_db()
-        db.execute(f"INSERT INTO inventory(user_id, item_id) VALUES('{session['user_id']}', '{request.form['itemid']}')")
+        db.execute(f"INSERT INTO inventory(user_id, item_id) VALUES('{session['user_id']}', '{item}')")
         db.commit()
     except sqlite3.IntegrityError:
         return "Item already in Inventory."

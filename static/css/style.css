@@ -2,6 +2,7 @@
 html { font-family: sans-serif; background: #9fa8a3; padding: 1rem; }
 body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; }
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+h2 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
 nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }

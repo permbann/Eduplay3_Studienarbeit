@@ -2,10 +2,8 @@ import os
 
 from flask import Flask, render_template, session
 from MathEngine import MathGenerator
-from Eduplay3_Studienarbeit.db import get_db
 from Eduplay3_Studienarbeit.auth import login_required
 from flask import Flask, render_template, request
-from Eduplay3_Studienarbeit.task_generator import MathGenerator
 from Eduplay3_Studienarbeit.db import get_db, query_db
 
 mg = MathGenerator()
@@ -72,4 +70,7 @@ def create_app(test_config=None):
 
     from . import shop
     app.register_blueprint(shop.bp)
+
+    from . import inventory
+    app.register_blueprint(inventory.bp)
     return app
