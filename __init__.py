@@ -1,13 +1,13 @@
 import os
 
-from flask import Flask, render_template, session
-from MathEngine import MathGenerator
+from flask import Flask, render_template, session, flash
+
 from Eduplay3_Studienarbeit.auth import login_required
-from Eduplay3_Studienarbeit.database_files.user_model import db, User
+from Eduplay3_Studienarbeit.database_files.db_models import db, User
+from Eduplay3_Studienarbeit.database_files.db_schemas import ma
+
 import sqlalchemy
 
-from flask import Flask, render_template, request
-from Eduplay3_Studienarbeit.db import get_db, query_db
 
 
 
@@ -16,8 +16,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        #DATABASE=os.path.join(app.instance_path, 'users.sqlite'),
-        SQLALCHEMY_DATABASE_URI='sqlite:///database_files/users.sqlite',
+        SQLALCHEMY_DATABASE_URI='sqlite:///database_files/db.sqlite',
         SQLALCHEMY_TRACK_MODIFICATIONS=False
     )
 
@@ -43,10 +42,13 @@ def create_app(test_config=None):
     db.init_app(app)
     db.drop_all()  # comment out if you want to keep data on restart
     db.create_all()
+    ma.init_app(app)
+
 
     try:
         from werkzeug.security import generate_password_hash
-        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=0, tries=3)
+        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=0,
+                          tries=3)
         db.session.add(admin_user)
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:

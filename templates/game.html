@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/math_game.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/platformer1.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/plattformer/main_game.js') }}"></script>
 {% endblock %}
 
 
@@ -27,7 +27,7 @@
         <div id="tries_box">
             Du kannst noch <p id="tries_label"></p> Mal falsch antworten bis ein Sprung abgezogen wird.
         </div>
-        <script src="{{ url_for('static', filename='js/math_game.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/math_game.js') }}"></script>
     </div>
     <section class="controls">
         <img src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="alternatetext">
