@@ -279,7 +279,7 @@ function update_jumps()
 {
     $.ajax({
         async: false,
-        type: 'POST',
+        type: 'PUT',
         data: {change: -1},
         url: '/api/update_jumps',
         success: function(response) {
