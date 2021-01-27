@@ -5,7 +5,7 @@ from flask import Blueprint, flash, g, redirect, render_template, request, sessi
 from wtforms import Form, StringField, PasswordField, validators
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from Eduplay3_Studienarbeit.database_files.user_model import db, User
+from Eduplay3_Studienarbeit.database_files.db_models import db, User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
