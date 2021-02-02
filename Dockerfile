@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6-slim
 COPY . /Eduplay3_Studienarbeit
 WORKDIR /Eduplay3_Studienarbeit
 RUN pip install -r requirements.txt
