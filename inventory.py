@@ -9,27 +9,6 @@ from Eduplay3_Studienarbeit.db import get_db
 
 bp = Blueprint('inventory', __name__, url_prefix='/inventory')
 
-@bp.route('/add', methods=['POST'])
-def insert_item():
-    item = list(request.form.keys())[0]
-    db = get_db()
-    db.execute(f"INSERT INTO inventory(user_id, item_id) VALUES('{session['user_id']}', '{item}')")
-    db.commit()
-
-    # just to test return all items in the inventory of the user
-    import json
-    res = get_db().execute(f"SELECT user_id, item_id FROM inventory where user_id = {session['user_id']}").fetchall()
-    readable = [dict(zip(row.keys(), row)) for row in res]
-    return json.dumps(readable)
-
-
-@bp.route('/get', methods=['GET'])
-def read_items():
-    import json
-    res = get_db().execute(f"SELECT item_id FROM inventory where user_id = {session['user_id']}").fetchall()
-    readable = [list(row) for row in res]
-    return json.dumps(readable)
-
 
 @bp.route('/equipped', methods=['GET'])
 def get_equipped():

@@ -27,3 +27,27 @@ class User(db.Model):
         Balance: {self.currency}
         Remaining Tries: {self.tries}
         """
+
+
+class Items(db.Model):
+    item_id = db.Column(db.String, unique=True, primary_key=True)
+    cost = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, item_id, cost):
+        self.item_id = item_id
+        self.cost = cost
+
+
+class Inventory(db.Model):
+    user_id = db.Column(db.String, primary_key=True)
+    item_id = db.Column(db.String, primary_key=True)
+
+    def __init__(self, user_id, item_id):
+        self.user_id = user_id
+        self.item_id = item_id
+
+
+class Equipped(db.Model):
+    user_id = db.Column(db.String, unique=True, primary_key=True)
+    item_id = db.Column(db.String, unique=True, primary_key=True)
+    item_type = db.Column(db.String, nullable=False)

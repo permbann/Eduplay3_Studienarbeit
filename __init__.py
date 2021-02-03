@@ -3,11 +3,11 @@ import os
 from flask import Flask, render_template, session, flash
 
 from Eduplay3_Studienarbeit.auth import login_required
-from Eduplay3_Studienarbeit.database_files.db_models import db, User
-from Eduplay3_Studienarbeit.database_files.db_schemas import ma
-
+from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items
 import sqlalchemy
 
+from flask import Flask, render_template, request
+from Eduplay3_Studienarbeit.database_files.db_schemas import ma
 
 
 
@@ -51,6 +51,8 @@ def create_app(test_config=None):
                           tries=3)
         db.session.add(admin_user)
         db.session.commit()
+        init_items()
+        db.session.commit()
     except sqlalchemy.exc.IntegrityError:
         print("Admin user already present. Skipping creation...")
         pass
@@ -68,3 +70,41 @@ def create_app(test_config=None):
     from . import inventory
     app.register_blueprint(inventory.bp)
     return app
+
+
+def init_items():
+    item_list= [('hat_11', 5),
+                ('hat_12', 5),
+                ('hat_13', 5),
+                ('hat_14', 10),
+                ('hat_21', 10),
+                ('hat_22', 15),
+                ('hat_23', 15),
+                ('hat_24', 20),
+                ('shoe_11', 5),
+                ('shoe_12', 5),
+                ('shoe_13', 5),
+                ('shoe_14', 10),
+                ('shoe_21', 10),
+                ('shoe_22', 15),
+                ('shoe_23', 15),
+                ('shoe_24', 20),
+                ('glove_11', 5),
+                ('glove_12', 5),
+                ('glove_13', 5),
+                ('glove_14', 10),
+                ('glove_21', 10),
+                ('glove_22', 15),
+                ('glove_23', 15),
+                ('glove_24', 20),
+                ('accessory_11', 5),
+                ('accessory_12', 5),
+                ('accessory_13', 5),
+                ('accessory_14', 10),
+                ('accessory_21', 10),
+                ('accessory_22', 15),
+                ('accessory_23', 15),
+                ('accessory_24', 20)]
+    for item in item_list:
+        db.session.add(Items(item[0], item[1]))
+    db.session.commit()
