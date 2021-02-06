@@ -1,3 +1,15 @@
+<!--
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/02/06"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+-->
+
 {% extends 'base.html' %}
 
 {% block header %}
@@ -7,6 +19,9 @@
     <script type="module" src="{{ url_for('static', filename='js/plattformer/main_game.js') }}"></script>
 {% endblock %}
 
+{% block custom_nav %}
+    <h1><a href="javascript:document.getElementById('ctl_image').scrollIntoView();">Anleitung</a></h1>
+{% endblock %}
 
 {% block content %}
     <div id="leftbox"></div>
@@ -30,6 +45,6 @@
         <script type="module" src="{{ url_for('static', filename='js/math_game.js') }}"></script>
     </div>
     <section class="controls">
-        <img src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="alternatetext">
+        <img id="ctl_image" src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="alternatetext">
     </section>
 {% endblock %}

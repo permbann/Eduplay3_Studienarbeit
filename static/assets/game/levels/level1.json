@@ -1,0 +1,26 @@
+{
+  "platforms": [
+    {"x": 450, "y": 1940, "type": "basic"},
+    {"x": 647, "y": 1810, "type": "basic"},
+    {"x": 996, "y": 1810, "type": "basic"},
+    {"x": 1167, "y": 1636, "type": "basic"},
+    {"x": 983, "y": 1426, "type": "basic"},
+    {"x": 767, "y": 1333, "type": "basic"},
+    {"x": 667, "y": 1333, "type": "basic"},
+    {"x": 567, "y": 1333, "type": "basic"},
+    {"x": 667, "y": 1128, "type": "basic"},
+    {"x": 455, "y": 1021, "type": "basic"},
+    {"x": 100, "y": 1021, "type": "basic"},
+    {"x": 0, "y": 1021, "type": "basic"},
+    {"x": 217, "y": 880, "type": "basic"},
+    {"x": 0, "y": 704, "type": "basic"},
+    {"x": 287, "y": 571, "type": "basic"},
+    {"x": 387, "y": 571, "type": "basic"},
+    {"x": 770, "y": 571, "type": "basic"},
+    {"x": 870, "y": 571, "type": "basic"},
+    {"x": 1067, "y": 438, "type": "basic"},
+    {"x": 1300, "y": 300, "type": "basic"},
+    {"x": 1200, "y": 300, "type": "basic"},
+    {"x": 1100, "y": 300, "type": "basic"}
+    ]
+}
