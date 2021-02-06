@@ -1,5 +1,18 @@
-import functools
-import sqlite3
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Main Flask file to start the webserver.
+"""
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/02/06"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
 
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from MathEngine import MathGenerator
@@ -50,6 +63,14 @@ def update_tries():
     user.tries = max(user.tries + update_value, 0)
     db.session.commit()
     return user_schema.jsonify(user)
+
+
+@bp.route('/level/<level>')
+def get_level(level):
+    levels_path = 'static/assets/game/levels'
+    level = open(f"{levels_path}/{level}.json", "r").read()
+    return level
+
 
 
 def _get_current_user():

@@ -1,3 +1,15 @@
+/*
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/02/06"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+ */
+
 import update_game_jumps_label from './plattformer/main_game.js';
 
 var task = "";
@@ -18,13 +30,18 @@ $(document).ready(function () {
     $.get("/api/jumps", function (data, status) {  // jquery http get request
         jumps = parseInt(data["jumps"]);
         document.getElementById("jumps_label").innerHTML = jumps;
-
-        update_game_jumps_label();
     });
     //load tries
     $.get("/api/tries", function (data, status) {  // jquery http get request
         tries = parseFloat(data['tries']);
         document.getElementById("tries_label").innerHTML = tries;
+    });
+
+    // Prevent default scrolling with Space key
+    window.addEventListener('keydown', function (e) {
+        if (e.code === 'Space' && e.target === document.body) {
+            e.preventDefault();
+        }
     });
 });
 
@@ -76,14 +93,14 @@ function validate_solution(number) {
     }
     if (solution === number) {
         $.ajax({
-                type: "PUT",
-                data: {change: 1},
-                url: "/api/update_jumps",
-                success: function (response) {
-                    update_jump_count(response['jumps']);
-                    console.log(response);
-                }
-            });
+            type: "PUT",
+            data: {change: 1},
+            url: "/api/update_jumps",
+            success: function (response) {
+                update_jump_count(response['jumps']);
+                console.log(response);
+            }
+        });
     } else {
         if (tries === 0) {
             $.ajax({
