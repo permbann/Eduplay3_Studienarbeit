@@ -49,5 +49,7 @@ class Inventory(db.Model):
 
 class Equipped(db.Model):
     user_id = db.Column(db.String, unique=True, primary_key=True)
-    item_id = db.Column(db.String, unique=True, primary_key=True)
-    item_type = db.Column(db.String, nullable=False)
+    hat = db.Column(db.String, nullable=True)
+    shoe = db.Column(db.String, nullable=True)
+    glove = db.Column(db.String, nullable=True)
+    accessory = db.Column(db.String, nullable=True)

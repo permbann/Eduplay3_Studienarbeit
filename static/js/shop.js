@@ -1,17 +1,24 @@
 var last_selected = null; //Current Item on confirm status
 var click = 0;      //Amount of clicks on item. 0= no selection 1 = confirm 2= purchased
 var cost_list;
+var equipped;
+var item_type;
+var equipped_list;
 
 /**
  * Loads all necessary data to display the shop from database
  * eg. currency, costs of displayed items, previously purchased items
  * @param item_type menu selection eg. hats, shoes, gloves or accessories
  */
-function load_item_data(item_type) {
+function load_item_data(item_type_name) {
+    item_type = item_type_name;
     get_currency();
     get_cost(item_type);
     setTimeout(function () {
         get_items();
+    }, 5);
+    setTimeout(function () {
+        get_equipped();
     }, 5);
 }
 
@@ -21,9 +28,20 @@ function load_item_data(item_type) {
 function get_items() {
     $.get("/api/get_items")
         .done(function (data) {
-            update_buttons(data);
+            update_equip_buttons(data);
         });
 }
+
+/**
+ * Gets all equipped items
+ */
+function get_equipped() {
+    $.get("/api/get_equipped")
+        .done(function (data) {
+            update_equipped_buttons(data);
+        });
+}
+
 
 /**
  * gets currency from database and updates currency display
@@ -94,7 +112,7 @@ function update_cost(item) {
  * changes purchase buttons to equip buttons if specific item is already purchased
  * @param items list of all purchased items
  */
-function update_buttons(items) {
+function update_equip_buttons(items) {
     items.forEach(function (item){
         element = document.getElementById(item.item_id);
         if (element != null) {
@@ -102,6 +120,27 @@ function update_buttons(items) {
             element.style.backgroundColor = "#586573";
         }
     });
+}
+
+/**
+ * changes purchase buttons to equip buttons if specific item is already purchased
+ * @param items list of all purchased items
+ */
+function update_equipped_buttons(items) {
+    $.each(items, function (key, value) {
+        if (item_type =='hat'){
+            element = document.getElementById(value.hat);
+        }else if (item_type =='shoe'){
+            element = document.getElementById(value.shoe);
+        }else if (item_type =='glove'){
+            element = document.getElementById(value.glove);
+        }else{
+            element = document.getElementById(value.acccessory);
+        }
+            last_selected = element;
+            element.value = "Equipped";
+            element.style.backgroundColor = "#00b0d1";
+        });
 }
 
 /**
@@ -114,45 +153,174 @@ function update_buttons(items) {
  * @param item item ID of selected item
  */
 function add_item(item) {
-    click += 1;
     if (last_selected != item && last_selected != null) {
-        select_new_item(item, last_selected);
-        last_selected = item;
-    } else {
-        if (click == 1 && item.value != 'Equip') {
-            item.value = "Confirm?";
-            item.style.backgroundColor = "#3fd14b";
+        if (item.value =="Equip"){
+            deselect_item(item, last_selected);
+            equip_item(item, last_selected);
             last_selected = item;
-        } else {
-            purchase_item(item);
-            click = 0;
+        }else {
+            deselect_item(item, last_selected);
+            select_new_item(item);
+            last_selected = item;
         }
+    } else {
+        switch (item.value) {
+            default:
+                item.value = "Confirm?";
+                item.style.backgroundColor = "#3fd14b";
+                break;
+            case "Confirm?":
+                purchase_item(item);
+                break;
+            case "Equip":
+                if (equipped != null) {
+                equip_item(item, equipped);
+                }else{
+                    item.value = "Equipped";
+                    item.style.backgroundColor = "#00b0d1";
+                    add_equipped(item);
+                    equipped=item;
+                }
+                break;
+        }
+                last_selected = item;
+        console.log(item.value);
+        console.log(last_selected.value);
     }
 }
+
+function select_new_item(item){
+    switch (item.value){
+        default:
+            item.value = "Confirm?";
+            item.style.backgroundColor = "#3fd14b";
+            break;
+        case "Confirm?":
+            item.value = "Equip";
+            item.style.backgroundColor = "#586573";
+            break;
+        case "Equip":
+            item.value = "Equipped";
+            item.style.backgroundColor = "#00b0d1";
+            break;
+        case "Equipped":
+            break;
+    }
+}
+
+function deselect_item(item, last_selected){
+    switch (last_selected.value){
+        default:
+            last_selected.value = "Confirm?";
+            last_selected.style.backgroundColor = "#3fd14b";
+            break;
+        case "Confirm?":
+            last_selected.value = update_cost(last_selected.id);
+            last_selected.style.backgroundColor = "#2b5a8c";
+            break;
+        case "Equip":
+            break;
+        case "Equipped":
+            if (item.value == 'Equip') {
+                last_selected.value = "Equip";
+                last_selected.style.backgroundColor = "#586573";
+            }
+            break;
+    }
+}
+
 
 /**
  * Changes Buttons between displaying price, "Confirm" and "Equip" depending on their status
  * @param item currently selected item
  * @param last_selected previously clicked on item
  */
-function select_new_item(item, last_selected) {
-    //if previously selected item is a purchased one it doesn't need to be reset to basic status but stay on purchased
-    if (last_selected.value == 'Equip' && item.value != 'Equip') {
-        item.value = "Confirm?";
-        item.style.backgroundColor = "#3fd14b";
-    }
-    //if a purchased item is clicked the previously selected one should be unselected
-    else if (item.value == 'Equip' && last_selected.value != 'Equip') {
-        last_selected.value = update_cost(last_selected.id);
-        last_selected.style.backgroundColor = "#2b5a8c";
-    } else if (last_selected.value == 'Equip' && item.value == 'Equip') {
-    } else {
-        last_selected.value = update_cost(last_selected.id);
-        last_selected.style.backgroundColor = "#2b5a8c";
-        item.value = "Confirm?";
-        item.style.backgroundColor = "#3fd14b";
+function se(item, last_selected) {
+    switch (item.value) {
+        default:
+            item.value = "Confirm?";
+            item.style.backgroundColor = "#3fd14b";
+            if (last_selected.value != 'Equipped' && last_selected.value != 'Equip') {
+                last_selected.value = update_cost(last_selected.id);
+                last_selected.style.backgroundColor = "#2b5a8c";
+            }
+            break;
+        case "Equip":
+             item.value = "Equipped";
+             item.style.backgroundColor = "#00b0d1";
+            if (last_selected.value == "Equipped"){
+                last_selected.value = "Equip";
+                last_selected.style.backgroundColor = "#586573";
+            } else {
+                last_selected.value = update_cost(last_selected.id);
+                last_selected.style.backgroundColor = "#2b5a8c";
+            }
+            break;
+        case "Equipped":
+            if (last_selected.value == "Confirm?"){
+                last_selected.value = update_cost(last_selected.id);
+                last_selected.style.backgroundColor = "#2b5a8c";
+            }
+            break;
     }
 }
+
+
+function equip_item(item, last_selected) {
+    if (equipped == null) {
+        if (last_selected.value == 'Equip' && item.value == 'Equip') {
+            item.value = "Equipped";
+            item.style.backgroundColor = "#00b0d1";
+
+        } else {
+            last_selected.value = update_cost(last_selected.id);
+            last_selected.style.backgroundColor = "#2b5a8c";
+            item.value = "Equipped";
+            item.style.backgroundColor = "#00b0d1";
+        }
+            equipped = item;
+    }else{
+         if (last_selected.value == 'Equip' && item.value == 'Equip') {
+            item.value = "Equipped";
+            item.style.backgroundColor = "#00b0d1";
+            equipped.value = "Equip";
+            equipped.style.backgroundColor = "#586573";
+         } else {
+             item.value = "Equipped";
+             item.style.backgroundColor = "#00b0d1";
+            equipped.value = "Equip";
+            equipped.style.backgroundColor = "#586573";
+         }
+            equipped = item;
+    }
+    add_equipped(equipped);
+}
+
+
+function add_equipped(item){
+    item_id = item.id.toString();
+    var item_type;
+    var request_body = {};
+    if(item_id.includes("hat")){
+        item_type="hat";
+    } else if(item_id.includes("shoe")){
+         item_type="shoe";
+    } else if(item_id.includes("glove")){
+         item_type="glove";
+    } else{
+        item_type="accessory";
+    }
+    request_body[item_type] = item_id;
+    $.ajax({
+        type: "PUT",
+        data: request_body,
+        url: "/api/add_equipped",
+        success: function (response) {
+            get_equipped();
+        }
+    });
+}
+
 
 /**
  * adds an item to the players inventory after purchasing it
@@ -164,6 +332,7 @@ function purchase_item(item) {
         data: {"item_id": item.id},
         url: "/api/add_item",
         success: function (response) {
+            console.log(response);
             get_items();
         }
     });

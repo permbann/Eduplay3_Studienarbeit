@@ -38,6 +38,8 @@ class EquippedSchema(ma.Schema):
     class Meta:
         fields = [
             "user_id",
-            "item_id",
-            "item_type"
+            "hat",
+            "shoe",
+            "glove",
+            "accessory"
         ]
