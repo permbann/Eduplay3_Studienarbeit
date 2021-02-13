@@ -17,17 +17,16 @@ import StartScene from './scenes/start_scene.js';
 
 //The config object is how you configure your Phaser Game.
 var config = {
-    type: Phaser.AUTO, //automatically tries to use WebGL, but if the browser or device doesn't support it it'll fall back to Canvas.
-    width: 800, //size of the canvas element that Phaser will create.
-    height: 720, //size of the canvas element that Phaser will create.
-    physics: { //include physics support. | there are other systems too: Impact Physics and Matter.js Physics.
+    type: Phaser.AUTO,  //automatically tries to use WebGL, but if the browser or device doesn't support it it'll fall back to Canvas.
+    width: 800,         //size of the canvas element that Phaser will create.
+    height: 720,        //size of the canvas element that Phaser will create.
+    physics: {          //include physics support. | there are other systems too: Impact Physics and Matter Physics.
         default: 'arcade',
         arcade: {
-            //gravity: {y: 600},
             debug: false
         }
     },
-    parent: 'game',
+    parent: 'game',     //canvas html element id
     scene: [Bootloader, StartScene, GameScene, UIScene],
     callbacks: {
         postBoot: function (game) {
@@ -40,8 +39,10 @@ var game = new Phaser.Game(config);
 
 
 function update_game_jumps_label(change = -1) {
+    /*
+        Exported funciton that can be accessed by the Math-Minigame and updates the jump count on the ui.
+     */
     let scene = game.scene.scenes[3]; //ui scene
-    console.log(change);
     if (scene.jump_count) {
         scene.jump_count = change;
         scene.jumps_text.setText('Sprünge: ' + scene.jump_count);

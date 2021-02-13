@@ -12,10 +12,18 @@ __version__ = "1.0"
 
 class StartScene extends Phaser.Scene {
     constructor() {
+        /*
+            Initializes Phaser.Scene with a key/name.
+         */
         super({key: "StartScene"});
     }
 
     create() {
+        /*
+            Phaser function that executes on activating this scene.
+            Displays hint text and animate it to bounce in place.
+            Reads any keyboard key press to start the main game.
+         */
         this.hint_text = this.add.text(400, 460, 'Drücke eine Taste um Loszulegen!', {
             font: '38px Trebuchet MS',
             fill: '#dadada'
@@ -24,7 +32,7 @@ class StartScene extends Phaser.Scene {
         var tween = this.tweens.add({
             targets: this.hint_text,
             alpha: {from: 0.8, to: 1},
-            ease: 'Elastic',       // 'Cubic', 'Elastic', 'Bounce', 'Back'
+            ease: 'Elastic',
             y: "+=5",
             duration: 2000,
             repeat: -1,            // -1: infinity
@@ -33,7 +41,7 @@ class StartScene extends Phaser.Scene {
 
         this.input.keyboard.on("keyup", function (e) {
             this.scene.launch('GameScene');
-            this.scene.start('UIScene');
+            this.scene.start("UIScene");
         }, this);
     }
 }

@@ -14,7 +14,9 @@ __maintainer__ = "developer"
 __status__ = "Released"
 __version__ = "1.0"
 
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+import os
+import pathlib
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, app
 from MathEngine import MathGenerator
 from Eduplay3_Studienarbeit.database_files.db_models import db, User
 from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_schema, UserSchema
@@ -28,20 +30,18 @@ def items():
     return mg.get_term(int(request.args.get('difficulty')))
 
 
+@bp.route("/difficulty")
+def get_difficulty():
+    user = _get_current_user()
+    schema = UserSchema(only=['active_difficulty'])
+    return schema.jsonify(user)
+
+
 @bp.route('/balance', methods=['GET'])
 def get_balance():
     user = _get_current_user()
     schema = UserSchema(only=['currency'])
     return schema.jsonify(user)
-
-
-@bp.route('/update_jumps', methods=['PUT'])
-def update_jumps():
-    update_value = int(request.form['change'])
-    user = _get_current_user()
-    user.jumps = max(user.jumps + update_value, 0)
-    db.session.commit()
-    return user_schema.jsonify(user)
 
 
 @bp.route('/jumps', methods=['GET'])
@@ -56,7 +56,25 @@ def get_tries():
     return {'tries': float(user.tries)}
 
 
-@bp.route('/update_tries', methods=['PUT'])
+@bp.route('/update_difficulty', methods=['PATCH'])
+def update_difficulty():
+    update_value = int(request.form['change'])
+    user = _get_current_user()
+    user.jumps = max(user.active_difficulty + update_value, 0)
+    db.session.commit()
+    return user_schema.jsonify(user)
+
+
+@bp.route('/update_jumps', methods=['PATCH'])
+def update_jumps():
+    update_value = int(request.form['change'])
+    user = _get_current_user()
+    user.jumps = max(user.jumps + update_value, 0)
+    db.session.commit()
+    return user_schema.jsonify(user)
+
+
+@bp.route('/update_tries', methods=['PATCH'])
 def update_tries():
     update_value = float(request.form['change'])
     user = _get_current_user()
@@ -67,10 +85,9 @@ def update_tries():
 
 @bp.route('/level/<level>')
 def get_level(level):
-    levels_path = 'static/assets/game/levels'
+    levels_path = os.path.join(pathlib.Path(__file__).parent.absolute(), 'static/assets/game/levels')
     level = open(f"{levels_path}/{level}.json", "r").read()
     return level
-
 
 
 def _get_current_user():
