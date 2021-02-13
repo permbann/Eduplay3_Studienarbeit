@@ -36,4 +36,3 @@ def test_generate_add_or_sub():
         term = generator.generate_add_or_sub(number_count, numbers, operator_symbol)
         validate_range(term, numbers)
         validate_result(term)
-

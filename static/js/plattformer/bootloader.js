@@ -12,17 +12,24 @@ __version__ = "1.0"
 
 class Bootloader extends Phaser.Scene {
     constructor() {
+        /*
+            Initializes the Phaser.Scene with a key/name.
+         */
         super({key: "Bootloader"});
-
     }
 
     preload() {
+        /*
+            Phaser.Scene function that is executed once before the scene is active.
+            Loads all images and sound assets into the Phaser engine memory.
+         */
         this.load.image('background', 'static/assets/game/background.png');
         this.load.image('ground', 'static/assets/game/ground.png');
         this.load.image('checkpoint', 'static/assets/game/checkpoint.png');
-        this.load.image('platform_blue', 'static/assets/game/plattform_basic.png');
+        this.load.image('platform_basic', 'static/assets/game/platform_basic.png');
         this.load.image('star', 'static/assets/star.png');
         this.load.image('collectable', 'static/assets/game/collectable.png');
+        this.load.image('trophy', 'static/assets/game/trophy.png');
         this.load.spritesheet('player', 'static/assets/game/player.png', {frameWidth: 45, frameHeight: 60});
         this.load.audio('bg_music', ['static/assets/game/sounds/Lost-Jungle.mp3']);
         this.load.audio('walk_sound', ['static/assets/game/sounds/slime_walk.wav']);
@@ -34,6 +41,10 @@ class Bootloader extends Phaser.Scene {
     }
 
     update() {
+        /*
+            Phaser.Scene function that executes each game cycle.
+            Switches to the Start screen.
+         */
         this.scene.start('StartScene');
     }
 

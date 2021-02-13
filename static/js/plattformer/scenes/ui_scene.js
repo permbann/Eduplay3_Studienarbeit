@@ -13,28 +13,48 @@ __version__ = "1.0"
 class UIScene extends Phaser.Scene {
     jumps_text;
     jump_count;
+    balance;
+    main_game;
+    colors = {};
 
     constructor() {
+        /*
+            Initializes the Phaser.Scene with a key/name.
+         */
         super({key: 'UIScene'});
     }
 
     create() {
         /*
-        When scene is activated initialize all elements of the ui.
+            Phaser.Scene function that is executed once on the start of the scene.
+            Initialize all elements of the ui.
+            Also set the event handlers for events emitted by the GameScene.
          */
+        this.colors.score = '#000000';
+        this.colors.retry = '#000000';
+        this.colors.retry_hover = '#33aa33';
+        this.colors.shop = '#444444';
+        this.colors.shop_hover = '#aa3333';
+        this.load_currency();
 
         //  Our Text object to display the Score
-        this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: '#000000'});
+        this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: this.colors.score}, this);
         this.get_jumps();
 
         //  Grab a reference to the Game Scene
-        let main_game = this.scene.get('GameScene');
+        this.main_game = this.scene.get('GameScene');
 
         //  Listen for events from it
-        main_game.events.on('jumped', function () {
+        this.main_game.events.on('jumped', function () {
             this.update_jumps();
-            main_game.jump_count = this.jump_count;
+            this.main_game.jump_count = this.jump_count;
         }, this);
+
+        this.main_game.events.on('finished', function () {
+            this.draw_finished();
+        }, this);
+
+        this.cameras.main.fadeIn(500, 0, 0, 0);
     }
 
     get_jumps() {
@@ -58,13 +78,81 @@ class UIScene extends Phaser.Scene {
          */
         let parent = this;
         $.ajax({
-            type: 'PUT',
+            type: 'PATCH',
             data: {change: -1},
             url: '/api/update_jumps',
             success: function (response) {
                 parent.jumps_text.setText('Sprünge: ' + response['jumps']);
                 parent.jump_count = response['jumps'];
                 document.getElementById("jumps_label").innerHTML = response['jumps'];
+            }
+        });
+    }
+
+    draw_finished() {
+        /*
+            Creates the text objects on the screen indicating giving options of what to do next.
+            Options:
+             - restart game
+             - go to shop
+         */
+        let retry = this.add.text(22, 360, 'Nochmal', {
+            font: '58px Trebuchet MS', fill: this.colors.retry
+        }, this);
+        let shop = this.add.text(22, 310, 'Öffne die Garderobe', {
+            font: '48px Trebuchet MS', fill: this.colors.retry
+        }, this);
+        let currency = this.add.text(22, 260, "Gesammelte Teile: " + this.balance, {
+            font: '38px Trebuchet MS', fill: this.colors.retry
+        }, this);
+
+        retry.setInteractive();
+        retry.on('pointerdown', () => {
+            retry.destroy();
+            shop.destroy();
+            currency.destroy();
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.cameras.main.fadeIn(500, 0, 0, 0);
+                this.main_game.scene.restart();
+            }, this);
+
+        });
+        shop.setInteractive();
+        shop.on('pointerdown', () => {
+            //TODO send to shop
+            //retry.destroy();
+            shop.destroy();
+            currency.destroy();
+        });
+
+        this.add_text_hover(retry, this.colors.retry, this.colors.retry_hover);
+        this.add_text_hover(shop, this.colors.shop, this.colors.shop_hover);
+    }
+
+    add_text_hover(text, color, hover_color) {
+        /*
+            Adds color change on over for provided text object with provided colors.
+         */
+        text.on('pointerover', () => {
+            text.setStyle({fill: hover_color});
+        });
+        text.on('pointerout', () => {
+            text.setStyle({fill: color});
+        });
+    }
+
+
+    load_currency() {
+        /*
+            Updates the current balance variable to the api value asynchronously.
+        */
+        let scene = this;
+        $.ajax({
+            type: 'GET',
+            url: '/api/balance',
+            success: function (response) {
+                scene.balance = parseInt(response['currency']);
             }
         });
     }

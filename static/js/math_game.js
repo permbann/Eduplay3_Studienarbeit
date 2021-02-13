@@ -17,15 +17,17 @@ var solution = 0;
 var has_answered = false;
 var jumps;
 var tries;
+var difficulty;
 var answers_texts = ['', '', '', ''];
 var answer_elements = [
     document.getElementById("answer0"),
     document.getElementById("answer1"),
     document.getElementById("answer2"),
     document.getElementById("answer3")];
+var try_elements = document.getElementsByClassName("fails");
 
 $(document).ready(function () {
-    update_term_async();
+    update_term();
     //load jumps
     $.get("/api/jumps", function (data, status) {  // jquery http get request
         jumps = parseInt(data["jumps"]);
@@ -34,7 +36,20 @@ $(document).ready(function () {
     //load tries
     $.get("/api/tries", function (data, status) {  // jquery http get request
         tries = parseFloat(data['tries']);
-        document.getElementById("tries_label").innerHTML = tries;
+        let decimal = tries % 1;
+        let int_val = parseInt(tries);
+        // color in the X es according to remaining tries
+        for (let i = 0; i < int_val; i++) {
+            try_elements[try_elements.length - 1 - i].style.color = "rgb(224,223,217)";
+        }
+        if (decimal) {
+            try_elements[try_elements.length - 1 - int_val].style.color = "rgb(245,115,88)";
+        }
+    });
+    //load difficulty
+    $.get("/api/difficulty", function (data, status) {  // jquery http get request
+        difficulty = parseFloat(data['active_difficulty']);
+        document.getElementById("difficulty_label").innerHTML = difficulty;
     });
 
     // Prevent default scrolling with Space key
@@ -47,10 +62,14 @@ $(document).ready(function () {
 
 
 $("#task_request").click(function () {
+    /*
+        On click function to get new term.
+        Asks for confirmation.
+     */
     if (!has_answered) {
         if (confirm("Willst du diese Aufgabe wirklich überspringen? Das wird als halbe falsche Antwort gewertet.")) {
             $.ajax({
-                type: "PUT",
+                type: "PATCH",
                 data: {change: -0.5},
                 url: "/api/update_tries",
                 success: function (response) {
@@ -58,14 +77,14 @@ $("#task_request").click(function () {
                     console.log(response);
                 }
             });
-            update_term_async();
-            for (var i = 0; i < answer_elements.length; i++) {
+            update_term();
+            for (let i = 0; i < answer_elements.length; i++) {
                 answer_elements[i].style.backgroundColor = "#fcf0fc";
             }
         }
     } else {
-        update_term_async();
-        for (var i = 0; i < answer_elements.length; i++) {
+        update_term();
+        for (let i = 0; i < answer_elements.length; i++) {
             answer_elements[i].style.backgroundColor = "#fcf0fc";
         }
     }
@@ -88,47 +107,47 @@ $("#answer3").click(function () {
 });
 
 function validate_solution(number) {
+    /*
+        If no answer is already selected select answer and increase players jump count if answer is correct.
+        :param number: the selected answer index
+     */
     if (has_answered) {
         return;
     }
     if (solution === number) {
         $.ajax({
-            type: "PUT",
+            type: "PATCH",
             data: {change: 1},
             url: "/api/update_jumps",
             success: function (response) {
                 update_jump_count(response['jumps']);
-                console.log(response);
             }
         });
     } else {
         if (tries === 0) {
             $.ajax({
-                type: "PUT",
+                type: "PATCH",
                 data: {change: -1},
                 url: "/api/update_jumps",
                 success: function (response) {
                     update_jump_count(response['jumps']);
-                    console.log(response);
                 }
             });
             $.ajax({
-                type: "PUT",
+                type: "PATCH",
                 data: {change: 3},
                 url: "/api/update_tries",
                 success: function (response) {
                     update_tries(response['tries']);
-                    console.log(response);
                 }
             });
         } else {
             $.ajax({
-                type: "PUT",
+                type: "PATCH",
                 data: {change: -1},
                 url: "/api/update_tries",
                 success: function (response) {
                     update_tries(response['tries']);
-                    console.log(response);
                 }
             });
         }
@@ -138,7 +157,10 @@ function validate_solution(number) {
 }
 
 function show_correct() {
-    for (var i = 0; i < answer_elements.length; i++) {
+    /*
+        Highlights the correct answer button green others red.
+     */
+    for (let i = 0; i < answer_elements.length; i++) {
         if (solution === i) {
             answer_elements[i].style.backgroundColor = "#4ba308";
         } else {
@@ -147,8 +169,11 @@ function show_correct() {
     }
 }
 
-function update_term_async() {
-    $.get("/api/get_math", {difficulty: 2}, function (data, status) {  // jquery http get request
+function update_term() {
+    /*
+        Make api call to get new math term and display it.
+     */
+    $.get("/api/get_math", {difficulty: 7}, function (data, status) {  // jquery http get request
         console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
         solution = data["solution_index"];
@@ -160,7 +185,11 @@ function update_term_async() {
 }
 
 function update_answer_text(answers) {
-    for (var i = 0; i < answer_elements.length; i++) {
+    /*
+        Updates all answer buttons.
+        :param answers: answer options list
+     */
+    for (let i = 0; i < answer_elements.length; i++) {
 
         answer_elements[i].innerHTML = answers_texts[i];
     }
@@ -172,12 +201,30 @@ function update_answer_text(answers) {
 }
 
 function update_jump_count(change) {
+    /*
+        Updates global variables jumps and displays it on both jumps labels.
+        :param change: the new amount of jumps
+     */
     jumps = change;
     document.getElementById("jumps_label").innerHTML = jumps;
-    update_game_jumps_label(change);
+    update_game_jumps_label(jumps);
 }
 
 function update_tries(change) {
+    /*
+        Updates global variables tries and displays it with coloring in the X (tries).
+        :param change: the new amount of tries
+     */
     tries = change;
-    document.getElementById("tries_label").innerHTML = tries;
+    let decimal = tries % 1;
+    let int_val = parseInt(tries);
+    for (let i = 0; i < int_val; i++) {
+        try_elements[try_elements.length - 1 - i].style.color = "rgb(224,223,217)";
+    }
+    for (let i = 0; i < try_elements.length - int_val; i++) {
+        try_elements[i].style.color = "rgb(240,16,1)";
+    }
+    if (decimal) {
+        try_elements[try_elements.length - 1 - int_val].style.color = "rgb(245,115,88)";
+    }
 }

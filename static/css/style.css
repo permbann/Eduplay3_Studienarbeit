@@ -1,6 +1,6 @@
 /*STYLE*/
 html { font-family: "Trebuchet MS", sans-serif; background: #9fa8a3; padding: 2rem; }
-body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; }
+body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; box-shadow: 0 0 100px rgb(71,61,65);}
 h1 { color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
