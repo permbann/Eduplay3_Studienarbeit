@@ -30,6 +30,10 @@
     .mascot_overlay{
         width:100px;
         position:absolute;
+        position:absolute;
+        display:none;
+        top:250px;
+        left:200px;
     }
 
     .purchase_button{
@@ -92,17 +96,27 @@
 <body onload="load_item_data('hat')">
     <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
 
-<div id="leftbox" style="position:relative;">
-    <img src="{{ url_for("static",  filename="images/Mascot2.png") }}"
-         alt="Mascot" width="200px" style="margin-top:300px;margin-left:8%; position: absolute;" >
-    <img hidden style="margin-left:80px; margin-top:250px;" id="blue_cap" class="mascot_overlay"
-         src="{{ url_for("static",  filename="images/cap.png") }}" alt="blue cap"/>
-    <img hidden style="margin-top:240px; margin-left:75px"id="crown" class="mascot_overlay"
-         src="{{ url_for("static",  filename="images/crown_mascot.png") }}" alt="crown"/>
-    <img hidden id="top_hat" class="mascot_overlay"
-         src="{{ url_for("static",  filename="images/topHat.png") }}" alt="top hat"/>
-    <img hidden id="headband" class="mascot_overlay"
-         src="{{ url_for("static",  filename="images/headband_mascot.png") }}" alt="headband"/>
+<div id="leftbox">
+    <img src="{{ url_for('static',  filename='images/Mascot2.png') }}"
+         alt="Mascot" width="200px"  style="top:300px; left:140px; position: absolute;" >
+    <div id="hat_imgs">
+        <img  id="blue_cap" class="mascot_overlay"
+             src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
+        <img  id="crown" class="mascot_overlay"
+             src="{{ url_for('static',  filename='images/crown_mascot.png') }}" alt="crown"/>
+        <img  id="top_hat" class="mascot_overlay"
+             src="{{ url_for('static',  filename='images/topHat.png') }}" alt="top hat"/>
+        <img  id="headband" class="mascot_overlay" style="width:135px;height:100px;left:175px;top:260px;"
+             src="{{ url_for('static',  filename='images/headband_mascot.png') }}" alt="headband"/>
+         <img  id="flower" class="mascot_overlay" style="top:260px; left:150px;"
+             src="{{ url_for('static',  filename='images/flower.png') }}" alt="flower"/>
+         <img  id="butterfly" class="mascot_overlay"
+             src="{{ url_for('static',  filename='images/butterfly.png') }}" alt="butterfly"/>
+         <img  id="santa_hat" class="mascot_overlay" style="width:150px;top:210px; left:150px;"
+             src="{{ url_for('static',  filename='images/santaHat.png') }}" alt="santa hat"/>
+         <img  id="bunny_ears" class="mascot_overlay" style="top:220px;"
+             src="{{ url_for('static',  filename='images/bunnyEars.png') }}" alt="bunny ears"/>
+    </div>
 </div>
 <div id="shop"
      style="width:1035px; height:720px; border: 1px solid black;float:left;">

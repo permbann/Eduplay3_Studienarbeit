@@ -1,5 +1,4 @@
 var last_selected = null; //Current Item on confirm status
-var click = 0;      //Amount of clicks on item. 0= no selection 1 = confirm 2= purchased
 var cost_list;
 var equipped;
 var item_type;
@@ -20,6 +19,7 @@ function load_item_data(item_type_name) {
     setTimeout(function () {
         get_equipped();
     }, 5);
+    dress_mascot();
 }
 
 /**
@@ -108,6 +108,7 @@ function update_cost(item) {
     }
 }
 
+
 /**
  * changes purchase buttons to equip buttons if specific item is already purchased
  * @param items list of all purchased items
@@ -115,7 +116,7 @@ function update_cost(item) {
 function update_equip_buttons(items) {
     items.forEach(function (item){
         element = document.getElementById(item.item_id);
-        if (element != null) {
+        if (element != null && (equipped ==null || item.item_id != equipped.id)) {
             element.value = "Equip";
             element.style.backgroundColor = "#586573";
         }
@@ -174,7 +175,7 @@ function add_item(item) {
                 break;
             case "Equip":
                 if (equipped != null) {
-                equip_item(item, equipped);
+                equip_item(item, last_selected);
                 }else{
                     item.value = "Equipped";
                     item.style.backgroundColor = "#00b0d1";
@@ -182,10 +183,10 @@ function add_item(item) {
                     equipped=item;
                 }
                 break;
+            case "Equipped":
+            break;
         }
-                last_selected = item;
-        console.log(item.value);
-        console.log(last_selected.value);
+        last_selected = item;
     }
 }
 
@@ -230,70 +231,42 @@ function deselect_item(item, last_selected){
 }
 
 
-/**
- * Changes Buttons between displaying price, "Confirm" and "Equip" depending on their status
- * @param item currently selected item
- * @param last_selected previously clicked on item
- */
-function se(item, last_selected) {
-    switch (item.value) {
-        default:
-            item.value = "Confirm?";
-            item.style.backgroundColor = "#3fd14b";
-            if (last_selected.value != 'Equipped' && last_selected.value != 'Equip') {
-                last_selected.value = update_cost(last_selected.id);
-                last_selected.style.backgroundColor = "#2b5a8c";
-            }
-            break;
-        case "Equip":
-             item.value = "Equipped";
-             item.style.backgroundColor = "#00b0d1";
-            if (last_selected.value == "Equipped"){
-                last_selected.value = "Equip";
-                last_selected.style.backgroundColor = "#586573";
-            } else {
-                last_selected.value = update_cost(last_selected.id);
-                last_selected.style.backgroundColor = "#2b5a8c";
-            }
-            break;
-        case "Equipped":
-            if (last_selected.value == "Confirm?"){
-                last_selected.value = update_cost(last_selected.id);
-                last_selected.style.backgroundColor = "#2b5a8c";
-            }
-            break;
-    }
-}
-
-
 function equip_item(item, last_selected) {
     if (equipped == null) {
-        if (last_selected.value == 'Equip' && item.value == 'Equip') {
-            item.value = "Equipped";
-            item.style.backgroundColor = "#00b0d1";
-
-        } else {
-            last_selected.value = update_cost(last_selected.id);
-            last_selected.style.backgroundColor = "#2b5a8c";
-            item.value = "Equipped";
-            item.style.backgroundColor = "#00b0d1";
+        switch (item.value){
+            default:
+                last_selected.value = update_cost(last_selected.id);
+                last_selected.style.backgroundColor = "#2b5a8c";
+                item.value = "Equipped";
+                item.style.backgroundColor = "#00b0d1";
+            break;
+            case "Equip":
+                item.value = "Equipped";
+                item.style.backgroundColor = "#00b0d1";
+                break;
         }
-            equipped = item;
     }else{
-         if (last_selected.value == 'Equip' && item.value == 'Equip') {
-            item.value = "Equipped";
-            item.style.backgroundColor = "#00b0d1";
-            equipped.value = "Equip";
-            equipped.style.backgroundColor = "#586573";
-         } else {
-             item.value = "Equipped";
-             item.style.backgroundColor = "#00b0d1";
-            equipped.value = "Equip";
-            equipped.style.backgroundColor = "#586573";
-         }
-            equipped = item;
+        switch (item.value){
+            default:
+                item.value = "Equipped";
+                item.style.backgroundColor = "#00b0d1";
+                equipped.value = "Equip";
+                equipped.style.backgroundColor = "#586573";
+                break;
+            case "Equip":
+                item.value = "Equipped";
+                item.style.backgroundColor = "#00b0d1";
+                equipped.value = "Equip";
+                equipped.style.backgroundColor = "#586573";
+                break;
+            case "Equipped":
+
+        }
     }
+    undress_mascot();
+    equipped = item;
     add_equipped(equipped);
+    dress_mascot();
 }
 
 
@@ -332,46 +305,77 @@ function purchase_item(item) {
         data: {"item_id": item.id},
         url: "/api/add_item",
         success: function (response) {
-            console.log(response);
-            get_items();
+           get_items();
         }
+    });
+}
+
+function undress_mascot(){
+    $.get("/api/get_equipped")
+        .done(function (data) {
+        $.each(data, function (key, value) {
+            switch (value.hat){
+                case"hat_11":
+                    document.getElementById("blue_cap").style.display = "none";
+                    break;
+                case"hat_12":
+                    document.getElementById("crown").style.display = "none";
+                    break;
+                case"hat_13":
+                    document.getElementById("top_hat").style.display = "none";
+                    break;
+                case"hat_14":
+                    document.getElementById("headband").style.display = "none";
+                    break;
+                case"hat_21":
+                    document.getElementById("flower").style.display = "none";
+                    break;
+                case"hat_22":
+                    document.getElementById("butterfly").style.display = "none";
+                    break;
+                case"hat_23":
+                    document.getElementById("santa_hat").style.display = "none";
+                    break;
+                case"hat_24":
+                    document.getElementById("bunny_ears").style.display = "none";
+                    break;
+            }
+        });
     });
 }
 
 function dress_mascot() {
-    $.get("/inventory/equipped").done(function (data) {
-        items = JSON.parse(data);
-        if (items != null) {
-            document.getElementById("blue_cap").style.display = "block";
-        }
-        /*
-        for (i = 0; i < items.length; i++) {
-            item_id = items[i];
-            if (item_id =='hat_11' || 'hat_12' || 'hat_13' || 'hat_14'){
-                hat=1;
+    $.get("/api/get_equipped")
+        .done(function (data) {
+        $.each(data, function (key, value) {
+        console.log("new: " + value.hat);
+            switch (value.hat){
+                case"hat_11":
+                    document.getElementById("blue_cap").style.display = "block";
+                    break;
+                case"hat_12":
+                    document.getElementById("crown").style.display = "block";
+                    break;
+                case"hat_13":
+                    document.getElementById("top_hat").style.display = "block";
+                    break;
+                case"hat_14":
+                    document.getElementById("headband").style.display = "block";
+                    break;
+                case"hat_21":
+                    document.getElementById("flower").style.display = "block";
+                    break;
+                case"hat_22":
+                    document.getElementById("butterfly").style.display = "block";
+                    break;
+                case"hat_23":
+                    document.getElementById("santa_hat").style.display = "block";
+                    break;
+                case"hat_24":
+                    document.getElementById("bunny_ears").style.display = "block";
+                    break;
             }
-            if (item_id == 'hat_11' && hat==0){
-                document.getElementById("blue_cap").style.display ="block";
-                hat=1;
-            }else if (item_id == 'hat_12' && hat==0) {
-                document.getElementById("crown").style.display = "block";
-                hat=1;
-            }else if (item_id == 'hat_13' && hat==0) {
-                document.getElementById("top_hat").style.display = "block";
-                hat=1;
-            }else if (item_id == 'hat_14' && hat==0) {
-                document.getElementById("headband").style.display = "block";
-                hat=1;
-            }else{
-            }
-        }
-         */
+        });
     });
 }
 
-function equip(item) {
-    $.post("/inventory/equip", item.id)
-        .done(function () {
-            dress_mascot();
-        });
-}
