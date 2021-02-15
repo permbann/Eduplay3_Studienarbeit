@@ -1,138 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'shop/base.html' %}
 {% block header %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<style>
-   table{
-        border-collapse: collapse;
-        border-spacing:0px;
-        table-layout: fixed ;
-        border-style: hidden;
-        width: 100% ;
-    }
-
-   .category_th{
-        height: 100px;
-        background-color: #586573;
-   }
-
-    td{
-        width:25%;
-        border: 8px solid #2b5a8c;
-        height: 218px;
-        align-content: center;
-    }
-
-    .item_img{
-        width:150px;
-        margin-left:30px;
-    }
-
-    .mascot_overlay{
-        width:100px;
-        position:absolute;
-        position:absolute;
-        display:none;
-        top:250px;
-        left:200px;
-    }
-
-    .purchase_button{
-        width:100%;
-        height:25%;
-        background-color: #2b5a8c;
-        padding:6px;
-        font-size: 18px;
-        border:none;
-        text-decoration: none;
-        margin-top:10px;
-    }
-
-        .purchase_button_grey{
-        width:100%;
-        height:25%;
-        background-color: #586573;
-        padding:6px;
-        font-size: 18px;
-        border:none;
-        text-decoration: none;
-        margin-top:105px;
-    }
-
-    .purchase_button:hover{
-        background-color: #3fd14b;
-    }
-
-    p{
-        text-align:center;
-    }
-
-    .category_button:focus{
-        background-color:#2b5a8c;
-    }
-
-    .category_button:hover{
-        background-color:#2b5a8c;
-    }
-
-     .category_button{
-        background-color: #586573;
-        width:100%;
-        height: 100%;
-        font-size: 18px;
-        border:none;
-     }
-
- #category_button_selected{
-        background-color:#2b5a8c;
-    }
-
-</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 {% endblock %}
-
 {% block content %}
      {% for value in iii %}
       <p>{{ value }}</p>
     {% endfor %}
 <body onload="load_item_data('hat')">
-    <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
-
-<div id="leftbox">
-    <img src="{{ url_for('static',  filename='images/Mascot2.png') }}"
-         alt="Mascot" width="200px"  style="top:300px; left:140px; position: absolute;" >
-    <div id="hat_imgs">
-        <img  id="blue_cap" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
-        <img  id="crown" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/crown_mascot.png') }}" alt="crown"/>
-        <img  id="top_hat" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/topHat.png') }}" alt="top hat"/>
-        <img  id="headband" class="mascot_overlay" style="width:135px;height:100px;left:175px;top:260px;"
-             src="{{ url_for('static',  filename='images/headband_mascot.png') }}" alt="headband"/>
-         <img  id="flower" class="mascot_overlay" style="top:260px; left:150px;"
-             src="{{ url_for('static',  filename='images/flower.png') }}" alt="flower"/>
-         <img  id="butterfly" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/butterfly.png') }}" alt="butterfly"/>
-         <img  id="santa_hat" class="mascot_overlay" style="width:150px;top:210px; left:150px;"
-             src="{{ url_for('static',  filename='images/santaHat.png') }}" alt="santa hat"/>
-         <img  id="bunny_ears" class="mascot_overlay" style="top:220px;"
-             src="{{ url_for('static',  filename='images/bunnyEars.png') }}" alt="bunny ears"/>
-    </div>
-</div>
-<div id="shop"
-     style="width:1035px; height:720px; border: 1px solid black;float:left;">
-    <div id="shop_headline">
-        <table>
-        <tr>
-            <th>
-            <h1 style="font-size: 80px; margin:0; text-align: left; padding-left: 80px;">Shop</h1>
-        </th>
-            <th>
-            <h2 id="currency_label" style="font-size: 50px; margin:0;"></h2>
-            </th>
-        </tr>
-            </table>
-    </div>
-    <div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f">
         <table  style="width:100%">
             <tr>
                 <th class="category_th">
@@ -210,6 +84,5 @@
             </tr>
         </table>
     </div>
-</div>
 </body>
 {% endblock %}
