@@ -5,46 +5,84 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/shop_style.css') }}">
 <nav>
-  <h1>Eduplay3</h1>
+    <h1>Eduplay3</h1>
 </nav>
 <section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-<div id="leftbox">
-    <img class="mascot" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
-    <div id="hat_imgs">
-        <img  id="blue_cap" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
-        <img  id="crown" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/crown_mascot.png') }}" alt="crown"/>
-        <img  id="top_hat" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/topHat.png') }}" alt="top hat"/>
-        <img  id="headband" class="mascot_overlay" style="width:135px;height:100px;left:23%;top:36%;"
-             src="{{ url_for('static',  filename='images/headband_mascot.png') }}" alt="headband"/>
-        <img  id="flower" class="mascot_overlay" style="top:38%; left:15%;"
-             src="{{ url_for('static',  filename='images/flower.png') }}" alt="flower"/>
-        <img  id="butterfly" class="mascot_overlay"
-             src="{{ url_for('static',  filename='images/butterfly.png') }}" alt="butterfly"/>
-        <img  id="santa_hat" class="mascot_overlay" style="width:150px;left:15%; top:30%;"
-             src="{{ url_for('static',  filename='images/santaHat.png') }}" alt="santa hat"/>
-        <img  id="bunny_ears" class="mascot_overlay" style="top:31%"
-             src="{{ url_for('static',  filename='images/bunnyEars.png') }}" alt="bunny ears"/>
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    <div id="leftbox">
+        <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}" alt="background">
+        <img class="mascot" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
+        <div id="hat_imgs">
+            <img id="blue_cap" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
+            <img id="crown" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/crown_mascot.png') }}" alt="crown"/>
+            <img id="top_hat" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/topHat.png') }}" alt="top hat"/>
+            <img id="headband" class="hat_overlay" style="width:135px;height:100px;left:23%;top:35%;"
+                 src="{{ url_for('static',  filename='images/headband_mascot.png') }}" alt="headband"/>
+            <img id="flower" class="hat_overlay" style="top:38%; left:15%;width:70px;"
+                 src="{{ url_for('static',  filename='images/flower.png') }}" alt="flower"/>
+            <img id="butterfly" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/butterfly.png') }}" alt="butterfly"/>
+            <img id="santa_hat" class="hat_overlay" style="width:150px;left:15%; top:28%;"
+                 src="{{ url_for('static',  filename='images/santaHat.png') }}" alt="santa hat"/>
+            <img id="bunny_ears" class="hat_overlay" style="top:30%"
+                 src="{{ url_for('static',  filename='images/bunnyEars.png') }}" alt="bunny ears"/>
+        </div>
+        <div id="shoe_imgs">
+            <img id="rain_boots" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/rainBoots_mascot.png') }}" alt="rain boots"/>
+            <img id="blue_socks" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/blueSocks_mascot.png') }}" alt="blue socks"/>
+            <img id="red_socks" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/redSocks_mascot.png') }}" alt="red socks"/>
+            <img id="sneakers" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/sneakers_mascot.png') }}" alt="sneakers"/>
+            <img id="crocs" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/crocs_mascot.png') }}" alt="crocs"/>
+            <img id="" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+            <img id="" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+            <img id="" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+        </div>
+        <div id="accessory_imgs">
+            <img id="lightsaber" class="accessory_overlay" style="top:60%; left:58%;"
+                 src="{{ url_for('static',  filename='images/lightsaber_mascot.png') }}" alt="lightsaber"/>
+            <img id="necklace" class="accessory_overlay" style="top:55%; left:36%; width:70px"
+                 src="{{ url_for('static',  filename='images/necklace_mascot.png') }}" alt="necklace"/>
+            <img id="plush" class="accessory_overlay" style="top:62%; left:10%;"
+                 src="{{ url_for('static',  filename='images/plush_mascot.png') }}" alt="plush"/>
+            <img id="scarf_blue" class="accessory_overlay" style="top:57%; left:30%;"
+                 src="{{ url_for('static',  filename='images/scarfBlue_mascot.png') }}" alt="scarf blue"/>
+            <img id="scarf_red" class="accessory_overlay" style="top:55.6%; left:26%;width:110px;"
+                 src="{{ url_for('static',  filename='images/scarfRed.png') }}" alt="scarf red"/>
+            <img id="" class="accessory_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+            <img id="" class="accessory_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+            <img id="" class="accessory_overlay"
+                 src="{{ url_for('static',  filename='images/') }}" alt=""/>
+        </div>
     </div>
-</div>
+    </div>
 
-<div id="shop"
-     style="width:1035px; height:720px; border: 1px solid black;float:left;">
-    <div id="shop_headline">
-        <table>
-            <tr>
-                <th><h1 style="font-size: 80px; margin:0; text-align: left; padding-left: 80px;">Shop</h1></th>
-                <th><h2 id="currency_label" style="font-size: 50px; margin:0;"></h2></th>
-            </tr>
-        </table>
+    <div id="shop"
+         style="width:1035px; height:720px; border: 1px solid black;float:left;">
+        <div id="shop_headline">
+            <table>
+                <tr>
+                    <th><h1 style="font-size: 80px; margin:0; text-align: left; padding-left: 80px;">Shop</h1></th>
+                    <th><h2 id="currency_label" style="font-size: 50px; margin:0;"></h2></th>
+                </tr>
+            </table>
+        </div>
+        <div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f" id="table">
+            {% block content %}{% endblock %}
+        </div>
     </div>
-<div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f" id="table">
-  {% block content %}{% endblock %}
-</div>
-</div>
 </section>

@@ -1,0 +1,31 @@
+/*STYLE*/
+table{border-collapse: collapse; border-spacing: 0; table-layout: fixed; border-style: hidden; width: 100%;}
+td{width: 25%; border: 8px solid #2b5a8c; height: 218px; align-content: center;}
+p{text-align:center;}
+
+.item_img{width: 150px; margin-left: 30px;}
+.mascot{width:200px; top:42%; left:9%; position: relative; z-index:0;}
+.hat_overlay{width:100px; position:relative; display:none; top:33%; left:33%; z-index:1;}
+.shoe_overlay{width:200px; position:relative; display:none; top:55.4%; left:9%; z-index:1;}
+.accessory_overlay{width:100px; position:relative; display:none; z-index:1;}
+.category_th{height: 100px; background-color: #586573;}
+.category_button{background-color: #586573; width:100%; height: 100%; font-size: 18px; border:none;}
+.category_button:focus{background-color:#2b5a8c;}
+.category_button:hover{background-color:#2b5a8c;}
+.purchase_button{width: 100%; height: 25%; background-color: #2b5a8c; padding: 6px; font-size: 18px; border: none;
+    text-decoration: none; margin-top: 10px; }
+.purchase_button_grey{width:100%; height:25%; background-color: #586573; padding:6px; font-size: 18px; border:none;
+    text-decoration: none; margin-top:105px;}
+.purchase_button:hover{background-color: #3fd14b;}
+
+#shop{background-color:#7e98ab;}
+#table_border{border:5px solid #37354f; border-spacing:5px;}
+#leftbox{ float:left; background:Red; width:240px; height:720px; }
+#sidebar_background{z-index: 0; position:absolute;}
+#hat_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
+#shoe_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
+#accessory_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
+#rightbox{ float:right; width:240px; height:720px; }
+#category_button_selected{background-color:#2b5a8c;}
+
+

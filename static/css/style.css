@@ -17,7 +17,6 @@ input[type=submit] { align-self: start; min-width: 10em; }
 #leftbox { float:left; background:Red; width:240px; height:720px; }
 #game{ float:left; align:center;}
 #rightbox{ float:right; width:240px; height:720px; }
-#shop{background-color:#7e98ab;}
 
 .content { margin-left:auto; margin-right:auto; width:1280px; }
 .controls img { max-width: 100%; height: auto; }

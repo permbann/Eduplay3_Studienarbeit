@@ -55,6 +55,21 @@ def update_tries():
 
 # -----------------------------------------------------------------------------
 
+@bp.route('/update_balance', methods=['PUT'])
+def update_balance():
+    """
+    Updates balance in database after a purchase
+    :return: new balance
+    """
+    user = _get_current_user()
+    currency = request.form['currency']
+    user.currency = currency
+    db.session.add(user)
+    db.session.commit()
+    schema = UserSchema()
+    return schema.jsonify(user)
+
+
 @bp.route('/add_item', methods=['PUT'])
 def add_item():
     """

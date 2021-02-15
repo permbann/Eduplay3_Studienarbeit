@@ -2,7 +2,7 @@ var last_selected = null; //Current Item on confirm status
 var cost_list;
 var equipped;
 var item_type;
-var equipped_list;
+var currency =0;
 
 /**
  * Loads all necessary data to display the shop from database
@@ -39,6 +39,7 @@ function get_equipped() {
     $.get("/api/get_equipped")
         .done(function (data) {
             update_equipped_buttons(data);
+            console.log(data);
         });
 }
 
@@ -55,6 +56,34 @@ function get_currency() {
 }
 
 /**
+ * subtracts item price from balance if balance > item price
+ * @param item purchased item
+ */
+function update_currency(item){
+    currency -= update_cost(item.id);
+    $.ajax({
+        type: "PUT",
+        data: {"currency": currency},
+        url: "/api/update_balance",
+        success: function (response) {
+            get_currency();
+        }
+    });
+}
+
+//TODO: Maybe add button to alert window that links to game -> earn balance
+/**
+ * checks whether user balance is high enough to purchase item
+ * @param item purchased item
+ */
+function check_payable(item){
+    if (update_cost(item.id) >currency){
+        window.confirm("Your balance is too low to purchase this item.");
+        throw new Error("Balance too low");
+    }
+}
+
+/**
  *gets cost for all items currently displayed
  * returned as cost + item_id list
  * @param item_type item currently displayed eg. hats, gloves, shoes, accessories
@@ -62,25 +91,25 @@ function get_currency() {
 function get_cost(item_type) {
     if (item_type == 'hat') {
         $.get("/api/get_hat").done(function (data) {
-            cost_list=data;
+            cost_list = data;
             update_cost(null);
         });
     }
     if (item_type == 'shoe') {
         $.get("/api/get_shoe").done(function (data) {
-            cost_list=data;
+            cost_list = data;
             update_cost(null)
         });
     }
     if (item_type == 'glove') {
         $.get("/api/get_glove").done(function (data) {
-            cost_list=data;
+            cost_list = data;
             update_cost(null)
         });
     }
     if (item_type == 'accessory') {
         $.get("/api/get_accessory").done(function (data) {
-            cost_list=data;
+            cost_list = data;
             update_cost(null)
         });
     }
@@ -114,9 +143,9 @@ function update_cost(item) {
  * @param items list of all purchased items
  */
 function update_equip_buttons(items) {
-    items.forEach(function (item){
+    items.forEach(function (item) {
         element = document.getElementById(item.item_id);
-        if (element != null && (equipped ==null || item.item_id != equipped.id)) {
+        if (element != null && (equipped == null || item.item_id != equipped.id)) {
             element.value = "Equip";
             element.style.backgroundColor = "#586573";
         }
@@ -129,19 +158,19 @@ function update_equip_buttons(items) {
  */
 function update_equipped_buttons(items) {
     $.each(items, function (key, value) {
-        if (item_type =='hat'){
+        if (item_type == 'hat') {
             element = document.getElementById(value.hat);
-        }else if (item_type =='shoe'){
+        } else if (item_type == 'shoe') {
             element = document.getElementById(value.shoe);
-        }else if (item_type =='glove'){
+        } else if (item_type == 'glove') {
             element = document.getElementById(value.glove);
-        }else{
-            element = document.getElementById(value.acccessory);
+        } else {
+            element = document.getElementById(value.accessory);
         }
-            last_selected = element;
-            element.value = "Equipped";
-            element.style.backgroundColor = "#00b0d1";
-        });
+        last_selected = element;
+        element.value = "Equipped";
+        element.style.backgroundColor = "#00b0d1";
+    });
 }
 
 /**
@@ -155,11 +184,11 @@ function update_equipped_buttons(items) {
  */
 function add_item(item) {
     if (last_selected != item && last_selected != null) {
-        if (item.value =="Equip"){
+        if (item.value == "Equip") {
             deselect_item(item, last_selected);
             equip_item(item, last_selected);
             last_selected = item;
-        }else {
+        } else {
             deselect_item(item, last_selected);
             select_new_item(item);
             last_selected = item;
@@ -174,24 +203,21 @@ function add_item(item) {
                 purchase_item(item);
                 break;
             case "Equip":
-                if (equipped != null) {
                 equip_item(item, last_selected);
-                }else{
-                    item.value = "Equipped";
-                    item.style.backgroundColor = "#00b0d1";
-                    add_equipped(item);
-                    equipped=item;
-                }
                 break;
             case "Equipped":
-            break;
+                break;
         }
         last_selected = item;
     }
 }
 
-function select_new_item(item){
-    switch (item.value){
+/**
+ * Updates button text and colour after click
+ * @param item - Button of the item that has been clicked
+ */
+function select_new_item(item) {
+    switch (item.value) {
         default:
             item.value = "Confirm?";
             item.style.backgroundColor = "#3fd14b";
@@ -209,8 +235,13 @@ function select_new_item(item){
     }
 }
 
-function deselect_item(item, last_selected){
-    switch (last_selected.value){
+/**
+ * reverts button of the previously clicked item to previous value
+ * @param item newly clicked item button
+ * @param last_selected previously selected item button, button to revert
+ */
+function deselect_item(item, last_selected) {
+    switch (last_selected.value) {
         default:
             last_selected.value = "Confirm?";
             last_selected.style.backgroundColor = "#3fd14b";
@@ -230,23 +261,28 @@ function deselect_item(item, last_selected){
     }
 }
 
-
+/**
+ * Changes buttons between  'Equip' and 'Equipped'
+ * only 1 item can be equipped at a time
+ * @param item item to chzange to 'Equipped'
+ * @param last_selected previously selected item to revert to previous state
+ */
 function equip_item(item, last_selected) {
     if (equipped == null) {
-        switch (item.value){
+        switch (item.value) {
             default:
                 last_selected.value = update_cost(last_selected.id);
                 last_selected.style.backgroundColor = "#2b5a8c";
                 item.value = "Equipped";
                 item.style.backgroundColor = "#00b0d1";
-            break;
+                break;
             case "Equip":
                 item.value = "Equipped";
                 item.style.backgroundColor = "#00b0d1";
                 break;
         }
-    }else{
-        switch (item.value){
+    } else {
+        switch (item.value) {
             default:
                 item.value = "Equipped";
                 item.style.backgroundColor = "#00b0d1";
@@ -260,7 +296,7 @@ function equip_item(item, last_selected) {
                 equipped.style.backgroundColor = "#586573";
                 break;
             case "Equipped":
-
+                break;
         }
     }
     undress_mascot();
@@ -269,19 +305,22 @@ function equip_item(item, last_selected) {
     dress_mascot();
 }
 
-
-function add_equipped(item){
+/**
+ * Adds the equipped item into the database, only 1 item at a time
+ * @param item newly equipped item
+ */
+function add_equipped(item) {
     item_id = item.id.toString();
     var item_type;
     var request_body = {};
-    if(item_id.includes("hat")){
-        item_type="hat";
-    } else if(item_id.includes("shoe")){
-         item_type="shoe";
-    } else if(item_id.includes("glove")){
-         item_type="glove";
-    } else{
-        item_type="accessory";
+    if (item_id.includes("hat")) {
+        item_type = "hat";
+    } else if (item_id.includes("shoe")) {
+        item_type = "shoe";
+    } else if (item_id.includes("glove")) {
+        item_type = "glove";
+    } else {
+        item_type = "accessory";
     }
     request_body[item_type] = item_id;
     $.ajax({
@@ -300,82 +339,194 @@ function add_equipped(item){
  * @param item purchased item to add to inventory
  */
 function purchase_item(item) {
+    check_payable(item);
     $.ajax({
         type: "PUT",
         data: {"item_id": item.id},
         url: "/api/add_item",
         success: function (response) {
-           get_items();
+            get_items();
         }
     });
+    update_currency(item);
 }
 
-function undress_mascot(){
+/**
+ * removes previously equipped item in specific category from mascot
+ */
+function undress_mascot() {
+    console.log("undress");
     $.get("/api/get_equipped")
         .done(function (data) {
-        $.each(data, function (key, value) {
-            switch (value.hat){
-                case"hat_11":
-                    document.getElementById("blue_cap").style.display = "none";
-                    break;
-                case"hat_12":
-                    document.getElementById("crown").style.display = "none";
-                    break;
-                case"hat_13":
-                    document.getElementById("top_hat").style.display = "none";
-                    break;
-                case"hat_14":
-                    document.getElementById("headband").style.display = "none";
-                    break;
-                case"hat_21":
-                    document.getElementById("flower").style.display = "none";
-                    break;
-                case"hat_22":
-                    document.getElementById("butterfly").style.display = "none";
-                    break;
-                case"hat_23":
-                    document.getElementById("santa_hat").style.display = "none";
-                    break;
-                case"hat_24":
-                    document.getElementById("bunny_ears").style.display = "none";
-                    break;
-            }
+            $.each(data, function (key, value) {
+                switch (value.hat) {
+                    case"hat_11":
+                        document.getElementById("blue_cap").style.display = "none";
+                        break;
+                    case"hat_12":
+                        document.getElementById("crown").style.display = "none";
+                        break;
+                    case"hat_13":
+                        document.getElementById("top_hat").style.display = "none";
+                        break;
+                    case"hat_14":
+                        document.getElementById("headband").style.display = "none";
+                        break;
+                    case"hat_21":
+                        document.getElementById("flower").style.display = "none";
+                        break;
+                    case"hat_22":
+                        document.getElementById("butterfly").style.display = "none";
+                        break;
+                    case"hat_23":
+                        document.getElementById("santa_hat").style.display = "none";
+                        break;
+                    case"hat_24":
+                        document.getElementById("bunny_ears").style.display = "none";
+                        break;
+                }
+                switch (value.shoe) {
+                    case"shoe_11":
+                        document.getElementById("rain_boots").style.display = "none";
+                        break;
+                    case"shoe_12":
+                        document.getElementById("blue_socks").style.display = "none";
+                        break;
+                    case"shoe_13":
+                        document.getElementById("red_socks").style.display = "none";
+                        break;
+                    case"shoe_14":
+                        document.getElementById("sneakers").style.display = "none";
+                        break;
+                    case"shoe_21":
+                        document.getElementById("crocs").style.display = "none";
+                        break;
+                    case"shoe_22":
+                        document.getElementById("").style.display = "none";
+                        break;
+                    case"shoe_23":
+                        document.getElementById("").style.display = "none";
+                        break;
+                    case"shoe_24":
+                        document.getElementById("").style.display = "none";
+                        break;
+                }
+                switch (value.accessory) {
+                    case"accessory_11":
+                        document.getElementById("lightsaber").style.display = "none";
+                        break;
+                    case"accessory_12":
+                        document.getElementById("necklace").style.display = "none";
+                        break;
+                    case"accessory_13":
+                        document.getElementById("plush").style.display = "none";
+                        break;
+                    case"accessory_14":
+                        document.getElementById("scarf_blue").style.display = "none";
+                        break;
+                    case"accessory_21":
+                        document.getElementById("scarf_red").style.display = "none";
+                        break;
+                    case"accessory_22":
+                        document.getElementById("").style.display = "none";
+                        break;
+                    case"accessory_23":
+                        document.getElementById("").style.display = "none";
+                        break;
+                    case"accessory_24":
+                        document.getElementById("").style.display = "none";
+                        break;
+                }
         });
-    });
+}
+
+)
+;
 }
 
 function dress_mascot() {
     $.get("/api/get_equipped")
         .done(function (data) {
-        $.each(data, function (key, value) {
-        console.log("new: " + value.hat);
-            switch (value.hat){
-                case"hat_11":
-                    document.getElementById("blue_cap").style.display = "block";
-                    break;
-                case"hat_12":
-                    document.getElementById("crown").style.display = "block";
-                    break;
-                case"hat_13":
-                    document.getElementById("top_hat").style.display = "block";
-                    break;
-                case"hat_14":
-                    document.getElementById("headband").style.display = "block";
-                    break;
-                case"hat_21":
-                    document.getElementById("flower").style.display = "block";
-                    break;
-                case"hat_22":
-                    document.getElementById("butterfly").style.display = "block";
-                    break;
-                case"hat_23":
-                    document.getElementById("santa_hat").style.display = "block";
-                    break;
-                case"hat_24":
-                    document.getElementById("bunny_ears").style.display = "block";
-                    break;
-            }
+            $.each(data, function (key, value) {
+                switch (value.hat) {
+                    case"hat_11":
+                        document.getElementById("blue_cap").style.display = "block";
+                        break;
+                    case"hat_12":
+                        document.getElementById("crown").style.display = "block";
+                        break;
+                    case"hat_13":
+                        document.getElementById("top_hat").style.display = "block";
+                        break;
+                    case"hat_14":
+                        document.getElementById("headband").style.display = "block";
+                        break;
+                    case"hat_21":
+                        document.getElementById("flower").style.display = "block";
+                        break;
+                    case"hat_22":
+                        document.getElementById("butterfly").style.display = "block";
+                        break;
+                    case"hat_23":
+                        document.getElementById("santa_hat").style.display = "block";
+                        break;
+                    case"hat_24":
+                        document.getElementById("bunny_ears").style.display = "block";
+                        break;
+                }
+                switch (value.shoe) {
+                    case"shoe_11":
+                        document.getElementById("rain_boots").style.display = "block";
+                        break;
+                    case"shoe_12":
+                        document.getElementById("blue_socks").style.display = "block";
+                        break;
+                    case"shoe_13":
+                        document.getElementById("red_socks").style.display = "block";
+                        break;
+                    case"shoe_14":
+                        document.getElementById("sneakers").style.display = "block";
+                        break;
+                    case"shoe_21":
+                        document.getElementById("crocs").style.display = "block";
+                        break;
+                    case"shoe_22":
+                        document.getElementById("").style.display = "block";
+                        break;
+                    case"shoe_23":
+                        document.getElementById("").style.display = "block";
+                        break;
+                    case"shoe_24":
+                        document.getElementById("").style.display = "block";
+                        break;
+                }
+                switch (value.accessory) {
+                    case"accessory_11":
+                        document.getElementById("lightsaber").style.display = "block";
+                        break;
+                    case"accessory_12":
+                        document.getElementById("necklace").style.display = "block";
+                        break;
+                    case"accessory_13":
+                        document.getElementById("plush").style.display = "block";
+                        break;
+                    case"accessory_14":
+                        document.getElementById("scarf_blue").style.display = "block";
+                        break;
+                    case"accessory_21":
+                        document.getElementById("scarf_red").style.display = "block";
+                        break;
+                    case"accessory_22":
+                        document.getElementById("").style.display = "block";
+                        break;
+                    case"accessory_23":
+                        document.getElementById("").style.display = "block";
+                        break;
+                    case"accessory_24":
+                        document.getElementById("").style.display = "block";
+                        break;
+                }
+            });
         });
-    });
 }
 

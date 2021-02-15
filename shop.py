@@ -25,11 +25,6 @@ def accessories():
     return render_template("shop/accessories.html")
 
 
-@bp.route('/base', methods=['GET', 'POST'])
-def base():
-    return render_template("shop/base.html")
-
-
 @bp.route('/gethat', methods=['GET'])
 def get_hat_cost():
     import json
