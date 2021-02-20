@@ -146,6 +146,9 @@ def add_equipped():
     :return:
     """
     key, value = list(request.form.items())[0]  # get the first item (only one allowed in the request)
+    if not value:
+        value = None
+
     equipped = _get_current_equipped()
     if not equipped:
         hat = value if 'hat' in key else None

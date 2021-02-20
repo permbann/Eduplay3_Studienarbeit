@@ -2,7 +2,7 @@ var last_selected = null; //Current Item on confirm status
 var cost_list;
 var equipped;
 var item_type;
-var currency =0;
+var currency = 0;
 
 /**
  * Loads all necessary data to display the shop from database
@@ -59,7 +59,7 @@ function get_currency() {
  * subtracts item price from balance if balance > item price
  * @param item purchased item
  */
-function update_currency(item){
+function update_currency(item) {
     currency -= update_cost(item.id);
     $.ajax({
         type: "PUT",
@@ -76,8 +76,8 @@ function update_currency(item){
  * checks whether user balance is high enough to purchase item
  * @param item purchased item
  */
-function check_payable(item){
-    if (update_cost(item.id) >currency){
+function check_payable(item) {
+    if (update_cost(item.id) > currency) {
         window.confirm("Your balance is too low to purchase this item.");
         throw new Error("Balance too low");
     }
@@ -206,6 +206,9 @@ function add_item(item) {
                 equip_item(item, last_selected);
                 break;
             case "Equipped":
+                item.value = "Equip";
+                item.style.backgroundColor = "#586573";
+                remove_equipped(item);
                 break;
         }
         last_selected = item;
@@ -231,6 +234,10 @@ function select_new_item(item) {
             item.style.backgroundColor = "#00b0d1";
             break;
         case "Equipped":
+            item.value = "Equip";
+            item.style.backgroundColor = "#586573";
+            remove_equipped(item);
+            undress_mascot();
             break;
     }
 }
@@ -256,6 +263,7 @@ function deselect_item(item, last_selected) {
             if (item.value == 'Equip') {
                 last_selected.value = "Equip";
                 last_selected.style.backgroundColor = "#586573";
+                remove_equipped(last_selected);
             }
             break;
     }
@@ -280,6 +288,11 @@ function equip_item(item, last_selected) {
                 item.value = "Equipped";
                 item.style.backgroundColor = "#00b0d1";
                 break;
+            case "Equipped":
+                item.value = "Equip";
+                item.style.backgroundColor = "#586573";
+                remove_equipped(item);
+                break;
         }
     } else {
         switch (item.value) {
@@ -296,6 +309,9 @@ function equip_item(item, last_selected) {
                 equipped.style.backgroundColor = "#586573";
                 break;
             case "Equipped":
+                item.value = "Equip";
+                item.style.backgroundColor = "#586573";
+                remove_equipped(item);
                 break;
         }
     }
@@ -304,6 +320,32 @@ function equip_item(item, last_selected) {
     add_equipped(equipped);
     dress_mascot();
 }
+
+function remove_equipped(item) {
+    undress_mascot();
+    item_id = item.id.toString();
+    var item_type;
+    var request_body = {};
+    if (item_id.includes("hat")) {
+        item_type = "hat";
+    } else if (item_id.includes("shoe")) {
+        item_type = "shoe";
+    } else if (item_id.includes("glove")) {
+        item_type = "glove";
+    } else {
+        item_type = "accessory";
+    }
+    request_body[item_type] = null;
+    $.ajax({
+        type: "PUT",
+        data: request_body,
+        url: "/api/add_equipped",
+        success: function (response) {
+        }
+    });
+    dress_mascot();
+}
+
 
 /**
  * Adds the equipped item into the database, only 1 item at a time
@@ -355,93 +397,117 @@ function purchase_item(item) {
  * removes previously equipped item in specific category from mascot
  */
 function undress_mascot() {
-    console.log("undress");
     $.get("/api/get_equipped")
         .done(function (data) {
-            $.each(data, function (key, value) {
-                switch (value.hat) {
-                    case"hat_11":
-                        document.getElementById("blue_cap").style.display = "none";
+                $.each(data, function (key, value) {
+                    switch (value.hat) {
+                        case"hat_11":
+                            document.getElementById("blue_cap").style.display = "none";
+                            break;
+                        case"hat_12":
+                            document.getElementById("crown").style.display = "none";
+                            break;
+                        case"hat_13":
+                            document.getElementById("top_hat").style.display = "none";
+                            break;
+                        case"hat_14":
+                            document.getElementById("headband").style.display = "none";
+                            break;
+                        case"hat_21":
+                            document.getElementById("flower").style.display = "none";
+                            break;
+                        case"hat_22":
+                            document.getElementById("butterfly").style.display = "none";
+                            break;
+                        case"hat_23":
+                            document.getElementById("santa_hat").style.display = "none";
+                            break;
+                        case"hat_24":
+                            document.getElementById("bunny_ears").style.display = "none";
+                            break;
+                    }
+                    switch (value.shoe) {
+                        case"shoe_11":
+                            document.getElementById("rain_boots").style.display = "none";
+                            break;
+                        case"shoe_12":
+                            document.getElementById("blue_socks").style.display = "none";
+                            break;
+                        case"shoe_13":
+                            document.getElementById("red_socks").style.display = "none";
+                            break;
+                        case"shoe_14":
+                            document.getElementById("sneakers").style.display = "none";
+                            break;
+                        case"shoe_21":
+                            document.getElementById("crocs").style.display = "none";
+                            break;
+                        case"shoe_22":
+                            document.getElementById("boots").style.display = "none";
+                            break;
+                        case"shoe_23":
+                            document.getElementById("ribbon_shoes").style.display = "none";
+                            break;
+                        case"shoe_24":
+                            document.getElementById("black_boots").style.display = "none";
+                            break;
+                    }
+                                switch (value.glove) {
+                    case"glove_11":
+                        document.getElementById("flower_top").style.display = "none";
                         break;
-                    case"hat_12":
-                        document.getElementById("crown").style.display = "none";
+                    case"glove_12":
+                        document.getElementById("green_shirt").style.display = "none";
                         break;
-                    case"hat_13":
-                        document.getElementById("top_hat").style.display = "none";
+                    case"glove_13":
+                        document.getElementById("red_sweater").style.display = "none";
                         break;
-                    case"hat_14":
-                        document.getElementById("headband").style.display = "none";
+                    case"glove_14":
+                        document.getElementById("pink_jacket").style.display = "none";
                         break;
-                    case"hat_21":
-                        document.getElementById("flower").style.display = "none";
+                    case"glove_21":
+                        document.getElementById("simley_top").style.display = "none";
                         break;
-                    case"hat_22":
-                        document.getElementById("butterfly").style.display = "none";
+                    case"glove_22":
+                        document.getElementById("purple_shirt").style.display = "none";
                         break;
-                    case"hat_23":
-                        document.getElementById("santa_hat").style.display = "none";
+                    case"glove_23":
+                        document.getElementById("blue_hoodie").style.display = "none";
                         break;
-                    case"hat_24":
-                        document.getElementById("bunny_ears").style.display = "none";
+                    case"glove_24":
+                        document.getElementById("leather_jacket").style.display = "none";
                         break;
                 }
-                switch (value.shoe) {
-                    case"shoe_11":
-                        document.getElementById("rain_boots").style.display = "none";
-                        break;
-                    case"shoe_12":
-                        document.getElementById("blue_socks").style.display = "none";
-                        break;
-                    case"shoe_13":
-                        document.getElementById("red_socks").style.display = "none";
-                        break;
-                    case"shoe_14":
-                        document.getElementById("sneakers").style.display = "none";
-                        break;
-                    case"shoe_21":
-                        document.getElementById("crocs").style.display = "none";
-                        break;
-                    case"shoe_22":
-                        document.getElementById("").style.display = "none";
-                        break;
-                    case"shoe_23":
-                        document.getElementById("").style.display = "none";
-                        break;
-                    case"shoe_24":
-                        document.getElementById("").style.display = "none";
-                        break;
-                }
-                switch (value.accessory) {
-                    case"accessory_11":
-                        document.getElementById("lightsaber").style.display = "none";
-                        break;
-                    case"accessory_12":
-                        document.getElementById("necklace").style.display = "none";
-                        break;
-                    case"accessory_13":
-                        document.getElementById("plush").style.display = "none";
-                        break;
-                    case"accessory_14":
-                        document.getElementById("scarf_blue").style.display = "none";
-                        break;
-                    case"accessory_21":
-                        document.getElementById("scarf_red").style.display = "none";
-                        break;
-                    case"accessory_22":
-                        document.getElementById("").style.display = "none";
-                        break;
-                    case"accessory_23":
-                        document.getElementById("").style.display = "none";
-                        break;
-                    case"accessory_24":
-                        document.getElementById("").style.display = "none";
-                        break;
-                }
-        });
-}
-
-)
-;
+                    switch (value.accessory) {
+                        case"accessory_11":
+                            document.getElementById("lightsaber").style.display = "none";
+                            break;
+                        case"accessory_12":
+                            document.getElementById("necklace").style.display = "none";
+                            break;
+                        case"accessory_13":
+                            document.getElementById("plush").style.display = "none";
+                            break;
+                        case"accessory_14":
+                            document.getElementById("scarf_blue").style.display = "none";
+                            break;
+                        case"accessory_21":
+                            document.getElementById("scarf_red").style.display = "none";
+                            break;
+                        case"accessory_22":
+                            document.getElementById("glasses").style.display = "none";
+                            break;
+                        case"accessory_23":
+                            document.getElementById("sunglasses").style.display = "none";
+                            break;
+                        case"accessory_24":
+                            document.getElementById("cat").style.display = "none";
+                            break;
+                    }
+                });
+            }
+        )
+    ;
 }
 
 function dress_mascot() {
@@ -491,13 +557,39 @@ function dress_mascot() {
                         document.getElementById("crocs").style.display = "block";
                         break;
                     case"shoe_22":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("boots").style.display = "block";
                         break;
                     case"shoe_23":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("ribbon_shoes").style.display = "block";
                         break;
                     case"shoe_24":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("black_boots").style.display = "block";
+                        break;
+                }
+                switch (value.glove) {
+                    case"glove_11":
+                        document.getElementById("flower_top").style.display = "block";
+                        break;
+                    case"glove_12":
+                        document.getElementById("green_shirt").style.display = "block";
+                        break;
+                    case"glove_13":
+                        document.getElementById("red_sweater").style.display = "block";
+                        break;
+                    case"glove_14":
+                        document.getElementById("pink_jacket").style.display = "block";
+                        break;
+                    case"glove_21":
+                        document.getElementById("simley_top").style.display = "block";
+                        break;
+                    case"glove_22":
+                        document.getElementById("purple_shirt").style.display = "block";
+                        break;
+                    case"glove_23":
+                        document.getElementById("blue_hoodie").style.display = "block";
+                        break;
+                    case"glove_24":
+                        document.getElementById("leather_jacket").style.display = "block";
                         break;
                 }
                 switch (value.accessory) {
@@ -517,13 +609,13 @@ function dress_mascot() {
                         document.getElementById("scarf_red").style.display = "block";
                         break;
                     case"accessory_22":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("glasses").style.display = "block";
                         break;
                     case"accessory_23":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("sunglasses").style.display = "block";
                         break;
                     case"accessory_24":
-                        document.getElementById("").style.display = "block";
+                        document.getElementById("cat").style.display = "block";
                         break;
                 }
             });
