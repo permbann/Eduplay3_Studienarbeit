@@ -39,7 +39,6 @@ function get_equipped() {
     $.get("/api/get_equipped")
         .done(function (data) {
             update_equipped_buttons(data);
-            console.log(data);
         });
 }
 
@@ -167,9 +166,9 @@ function update_equipped_buttons(items) {
         } else {
             element = document.getElementById(value.accessory);
         }
-        last_selected = element;
-        element.value = "Equipped";
-        element.style.backgroundColor = "#00b0d1";
+            last_selected = element;
+            element.value = "Equipped";
+            element.style.backgroundColor = "#00b0d1";
     });
 }
 
@@ -260,11 +259,6 @@ function deselect_item(item, last_selected) {
         case "Equip":
             break;
         case "Equipped":
-            if (item.value == 'Equip') {
-                last_selected.value = "Equip";
-                last_selected.style.backgroundColor = "#586573";
-                remove_equipped(last_selected);
-            }
             break;
     }
 }
@@ -505,9 +499,7 @@ function undress_mascot() {
                             break;
                     }
                 });
-            }
-        )
-    ;
+            });
 }
 
 function dress_mascot() {
