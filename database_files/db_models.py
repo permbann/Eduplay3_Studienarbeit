@@ -51,5 +51,5 @@ class Equipped(db.Model):
     user_id = db.Column(db.String, unique=True, primary_key=True)
     hat = db.Column(db.String, nullable=True)
     shoe = db.Column(db.String, nullable=True)
-    glove = db.Column(db.String, nullable=True)
+    shirt = db.Column(db.String, nullable=True)
     accessory = db.Column(db.String, nullable=True)

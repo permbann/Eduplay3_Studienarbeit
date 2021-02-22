@@ -117,15 +117,16 @@ def get_shoe_cost():
     return jsonify(schema.dump(shoes))
 
 
-@bp.route('/get_glove', methods=['GET'])
-def get_glove_cost():
+@bp.route('/get_shirt', methods=['GET'])
+def get_shirt_cost():
     """
-    gets cost of all gloves with their corresponding ID
+    gets cost of all shirts with their corresponding ID
     :return: list of cost + item_id
     """
-    gloves = Items.query.filter(Items.item_id.like('%glove%')).all()
+    shirts = Items.query.filter(Items.item_id.like('%shirt%')).all()
     schema = ItemsSchema(many=True)
-    return jsonify(schema.dump(gloves))
+    print(shirts)
+    return jsonify(schema.dump(shirts))
 
 
 @bp.route('/get_accessory', methods=['GET'])
@@ -153,13 +154,13 @@ def add_equipped():
     if not equipped:
         hat = value if 'hat' in key else None
         shoe = value if 'shoe' in key else None
-        glove = value if 'glove' in key else None
+        shirt = value if 'shirt' in key else None
         accessory = value if 'accessory' in key else None
         equipped = Equipped(
             user_id=session['user_id'],
             hat=hat,
             shoe=shoe,
-            glove=glove,
+            shirt=shirt,
             accessory=accessory
         )
     else:
@@ -167,8 +168,8 @@ def add_equipped():
             equipped.hat = value
         if 'shoe' in key:
             equipped.shoe = value
-        if 'glove' in key:
-            equipped.glove = value
+        if 'shirt' in key:
+            equipped.shirt = value
         if 'accessory' in key:
             equipped.accessory = value
     db.session.add(equipped)

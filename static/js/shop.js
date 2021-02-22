@@ -7,7 +7,7 @@ var currency = 0;
 /**
  * Loads all necessary data to display the shop from database
  * eg. currency, costs of displayed items, previously purchased items
- * @param item_type menu selection eg. hats, shoes, gloves or accessories
+ * @param item_type menu selection eg. hats, shoes, shirts or accessories
  */
 function load_item_data(item_type_name) {
     item_type = item_type_name;
@@ -85,7 +85,7 @@ function check_payable(item) {
 /**
  *gets cost for all items currently displayed
  * returned as cost + item_id list
- * @param item_type item currently displayed eg. hats, gloves, shoes, accessories
+ * @param item_type item currently displayed eg. hats, shirts, shoes, accessories
  */
 function get_cost(item_type) {
     if (item_type == 'hat') {
@@ -100,8 +100,8 @@ function get_cost(item_type) {
             update_cost(null)
         });
     }
-    if (item_type == 'glove') {
-        $.get("/api/get_glove").done(function (data) {
+    if (item_type == 'shirt') {
+        $.get("/api/get_shirt").done(function (data) {
             cost_list = data;
             update_cost(null)
         });
@@ -161,8 +161,8 @@ function update_equipped_buttons(items) {
             element = document.getElementById(value.hat);
         } else if (item_type == 'shoe') {
             element = document.getElementById(value.shoe);
-        } else if (item_type == 'glove') {
-            element = document.getElementById(value.glove);
+        } else if (item_type == 'shirt') {
+            element = document.getElementById(value.shirt);
         } else {
             element = document.getElementById(value.accessory);
         }
@@ -324,8 +324,8 @@ function remove_equipped(item) {
         item_type = "hat";
     } else if (item_id.includes("shoe")) {
         item_type = "shoe";
-    } else if (item_id.includes("glove")) {
-        item_type = "glove";
+    } else if (item_id.includes("shirt")) {
+        item_type = "shirt";
     } else {
         item_type = "accessory";
     }
@@ -353,8 +353,8 @@ function add_equipped(item) {
         item_type = "hat";
     } else if (item_id.includes("shoe")) {
         item_type = "shoe";
-    } else if (item_id.includes("glove")) {
-        item_type = "glove";
+    } else if (item_id.includes("shirt")) {
+        item_type = "shirt";
     } else {
         item_type = "accessory";
     }
@@ -446,29 +446,29 @@ function undress_mascot() {
                             document.getElementById("black_boots").style.display = "none";
                             break;
                     }
-                                switch (value.glove) {
-                    case"glove_11":
+                                switch (value.shirt) {
+                    case"shirt_11":
                         document.getElementById("flower_top").style.display = "none";
                         break;
-                    case"glove_12":
+                    case"shirt_12":
                         document.getElementById("green_shirt").style.display = "none";
                         break;
-                    case"glove_13":
+                    case"shirt_13":
                         document.getElementById("red_sweater").style.display = "none";
                         break;
-                    case"glove_14":
+                    case"shirt_14":
                         document.getElementById("pink_jacket").style.display = "none";
                         break;
-                    case"glove_21":
+                    case"shirt_21":
                         document.getElementById("simley_top").style.display = "none";
                         break;
-                    case"glove_22":
+                    case"shirt_22":
                         document.getElementById("purple_shirt").style.display = "none";
                         break;
-                    case"glove_23":
+                    case"shirt_23":
                         document.getElementById("blue_hoodie").style.display = "none";
                         break;
-                    case"glove_24":
+                    case"shirt_24":
                         document.getElementById("leather_jacket").style.display = "none";
                         break;
                 }
@@ -558,29 +558,29 @@ function dress_mascot() {
                         document.getElementById("black_boots").style.display = "block";
                         break;
                 }
-                switch (value.glove) {
-                    case"glove_11":
+                switch (value.shirt) {
+                    case"shirt_11":
                         document.getElementById("flower_top").style.display = "block";
                         break;
-                    case"glove_12":
+                    case"shirt_12":
                         document.getElementById("green_shirt").style.display = "block";
                         break;
-                    case"glove_13":
+                    case"shirt_13":
                         document.getElementById("red_sweater").style.display = "block";
                         break;
-                    case"glove_14":
+                    case"shirt_14":
                         document.getElementById("pink_jacket").style.display = "block";
                         break;
-                    case"glove_21":
+                    case"shirt_21":
                         document.getElementById("simley_top").style.display = "block";
                         break;
-                    case"glove_22":
+                    case"shirt_22":
                         document.getElementById("purple_shirt").style.display = "block";
                         break;
-                    case"glove_23":
+                    case"shirt_23":
                         document.getElementById("blue_hoodie").style.display = "block";
                         break;
-                    case"glove_24":
+                    case"shirt_24":
                         document.getElementById("leather_jacket").style.display = "block";
                         break;
                 }

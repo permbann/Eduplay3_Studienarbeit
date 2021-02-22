@@ -12,8 +12,11 @@
         {% block header %}{% endblock %}
     </header>
     <div id="leftbox">
-        <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}" alt="background">
-        <img class="mascot" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
+        <div id="leftbg">
+            <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}"
+                 alt="background">
+            <img class="mascot" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
+        </div>
         <div id="hat_imgs">
             <img id="blue_cap" class="hat_overlay"
                  src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
@@ -89,8 +92,7 @@
     </div>
     </div>
 
-    <div id="shop"
-         style="width:1035px; height:720px; border: 1px solid black;float:left;">
+    <div id="shop">
         <div id="shop_headline">
             <table>
                 <tr>

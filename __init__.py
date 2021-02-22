@@ -47,7 +47,7 @@ def create_app(test_config=None):
 
     try:
         from werkzeug.security import generate_password_hash
-        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=90,
+        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=100,
                           tries=3)
         db.session.add(admin_user)
         db.session.commit()
@@ -89,14 +89,14 @@ def init_items():
                 ('shoe_22', 15),
                 ('shoe_23', 15),
                 ('shoe_24', 20),
-                ('glove_11', 5),
-                ('glove_12', 5),
-                ('glove_13', 5),
-                ('glove_14', 10),
-                ('glove_21', 10),
-                ('glove_22', 15),
-                ('glove_23', 15),
-                ('glove_24', 20),
+                ('shirt_11', 5),
+                ('shirt_12', 5),
+                ('shirt_13', 5),
+                ('shirt_14', 10),
+                ('shirt_21', 10),
+                ('shirt_22', 15),
+                ('shirt_23', 15),
+                ('shirt_24', 20),
                 ('accessory_11', 5),
                 ('accessory_12', 5),
                 ('accessory_13', 5),

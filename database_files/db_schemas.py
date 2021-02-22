@@ -40,6 +40,6 @@ class EquippedSchema(ma.Schema):
             "user_id",
             "hat",
             "shoe",
-            "glove",
+            "shirt",
             "accessory"
         ]

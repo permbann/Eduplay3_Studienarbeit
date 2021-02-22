@@ -19,15 +19,18 @@ p{text-align:center;}
     text-decoration: none; margin-top:105px;}
 .purchase_button:hover{background-color: #3fd14b;}
 
-#shop{background-color:#7e98ab;}
+#shop{background-color:#7e98ab; width:1035px; height:720px; border: 1px solid black;float:left;}
 #table_border{border:5px solid #37354f; border-spacing:5px;}
-#leftbox{ float:left; background:Red; width:240px; height:720px; }
+#leftbox{ float:left; background:Red; width:240px; height:720px; min-width:240px; min-height:720px; position: relative;}
 #sidebar_background{z-index: 0; position:absolute;}
-#hat_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
-#shoe_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
-#shirt_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
-#accessory_imgs{float:left; position:absolute;top:5.5%; width:240px; height:720px;}
+#hat_imgs{float:left; position:absolute;top:1.5%; width:240px; height:720px;}
+#shoe_imgs{float:left; position:absolute;top:1.5%; width:240px; height:720px;}
+#shirt_imgs{float:left; position:absolute;top:1.5%; width:240px; height:720px;}
+#accessory_imgs{float:left; position:absolute;top:1.5%; width:240px; height:720px;}
 #rightbox{ float:right; width:240px; height:720px; }
 #category_button_selected{background-color:#2b5a8c;}
 
-
+#leftbg{
+    position: absolute;
+    width:240px; height:720px; min-width:240px; min-height:720px;
+}
