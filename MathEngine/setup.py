@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 setup(
     name='MathEngine',
     packages=find_packages(include=['MathEngine']),
-    version='0.1.0',
+    version='0.1.1',
     description='A handy Engine to generate Math terms for different difficulty levels.',
     author='Lukas Schult',
     license='MIT',

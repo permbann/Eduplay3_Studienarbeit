@@ -1,5 +1,22 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Main Flask file to start the webserver.
+"""
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/02/06"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+
 import numpy as np
 import operator
+import json
 
 
 class MathGenerator:
@@ -18,17 +35,39 @@ class MathGenerator:
         :return:
         """
         if difficulty == 0:
-            return self.generate_lvl0()
+            return self.generate_add_lvl(possible_numbers=np.arange(start=0, stop=20, step=1))
         if difficulty == 1:
-            return self.generate_lvl1()
+            return self.generate_add_sub_level(possible_numbers=np.arange(start=-10, stop=10, step=1))
         if difficulty == 2:
-            return self.generate_lvl2()
+            return self.generate_add_sub_level(possible_numbers=np.arange(start=-20, stop=20, step=1))
         if difficulty == 3:
-            return self.generate_lvl3()
+            return self.generate_add_sub_mult_level(possible_numbers_add_sub=np.arange(start=0, stop=50, step=1),
+                                                    possible_numbers_mult=np.arange(start=0, stop=10, step=1)
+                                                    )
         if difficulty == 4:
-            return self.generate_lvl4()
+            return self.generate_add_sub_mult_level(possible_numbers_add_sub=np.arange(start=-50, stop=50, step=1),
+                                                    possible_numbers_mult=np.arange(start=-10, stop=10, step=1)
+                                                    )
+        if difficulty == 5:
+            return self.generate_add_sub_mult_level(possible_numbers_add_sub=np.arange(start=-100, stop=100, step=1),
+                                                    possible_numbers_mult=np.arange(start=-10, stop=10, step=1)
+                                                    )
+        if difficulty == 6:
+            return self.generate_add_sub_mult_level(possible_numbers_add_sub=np.arange(start=-50, stop=50, step=1),
+                                                    possible_numbers_mult=np.arange(start=-10, stop=10, step=1)
+                                                    )
+        if difficulty == 7:
+            return self.generate_random_add_sub_level(possible_numbers=np.arange(start=-100, stop=100, step=1))
 
-    def build_term_string(self, term_steps, operator_symbol):
+        if difficulty == 8:
+            return self.generate_random_mult_div_lvl(possible_numbers=np.arange(start=-20, stop=20, step=1))
+
+        else:
+            if np.random.choice([True, False]):
+                return self.generate_random_add_sub_level(possible_numbers=np.arange(start=-100, stop=100, step=1))
+            return self.generate_random_mult_div_lvl(possible_numbers=np.arange(start=-50, stop=50, step=1))
+
+    def build_term_string(self, term_steps, operator_symbols):
         """
         Builds a String for a term with the given steps.
         :param term_steps: Steps to be inserted.
@@ -36,73 +75,114 @@ class MathGenerator:
         :return: Term String.
         """
         term_string = f"{term_steps[0]}"
-        for value in term_steps[1:]:
-            operation = operator_symbol
-            if value < 0 and operator_symbol == "-":  # auto convert  - - to +
+        for i, value in enumerate(term_steps[1:]):
+            if type(operator_symbols) == list:
+                operation = operator_symbols[i]
+            else:
+                operation = operator_symbols
+            if value < 0 and operation == "-":  # auto convert  - - to +
                 operation = "+"
                 value = -value
-            if value < 0 and operator_symbol in ["*", "/"]:  # use parentheses for negative values in mult and div
+            elif value < 0:  # and operation in ["+", "*", "/"]:  # use parentheses for negative values in mult and div
                 value = f"({value})"
             term_string += f" {operation} {value}"
         return term_string + " = ?"
 
-    def generate_lvl0(self):
+    def generate_add_lvl(self, possible_numbers):
         """
-        Generates a addition term within the postitive numbers up to 20.
-        :return: tuple  (the string of the term with inserted values, the result)
+        Generates a addition term response.
+        :param possible_numbers: All numbers that can occur.
+        :return: dictionary of term string, answer options and solution_index
         """
-        numbers = np.arange(start=0, stop=20, step=1)
         number_count = 2
         operator_symbol = "+"
-        term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
-        return self.build_term_string(term[1], operator_symbol), term[0]
+        term = self.generate_add_or_sub(number_count, possible_numbers, operator_symbol)
+        answers, solution_index = self.generate_answers(term[operator_symbol][0], possible_numbers)
+        return self.create_response_dict(self.build_term_string(term[operator_symbol][1], operator_symbol),
+                                         answers,
+                                         solution_index
+                                         )
 
-    def generate_lvl1(self):
+    def generate_add_sub_level(self, possible_numbers):
         """
-        Generates a addition or subtraction term within the  numbers -20 to 20.
-        :return: tuple  (the string of the term with inserted values, the result)
+        Generates a addition or subtraction term response.
+        :param possible_numbers: All numbers that can occur.
+        :return: dictionary of term string, answer options and solution_index
         """
-        numbers = np.arange(start=-20, stop=20, step=1)
         number_count = 2
         operator_symbol = np.random.choice(["+", "-"])
-        term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
-        return self.build_term_string(term[operator_symbol][1], operator_symbol), term[operator_symbol][0]
+        term = self.generate_add_or_sub(number_count, possible_numbers, operator_symbol)
+        answers, solution_index = self.generate_answers(term[operator_symbol][0], possible_numbers)
+        return self.create_response_dict(self.build_term_string(term[operator_symbol][1], operator_symbol),
+                                         answers,
+                                         solution_index
+                                         )
 
-    def generate_lvl2(self):
+    def generate_add_sub_mult_level(self, possible_numbers_add_sub, possible_numbers_mult):
         """
-            Generates a addition or subtraction term within the  numbers -20 to 20.
-            :return: tuple  (the string of the term with inserted values, the result)
+            Generates a addition, subtraction or multiplication term response.
+            :param possible_numbers_add_sub: All numbers that can occur for addition and subtraction terms.
+            :param possible_numbers_mult: All numbers that can occur for multiplication terms.
+            :return: dictionary of term string, answer options and solution_index
         """
         operator_symbol = np.random.choice(["+", "-", "*"])
-        term_dict = {"term": "", "answers": [], "solution_index": 0}
         if operator_symbol in ["+", "-"]:
-            numbers = np.arange(start=0, stop=100, step=1)
             number_count = np.random.choice([2, 3])
-            term = self.generate_add_or_sub(number_count, numbers, operator_symbol)
-            #return self.build_term_string(term[operator_symbol][1], operator_symbol), \
-            #       self.generate_answers(term[operator_symbol][0], numbers)
-            term_string = self.build_term_string(term[operator_symbol][1], operator_symbol)
-            answers, solution_index = self.generate_answers(term[operator_symbol][0], numbers)
+            term = self.generate_add_or_sub(number_count, possible_numbers_add_sub, operator_symbol)
+            answers, solution_index = self.generate_answers(term[operator_symbol][0], possible_numbers_add_sub)
 
         else:
-            numbers = np.arange(start=-20, stop=50, step=1)
-            term = self.generate_multiplication_value_pair(numbers)
-            term_string = self.build_term_string(term[operator_symbol][1], operator_symbol)
-            answers, solution_index = self.generate_answers(term[operator_symbol][0], numbers)
-            #return self.build_term_string(term[operator_symbol][1], operator_symbol), \
-            #       self.generate_answers(term[operator_symbol][0], numbers)
+            term = self.generate_multiplication_value_pair(possible_numbers_mult)
+            answers, solution_index = self.generate_answers(term[operator_symbol][0], possible_numbers_mult)
+        return self.create_response_dict(self.build_term_string(term[operator_symbol][1], operator_symbol),
+                                         answers,
+                                         solution_index
+                                         )
 
-        term_dict["term"] = term_string
-        import json
-        term_dict["answers"] = json.dumps(answers.tolist())  # encoding the np.array to json is possible after tolist()
-        term_dict["solution_index"] = solution_index
-        return term_dict
+    def generate_random_add_sub_level(self, possible_numbers):
+        """
+            Generates a mixed term response (combination between addition and subtraction of up to 4 numbers)
+            :param possible_numbers: All numbers that can occur.
+            :return: dictionary of term string, answer options and solution_index
+        """
 
-    def generate_lvl3(self):
-        pass
+        term = self.generate_mixed_add_sub(np.random.choice([3, 4]), possible_numbers)
+        answers, solution_index = self.generate_answers(term[0], possible_numbers)
+        return self.create_response_dict(self.build_term_string(term[1], operator_symbols=term[2]),
+                                         answers,
+                                         solution_index
+                                         )
 
-    def generate_lvl4(self):
-        pass
+    def generate_random_mult_div_lvl(self, possible_numbers):
+        """
+            Generates a multiplication or division term response.
+            :param possible_numbers: All numbers that can occur.
+            :return: dictionary of term string, answer options and solution_index
+        """
+        term_type = np.random.choice(["*", "/"])
+        if term_type == "*":
+            term = self.generate_multiplication_value_pair(possible_numbers)
+        else:
+            term = self.generate_division_value_pair(possible_numbers)
+        answers, solution_index = self.generate_answers(term[term_type][0], possible_numbers)
+        return self.create_response_dict(self.build_term_string(term[term_type][1], operator_symbols=term_type),
+                                         answers,
+                                         solution_index
+                                         )
+
+    def create_response_dict(self, term_string, answers, solution_index):
+        """
+            Generates a multiplication or division term response.
+            :param term_string: string version of the term (for display)
+            :param answers: a json compatible list of possible answers
+            :param solution_index: the list index for the correct solution
+            :return: dictionary of term string, answer options and solution_index
+        """
+        return {
+            "term": term_string,
+            "answers": json.dumps(answers.tolist()),
+            "solution_index": solution_index
+        }
 
     def generate_add_or_sub(self, step_count, num_range, operator_symbol, start=0):
         """
@@ -136,11 +216,15 @@ class MathGenerator:
         return {operator_symbol: [get_result(), steps]}
 
     def is_prime(self, n):
-        x = True
+        """
+        Checks if given number is prime.
+        :param n: number to check
+        :return: True if prime else False
+        """
         for i in range(2, n):
             if n % i == 0:
-                x = False
-        return x
+                return False
+        return True
 
     def generate_multiplication_value_pair(self, num_range):
         """
@@ -164,15 +248,15 @@ class MathGenerator:
                 negative = True
                 result = -result
             steps = np.zeros(2, dtype=int)
-            # get divisors
+
             divisors = []
             i = 1
             while i <= result:  # look for all divisors without residue
                 if result % i == 0:
-                    divisors.append(i)
+                    divisors.append(i)  # fill divisors list
                 i += 1
-            steps[0] = np.random.choice(divisors)
-            steps[1] = result / steps[0]
+            steps[0] = np.random.choice(divisors)  # choose divisor at random for first operand
+            steps[1] = result / steps[0]  # calculate the second operand
             if negative:
                 negate_idx = np.random.choice([0, 1])
                 steps[negate_idx] = -steps[negate_idx]
@@ -218,6 +302,8 @@ class MathGenerator:
         :return: Result of the term, steps of the term, operations between steps.
         """
         retry = True
+        if step_count == 2:
+            return self.generate_random_add_or_sub_pair(num_range)
         while retry:
             steps = np.zeros(step_count, dtype=dict)
             term = self.generate_random_add_or_sub_pair(num_range)  # generate the first term
@@ -246,6 +332,12 @@ class MathGenerator:
         return result, steps, operations
 
     def generate_answers(self, solution, num_range):
+        """
+        Generates wrong answers for answer options.
+        :param solution: the correct term result
+        :param num_range: the boundaries for generated answers
+        :return: tuple of answer list and correct answer index
+        """
         answers = np.zeros(4)
         indexes = list(range(4))
         np.random.shuffle(indexes)

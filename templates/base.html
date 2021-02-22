@@ -1,3 +1,15 @@
+<!--
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/02/06"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+-->
+
 <!doctype html>
 <html lang="de">
     <head>
@@ -11,6 +23,7 @@
         {% from "auth/form_helper.html" import flash_messages %}
         <nav>
             <h1><a href="/">Eduplay3</a></h1>
+            {%  block custom_nav %}{% endblock %}
             <ul>
                 <!-- g is automatically available in templates. Based on if g.user is set (from load_logged_in_user)
                 either the username and a log out link are displayed, or links to register and log in are displayed.-->

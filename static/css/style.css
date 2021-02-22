@@ -1,8 +1,7 @@
 /*STYLE*/
-html { font-family: sans-serif; background: #9fa8a3; padding: 1rem; }
-body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; }
-h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
-h2 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+html { font-family: "Trebuchet MS", sans-serif; background: #9fa8a3; padding: 2rem; }
+body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; box-shadow: 0 0 100px rgb(71,61,65);}
+h1 { color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
 nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
@@ -20,3 +19,11 @@ input[type=submit] { align-self: start; min-width: 10em; }
 
 .content { margin-left:auto; margin-right:auto; width:1280px; }
 .controls img { max-width: 100%; height: auto; }
+
+html,body {
+    background: url(../images/html_background.png) no-repeat center center fixed;
+    -webkit-background-size: cover; /* For WebKit*/
+    -moz-background-size: cover;    /* Mozilla*/
+    -o-background-size: cover;      /* Opera*/
+    background-size: cover;         /* Generic*/
+}
