@@ -13,11 +13,12 @@ __version__ = "1.0"
 {% extends 'base.html' %}
 
 {% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shop_style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/math_game.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/plattformer/main_game.js') }}"></script>
     <script src="https://kit.fontawesome.com/1012926d41.js" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
 {% endblock %}
 
 {% block custom_nav %}
@@ -25,7 +26,86 @@ __version__ = "1.0"
 {% endblock %}
 
 {% block content %}
-    <div id="leftbox"></div>
+    <div id="leftbox">
+        <div id="leftbg">
+            <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}"
+                 alt="background">
+            <img class="mascot" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
+        </div>
+        <div id="hat_imgs">
+            <img id="blue_cap" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/cap.png') }}" alt="blue cap"/>
+            <img id="crown" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/crown_mascot.png') }}" alt="crown"/>
+            <img id="top_hat" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/topHat.png') }}" alt="top hat"/>
+            <img id="headband" class="hat_overlay" style="width:135px;height:100px;left:23%;top:35%;"
+                 src="{{ url_for('static',  filename='images/headband_mascot.png') }}" alt="headband"/>
+            <img id="flower" class="hat_overlay" style="top:38%; left:15%;width:70px;"
+                 src="{{ url_for('static',  filename='images/flower.png') }}" alt="flower"/>
+            <img id="butterfly" class="hat_overlay"
+                 src="{{ url_for('static',  filename='images/butterfly.png') }}" alt="butterfly"/>
+            <img id="santa_hat" class="hat_overlay" style="width:150px;left:15%; top:28%;"
+                 src="{{ url_for('static',  filename='images/santaHat_mascot.png') }}" alt="santa hat"/>
+            <img id="bunny_ears" class="hat_overlay" style="top:30%"
+                 src="{{ url_for('static',  filename='images/bunnyEars.png') }}" alt="bunny ears"/>
+        </div>
+        <div id="shoe_imgs">
+            <img id="rain_boots" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/rainBoots_mascot.png') }}" alt="rain boots"/>
+            <img id="blue_socks" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/blueSocks_mascot.png') }}" alt="blue socks"/>
+            <img id="red_socks" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/redSocks_mascot.png') }}" alt="red socks"/>
+            <img id="sneakers" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/sneakers_mascot.png') }}" alt="sneakers"/>
+            <img id="crocs" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/crocs_mascot.png') }}" alt="crocs"/>
+            <img id="boots" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/boots_mascot.png') }}" alt="boots"/>
+            <img id="ribbon_shoes" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/ribbonShoes_mascot.png') }}" alt="ribbon shoes"/>
+            <img id="black_boots" class="shoe_overlay"
+                 src="{{ url_for('static',  filename='images/blackBoots_mascot.png') }}" alt="black boots"/>
+        </div>
+        <div id="shirt_imgs">
+            <img id="flower_top" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/flowerTop_mascot.png') }}" alt="flower top"/>
+            <img id="green_shirt" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/greenShirt_mascot.png') }}" alt="green shirt"/>
+            <img id="red_sweater" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/redSweater_mascot.png') }}" alt="red sweater"/>
+            <img id="pink_jacket" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/pinkJacket_mascot.png') }}" alt="pink jacket"/>
+            <img id="simley_top" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/smileyTop_mascot.png') }}" alt="smiley top"/>
+            <img id="purple_shirt" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/purpleShirt_mascot.png') }}" alt="purple shirt"/>
+            <img id="blue_hoodie" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/blueHoodie_mascot.png') }}" alt="blue hoodie"/>
+            <img id="leather_jacket" class="shirt_overlay"
+                 src="{{ url_for('static',  filename='images/leatherJacket_mascot.png') }}" alt="leather jacket"/>
+        </div>
+        <div id="accessory_imgs">
+            <img id="lightsaber" class="accessory_overlay" style="top:60%; left:58%;"
+                 src="{{ url_for('static',  filename='images/lightsaber_mascot.png') }}" alt="lightsaber"/>
+            <img id="necklace" class="accessory_overlay" style="top:55%; left:36%; width:70px"
+                 src="{{ url_for('static',  filename='images/necklace_mascot.png') }}" alt="necklace"/>
+            <img id="plush" class="accessory_overlay" style="top:62%; left:10%;"
+                 src="{{ url_for('static',  filename='images/plush_mascot.png') }}" alt="plush"/>
+            <img id="scarf_blue" class="accessory_overlay" style="top:57%; left:30%;"
+                 src="{{ url_for('static',  filename='images/scarfBlue_mascot.png') }}" alt="scarf blue"/>
+            <img id="scarf_red" class="accessory_overlay" style="top:55.6%; left:26%;width:110px;"
+                 src="{{ url_for('static',  filename='images/scarfRed.png') }}" alt="scarf red"/>
+            <img id="glasses" class="accessory_overlay" style="top:41%; left:23%;width:140px;"
+                 src="{{ url_for('static',  filename='images/glasses.png') }}" alt="glasses"/>
+            <img id="sunglasses" class="accessory_overlay" style="top:41%; left:22%;width:145px;"
+                 src="{{ url_for('static',  filename='images/sunglasses.png') }}" alt="sunglasses"/>
+            <img id="cat" class="accessory_overlay" style="top:67%; left:10%;"
+                 src="{{ url_for('static',  filename='images/cat.png') }}" alt="cat"/>
+        </div>
+    </div>
+    </div>
     <div id="game"></div>
     <div id="rightbox">
         <div id="difficulty_box">Aufgabenschwierigkeit: <p id="difficulty_label"></p></div>

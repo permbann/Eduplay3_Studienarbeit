@@ -1,4 +1,6 @@
 /*STYLE*/
+h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
+h2 { font-family: serif; color: #377ba8; margin: 1rem 0;}
 table{border-collapse: collapse; border-spacing: 0; table-layout: fixed; border-style: hidden; width: 100%;}
 td{width: 25%; border: 8px solid #2b5a8c; height: 218px; align-content: center;}
 p{text-align:center;}
@@ -19,7 +21,8 @@ p{text-align:center;}
     text-decoration: none; margin-top:105px;}
 .purchase_button:hover{background-color: #3fd14b;}
 
-#shop{background-color:#7e98ab; width:1035px; height:720px; border: 1px solid black;float:left;}
+#shop{background-color:#7e98ab; width:1040px; height:720px; border: 1px solid black;float:left;}
+#currency_label{margin-left:150px; font-size: 50px;}
 #table_border{border:5px solid #37354f; border-spacing:5px;}
 #leftbox{ float:left; background:Red; width:240px; height:720px; min-width:240px; min-height:720px; position: relative;}
 #sidebar_background{z-index: 0; position:absolute;}

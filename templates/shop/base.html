@@ -1,16 +1,11 @@
-<!doctype html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+{% extends 'base.html' %}
+{% block header %}
 <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
 <title>{% block title %}{% endblock %} - Eduplay3</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/shop_style.css') }}">
-<nav>
-    <h1>Eduplay3</h1>
-</nav>
-<section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
+{% endblock %}
+{% block content %}
     <div id="leftbox">
         <div id="leftbg">
             <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}"
@@ -90,19 +85,18 @@
                  src="{{ url_for('static',  filename='images/cat.png') }}" alt="cat"/>
         </div>
     </div>
-    </div>
 
     <div id="shop">
         <div id="shop_headline">
             <table>
                 <tr>
                     <th><h1 style="font-size: 80px; margin:0; text-align: left; padding-left: 80px;">Shop</h1></th>
-                    <th><h2 id="currency_label" style="font-size: 50px; margin:0;"></h2></th>
+                    <th><h2 id="currency_label"></h2></th>
                 </tr>
             </table>
         </div>
         <div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f" id="table">
-            {% block content %}{% endblock %}
+            {% block table_content %}{% endblock %}
         </div>
     </div>
-</section>
+{% endblock %}
