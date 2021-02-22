@@ -1,0 +1,85 @@
+{% extends 'shop/base.html' %}
+{% block table_content %}
+     {% for value in iii %}
+      <p>{{ value }}</p>
+    {% endfor %}
+<body onload="load_item_data('shoe')">
+    <script src="{{ url_for('static', filename='js/shop.js') }}"></script>
+        <table id="table_hat" style="width:100%">
+            <tr>
+                <th class="category_th">
+                    <form action="/shop/hats" class="category_button" >
+                        <input type="submit" class="category_button" value="Hats"/>
+                    </form>
+                </th>
+                <th class="category_th">
+                    <form action="" class="category_button">
+                        <input type="submit" class="category_button" value="Shoes" id="category_button_selected" />
+                    </form>
+                </th>
+                <th class="category_th">
+                    <form action="/shop/shirts" class="category_button" >
+                        <input type="submit" class="category_button" value="Shirts"/>
+                    </form>
+                </th>
+                <th class="category_th">
+                    <form action="/shop/accessories" class="category_button" >
+                        <input type="submit" class="category_button" value="Accessories"/>
+                    </form>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <img class="item_img" src="{{ url_for("static",  filename="images/rainBoots.png") }}" alt="rain boots"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_11" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/blueSocks.png") }}" alt="blue socks"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_12" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/redSocks.png") }}" alt="red socks"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_13" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/sneakers.png") }}" alt="sneakers"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_14" value="cost"/>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img class="item_img" src="{{ url_for("static",  filename="images/crocs.png") }}" alt="crocs"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_21" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/boots.png") }}" alt="boots"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_22" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/ribbonShoes.png") }}" alt="ribbon shoes"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_23" value="cost"/>
+                    </form>
+                </td>
+                 <td>
+                     <img class="item_img" src="{{ url_for("static",  filename="images/blackBoots.png") }}" alt="black boots"/>
+                    <form id="my_form" method="post">
+                         <input onclick="add_item(this)" class="purchase_button" type="button" id="shoe_24" value="cost"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+</body>
+{% endblock %}

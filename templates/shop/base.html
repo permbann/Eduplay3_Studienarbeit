@@ -1,30 +1,10 @@
-<!--
-__authors__ = ["Luana Juhl", "Lukas Schult"]
-__contact__ = "it16156@lehre.dhbw-stuttgart.de"
-__credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
-__deprecated__ = False
-__email__ = "it16156@lehre.dhbw-stuttgart.de"
-__maintainer__ = "developer"
-__status__ = "Released"
-__version__ = "1.0"
--->
-
 {% extends 'base.html' %}
-
 {% block header %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/shop_style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/math_game.css') }}">
-    <script src="{{ url_for('static', filename='js/phaser.min.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/plattformer/main_game.js') }}"></script>
-    <script src="https://kit.fontawesome.com/1012926d41.js" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/shop.js') }}"></script>
+<title>{% block title %}{% endblock %} - Eduplay3</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/shop_style.css') }}">
 {% endblock %}
-
-{% block custom_nav %}
-    <h1><a href="javascript:document.getElementById('ctl_image').scrollIntoView();">Anleitung</a></h1>
-{% endblock %}
-
 {% block content %}
     <div id="leftbox">
         <div id="leftbg">
@@ -105,29 +85,18 @@ __version__ = "1.0"
                  src="{{ url_for('static',  filename='images/cat.png') }}" alt="cat"/>
         </div>
     </div>
-    </div>
-    <div id="game"></div>
-    <div id="rightbox">
-        <div id="difficulty_box">Aufgabenschwierigkeit: <p id="difficulty_label"></p></div>
-        <div id="jumps_box">Du hast <p id="jumps_label"></p> Sprünge</div>
-        <div id="task_box">
-            <p id="task_field"></p>
+
+    <div id="shop">
+        <div id="shop_headline">
+            <table>
+                <tr>
+                    <th><h1 style="font-size: 80px; margin:0; text-align: left; padding-left: 80px;">Shop</h1></th>
+                    <th><h2 id="currency_label"></h2></th>
+                </tr>
+            </table>
         </div>
-        <button id="task_request">Neue Aufgabe</button>
-        <button id="answer0" class="answer"></button>
-        <button id="answer1" class="answer"></button>
-        <button id="answer2" class="answer"></button>
-        <button id="answer3" class="answer"></button>
-        <div id="tries_box">
-            <div class="try"><i class="fas fa-times fails"></i></div>
-            <div class="try"><i class="fas fa-times fails"></i></div>
-            <div class="try"><i class="fas fa-times fails"></i></div>
+        <div style="margin:20px 50px 20px 50px;  height:555px; background:#5acaf2;border:8px solid #37354f" id="table">
+            {% block table_content %}{% endblock %}
         </div>
-        <script type="module" src="{{ url_for('static', filename='js/math_game.js') }}"></script>
     </div>
-    <section class="controls">
-        <img id="ctl_image"
-             src="https://images.pexels.com/photos/5605060/pexels-photo-5605060.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-             alt="alternatetext">
-    </section>
 {% endblock %}
