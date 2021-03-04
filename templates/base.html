@@ -12,39 +12,40 @@ __version__ = "1.0"
 
 <!doctype html>
 <html lang="de">
-    <head>
-        <title>{% block title %}{% endblock %} - Eduplay3</title>
-        <link rel="icon" href="{{ url_for('static', filename='images/star.png') }}">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    </head>
-    <body>
-        {% from "auth/form_helper.html" import flash_messages %}
-        <nav>
-            <h1><a href="/">Eduplay3</a></h1>
-            {%  block custom_nav %}{% endblock %}
-            <ul>
-                <!-- g is automatically available in templates. Based on if g.user is set (from load_logged_in_user)
-                either the username and a log out link are displayed, or links to register and log in are displayed.-->
-                {% if g.user %}
-                    <li><span>{{ g.user }}</span>
-                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-                        {% else %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a>
-                    <li><a href="{{ url_for('auth.login') }}">Log In</a>
-                {% endif %}
-            </ul>
-        </nav>
-        <section class="content">
-            <header>
-                {% block header %}{% endblock %}
-            </header>
-            {{ flash_messages() }}
-            {% block content %}{% endblock %}
-        </section>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-                crossorigin="anonymous"></script>
-    </body>
+<head>
+    <title>{% block title %}{% endblock %} - Eduplay3</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="icon" href="{{ url_for('static', filename='images/star.png') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% from "auth/form_helper.html" import flash_messages %}
+<nav>
+    <h1><a href="/">Eduplay3</a></h1>
+    {% block custom_nav %}{% endblock %}
+    <ul>
+        <!-- g is automatically available in templates. Based on if g.user is set (from load_logged_in_user)
+        either the username and a log out link are displayed, or links to register and log in are displayed.-->
+        {% if g.user %}
+            <li><span>{{ g.user }}</span>
+            <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+                {% else %}
+            <li><a href="{{ url_for('auth.register') }}">Register</a>
+            <li><a href="{{ url_for('auth.login') }}">Log In</a>
+        {% endif %}
+    </ul>
+</nav>
+<section class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {{ flash_messages() }}
+    {% block content %}{% endblock %}
+</section>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
 </html>

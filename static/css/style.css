@@ -4,7 +4,7 @@ body { max-width: 1280px; margin: 0 auto; background: #9fa8a3; box-shadow: 0 0 1
 h1 { color: #377ba8; margin: 1rem 0; }
 a { color: #377ba8; }
 hr { border: none; border-top: 1px solid lightgray; }
-nav { background: lightgray; display: flex; align-items: center; padding: 0.5rem; }
+nav { background: lightgray; display: flex; align-items: center; padding: 0 0.5rem; }
 nav h1 { flex: auto; margin: 0; }
 nav h1 a { text-decoration: none; padding: 0.25rem 0.5rem; }
 nav ul  { display: flex; list-style: none; margin: 0; padding: 0; }
@@ -12,6 +12,7 @@ nav ul li a, nav ul li span, header .action { display: block; padding: 0.5rem; }
 input.danger { color: #cc2f2e; }
 input[type=submit] { align-self: start; min-width: 10em; }
 
+#table_border{border:5px solid #37354f; border-spacing:5px;}
 #leftbox { float:left; background:Red; width:240px; height:720px; }
 #game{ float:left; align:center;}
 #rightbox{ float:right; width:240px; height:720px; }
