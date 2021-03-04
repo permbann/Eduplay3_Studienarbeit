@@ -58,10 +58,9 @@ def create_app(test_config=None):
     db.create_all()
     ma.init_app(app)
 
-
     try:
         from werkzeug.security import generate_password_hash
-        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=0,
+        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=1000, currency=0,
                           tries=3)
         db.session.add(admin_user)
         db.session.commit()

@@ -48,8 +48,21 @@ class GameScene extends Phaser.Scene {
             this.world_height - this.textures.get('ground').getSourceImage().height / 2, 'ground');
 
         this.collectables = this.physics.add.staticGroup();
-        this.load_level(2);
+        //this.load_level(2);
+        this.load_level_gen();
 
+        // this.spinning_platforms = this.physics.add.staticGroup();
+        // var plat = this.spinning_platforms.create(100, 1500, 'ground');
+        // plat.angle = 30;
+        // //plat.body.setAllowRotation(true);
+        // //plat.body.angle = -30;
+        // plat.refreshBody();
+        // // this.tweens.add({
+        // //     targets: this.spinning_platforms.create(100, 1500, 'ground'),
+        // //     duration: 2000,
+        // //     angle: 360,
+        // //     repeat: -1,
+        // // });
 
         this.init_player();
         this.cameras.main.startFollow(this.player);
@@ -74,7 +87,6 @@ class GameScene extends Phaser.Scene {
         if (!this.player.is_walking) {
             this.sounds.walk_sound.stop();
         }
-
         let steering_keys = {
             'left': this.cursors.left.isDown,
             'right': this.cursors.right.isDown,
@@ -189,6 +201,32 @@ class GameScene extends Phaser.Scene {
         let scene = this;
         $.getJSON("/api/level/level" + level, function (level_data) {
 
+            $.each(level_data["platforms"], function (index) {
+                let x;
+                let y;
+                switch (level_data["platforms"][index].type) {
+                    case 'final':
+                        x = level_data["platforms"][index].x + scene.textures.get('platform_basic').getSourceImage().width / 2;
+                        y = level_data["platforms"][index].y + scene.textures.get('platform_basic').getSourceImage().height / 2;
+                        scene.platforms.create(x, y, 'platform_basic');
+                        scene.collectables.create(x, y - 80, 'trophy');
+                        scene.collectables.getChildren()[scene.collectables.getLength() - 1].name = "trophy";
+                        break;
+                    default:
+                        x = level_data["platforms"][index].x + scene.textures.get('platform_basic').getSourceImage().width / 2;
+                        y = level_data["platforms"][index].y + scene.textures.get('platform_basic').getSourceImage().height / 2;
+                        scene.platforms.create(x, y, 'platform_basic');
+                }
+                if (level_data["platforms"][index].has_collectable) {
+                    scene.collectables.create(x, y - 80, 'collectable').alpha = 0.6;
+                }
+            });
+        });
+    }
+
+    load_level_gen() {
+        let scene = this;
+        $.getJSON("/api/genlevel", function (level_data) {
             $.each(level_data["platforms"], function (index) {
                 let x;
                 let y;

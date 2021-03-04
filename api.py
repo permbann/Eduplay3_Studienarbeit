@@ -16,10 +16,12 @@ __version__ = "1.0"
 
 import os
 import pathlib
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, app
+from flask import Blueprint, request, session
 from MathEngine import MathGenerator
+# import E3LevelGenerator as level_generator
+from E3LevelGenerator import LevelGenerator
 from Eduplay3_Studienarbeit.database_files.db_models import db, User
-from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_schema, UserSchema
+from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, UserSchema
 
 mg = MathGenerator()
 bp = Blueprint('api', __name__, url_prefix='/api')
@@ -90,5 +92,13 @@ def get_level(level):
     return level
 
 
+@bp.route('/genlevel')
+def get_level_gen():
+    generator = LevelGenerator(10, 40)
+    return generator.generate_level()
+
+
 def _get_current_user():
     return User.query.filter_by(id=session['user_id']).first()
+
+
