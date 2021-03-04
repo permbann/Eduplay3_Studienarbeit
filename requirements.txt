@@ -7,3 +7,10 @@ marshmallow==3.10.0
 flask-marshmallow==0.14.0
 marshmallow-sqlalchemy==0.24.1
 ./MathEngine
+./E3LevelGenerator
+click~=7.1.2
+mathengine~=0.1.1
+e3levelgenerator~=0.1.1
+numpy~=1.19.3
+setuptools~=52.0.0
+sqlalchemy~=1.3.23

@@ -16,8 +16,9 @@ __version__ = "1.0"
 
 import os
 import pathlib
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, app
+from flask import Blueprint, request, session
 from MathEngine import MathGenerator
+from E3LevelGenerator import LevelGenerator
 from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items, Inventory, Equipped
 from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_schema, UserSchema, ItemsSchema, \
     InventorySchema, EquippedSchema
@@ -90,7 +91,12 @@ def get_level(level):
     level = open(f"{levels_path}/{level}.json", "r").read()
     return level
 
-# -----------------------------------------------------------------------------
+
+@bp.route('/genlevel')
+def get_level_gen():
+    generator = LevelGenerator(10, 40)
+    return generator.generate_level()
+
 
 @bp.route('/update_balance', methods=['PUT'])
 def update_balance():

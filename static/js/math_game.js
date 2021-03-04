@@ -173,7 +173,7 @@ function update_term() {
     /*
         Make api call to get new math term and display it.
      */
-    $.get("/api/get_math", {difficulty: 7}, function (data, status) {  // jquery http get request
+    $.get("/api/get_math", {difficulty: 10}, function (data, status) {  // jquery http get request
         console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
         solution = data["solution_index"];

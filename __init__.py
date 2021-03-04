@@ -20,11 +20,9 @@ from flask import Flask, render_template, session, flash
 
 from Eduplay3_Studienarbeit.auth import login_required
 from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items
-import sqlalchemy
-
-from flask import Flask, render_template, request
 from Eduplay3_Studienarbeit.database_files.db_schemas import ma
 
+import sqlalchemy
 
 
 def create_app(test_config=None):
@@ -60,15 +58,13 @@ def create_app(test_config=None):
     db.create_all()
     ma.init_app(app)
 
-
     try:
         from werkzeug.security import generate_password_hash
-        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=100, currency=100,
+        admin_user = User("admin", "admin@trash-mail.com", generate_password_hash("admin"), jumps=1000, currency=100,
                           tries=3)
         db.session.add(admin_user)
         db.session.commit()
         init_items()
-        db.session.commit()
     except sqlalchemy.exc.IntegrityError:
         print("Admin user already present. Skipping creation...")
         pass
