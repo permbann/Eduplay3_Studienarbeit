@@ -262,6 +262,15 @@ function get_jumps()
     return jump_count;
 }
 
+function get_currency()
+{
+$.get("/api/currency")
+        .done(function (data) {
+            currency = parseInt(data['currency']);
+        });
+    return currency;
+}
+
 function update_game_jumps_label(change=-1)
 {
     if (jump_count)

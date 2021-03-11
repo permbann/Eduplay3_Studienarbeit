@@ -47,38 +47,37 @@ function get_equipped() {
  * gets currency from database and updates currency display
  */
 function get_currency() {
-    $.get("/api/balance")
+    $.get("/api/currency")
         .done(function (data) {
             currency = parseInt(data['currency']);
-            document.getElementById("currency_label").innerHTML = "Currency: " + currency;
+            document.getElementById("currency_label").innerHTML = "Tokens: " + currency;
         });
 }
 
 /**
- * subtracts item price from balance if balance > item price
+ * subtracts item price from currency if currency > item price
  * @param item purchased item
  */
 function update_currency(item) {
-    currency -= update_cost(item.id);
+    currency = update_cost(item.id);
     $.ajax({
-        type: "PUT",
-        data: {"currency": currency},
-        url: "/api/update_balance",
-        success: function (response) {
+        type: "PATCH",
+        data: {"currency": -currency},
+        url: "/api/update_currency",
+        success: function () {
             get_currency();
         }
     });
 }
 
-//TODO: Maybe add button to alert window that links to game -> earn balance
 /**
- * checks whether user balance is high enough to purchase item
+ * checks whether user currency is high enough to purchase item
  * @param item purchased item
  */
 function check_payable(item) {
     if (update_cost(item.id) > currency) {
-        window.confirm("Your balance is too low to purchase this item.");
-        throw new Error("Balance too low");
+        window.confirm("Deine Tokens reichen nicht aus um diesen Gegenstand zu kaufen.");
+        throw new Error("Not enough Tokens");
     }
 }
 
@@ -145,7 +144,7 @@ function update_equip_buttons(items) {
     items.forEach(function (item) {
         element = document.getElementById(item.item_id);
         if (element != null && (equipped == null || item.item_id != equipped.id)) {
-            element.value = "Equip";
+            element.value = "Ausrüsten";
             element.style.backgroundColor = "#586573";
         }
     });
@@ -167,7 +166,7 @@ function update_equipped_buttons(items) {
             element = document.getElementById(value.accessory);
         }
             last_selected = element;
-            element.value = "Equipped";
+            element.value = "Ausgerüstet";
             element.style.backgroundColor = "#00b0d1";
     });
 }
@@ -177,13 +176,13 @@ function update_equipped_buttons(items) {
  * calls function to handle display of selected item
  *
  * only applies to first button clicked:
- * if a button is clicked for the first time and it's not the button of an already purchased item the value is changed to "Confirm?"
+ * if a button is clicked for the first time and it's not the button of an already purchased item the value is changed to "Kaufen?"
  * if the button is clicked a second time the function to purchase item is called
  * @param item item ID of selected item
  */
 function add_item(item) {
     if (last_selected != item && last_selected != null) {
-        if (item.value == "Equip") {
+        if (item.value == "Ausrüsten") {
             deselect_item(item, last_selected);
             equip_item(item, last_selected);
             last_selected = item;
@@ -195,17 +194,17 @@ function add_item(item) {
     } else {
         switch (item.value) {
             default:
-                item.value = "Confirm?";
+                item.value = "Kaufen?";
                 item.style.backgroundColor = "#3fd14b";
                 break;
-            case "Confirm?":
+            case "Kaufen?":
                 purchase_item(item);
                 break;
-            case "Equip":
+            case "Ausrüsten":
                 equip_item(item, last_selected);
                 break;
-            case "Equipped":
-                item.value = "Equip";
+            case "Ausgerüstet":
+                item.value = "Ausrüsten";
                 item.style.backgroundColor = "#586573";
                 remove_equipped(item);
                 break;
@@ -221,19 +220,19 @@ function add_item(item) {
 function select_new_item(item) {
     switch (item.value) {
         default:
-            item.value = "Confirm?";
+            item.value = "Kaufen?";
             item.style.backgroundColor = "#3fd14b";
             break;
-        case "Confirm?":
-            item.value = "Equip";
+        case "Kaufen?":
+            item.value = "Ausrüsten";
             item.style.backgroundColor = "#586573";
             break;
-        case "Equip":
-            item.value = "Equipped";
+        case "Ausrüsten":
+            item.value = "Ausgerüstet";
             item.style.backgroundColor = "#00b0d1";
             break;
-        case "Equipped":
-            item.value = "Equip";
+        case "Ausgerüstet":
+            item.value = "Ausrüsten";
             item.style.backgroundColor = "#586573";
             remove_equipped(item);
             undress_mascot();
@@ -249,24 +248,24 @@ function select_new_item(item) {
 function deselect_item(item, last_selected) {
     switch (last_selected.value) {
         default:
-            last_selected.value = "Confirm?";
+            last_selected.value = "Kaufen?";
             last_selected.style.backgroundColor = "#3fd14b";
             break;
-        case "Confirm?":
+        case "Kaufen?":
             last_selected.value = update_cost(last_selected.id);
             last_selected.style.backgroundColor = "#2b5a8c";
             break;
-        case "Equip":
+        case "Ausrüsten":
             break;
-        case "Equipped":
+        case "Ausgerüstet":
             break;
     }
 }
 
 /**
- * Changes buttons between  'Equip' and 'Equipped'
+ * Changes buttons between  'Ausrüsten' and 'Ausgerüstet'
  * only 1 item can be equipped at a time
- * @param item item to chzange to 'Equipped'
+ * @param item item to chzange to 'Ausgerüstet'
  * @param last_selected previously selected item to revert to previous state
  */
 function equip_item(item, last_selected) {
@@ -275,15 +274,15 @@ function equip_item(item, last_selected) {
             default:
                 last_selected.value = update_cost(last_selected.id);
                 last_selected.style.backgroundColor = "#2b5a8c";
-                item.value = "Equipped";
+                item.value = "Ausgerüstet";
                 item.style.backgroundColor = "#00b0d1";
                 break;
-            case "Equip":
-                item.value = "Equipped";
+            case "Ausrüsten":
+                item.value = "Ausgerüstet";
                 item.style.backgroundColor = "#00b0d1";
                 break;
-            case "Equipped":
-                item.value = "Equip";
+            case "Ausgerüstet":
+                item.value = "Ausrüsten";
                 item.style.backgroundColor = "#586573";
                 remove_equipped(item);
                 break;
@@ -291,19 +290,19 @@ function equip_item(item, last_selected) {
     } else {
         switch (item.value) {
             default:
-                item.value = "Equipped";
+                item.value = "Ausgerüstet";
                 item.style.backgroundColor = "#00b0d1";
-                equipped.value = "Equip";
+                equipped.value = "Ausrüsten";
                 equipped.style.backgroundColor = "#586573";
                 break;
-            case "Equip":
-                item.value = "Equipped";
+            case "Ausrüsten":
+                item.value = "Ausgerüstet";
                 item.style.backgroundColor = "#00b0d1";
-                equipped.value = "Equip";
+                equipped.value = "Ausrüsten";
                 equipped.style.backgroundColor = "#586573";
                 break;
-            case "Equipped":
-                item.value = "Equip";
+            case "Ausgerüstet":
+                item.value = "Ausrüsten";
                 item.style.backgroundColor = "#586573";
                 remove_equipped(item);
                 break;

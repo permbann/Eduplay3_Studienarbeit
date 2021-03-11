@@ -39,8 +39,8 @@ def get_difficulty():
     return schema.jsonify(user)
 
 
-@bp.route('/balance', methods=['GET'])
-def get_balance():
+@bp.route('/currency', methods=['GET'])
+def get_currency():
     user = _get_current_user()
     schema = UserSchema(only=['currency'])
     return schema.jsonify(user)
@@ -98,15 +98,15 @@ def get_level_gen():
     return generator.generate_level()
 
 
-@bp.route('/update_balance', methods=['PUT'])
-def update_balance():
+@bp.route('/update_currency', methods=['PATCH'])
+def update_currency():
     """
-    Updates balance in database after a purchase
-    :return: new balance
+    Updates currency in database
+    :return: new currency
     """
     user = _get_current_user()
-    currency = request.form['currency']
-    user.currency = currency
+    currency = int(request.form['currency'])
+    user.currency = user.currency + currency
     db.session.add(user)
     db.session.commit()
     schema = UserSchema()

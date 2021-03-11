@@ -29,6 +29,7 @@ __version__ = "1.0"
         <!-- g is automatically available in templates. Based on if g.user is set (from load_logged_in_user)
         either the username and a log out link are displayed, or links to register and log in are displayed.-->
         {% if g.user %}
+            <li><a href="{{ url_for('shop.shop') }}">Shop</a></li>
             <li><span>{{ g.user }}</span>
             <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
                 {% else %}

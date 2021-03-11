@@ -42,7 +42,7 @@ class User(db.Model):
         return f"""
         User: {self.username}
         Jumps: {self.jumps}
-        Balance: {self.currency}
+        Currency: {self.currency}
         Remaining Tries: {self.tries}
         Active Difficulty: {self.active_difficulty}
         """

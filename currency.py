@@ -11,12 +11,12 @@ from Eduplay3_Studienarbeit.db import get_db
 bp = Blueprint('currency', __name__, url_prefix='/currency')
 
 
-@bp.route('/balance', methods=['GET'])
-def get_balance():
+@bp.route('/currency', methods=['GET'])
+def get_currency():
     res = get_db().execute(f"SELECT currency FROM user where id = {session['user_id']}").fetchone()
     return dict(zip(res.keys(), res))
 
-#TODO Update balance on post
+#TODO Update currency on post
 
 @bp.route('/dummy', methods=['POST'])
 def insert_dummy():
