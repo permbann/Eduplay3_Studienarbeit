@@ -28,8 +28,17 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 
 
 @bp.route("/get_math", methods=['GET'])
-def items():
+def get_math():
     return mg.get_term(int(request.args.get('difficulty')))
+
+
+@bp.route("/get_audio", methods=['GET'])
+def get_audio():
+    audio_paths = dict()
+    for root, _, files in os.walk("static/assets/sounds"):
+        for file in files:
+            audio_paths[file.replace(".wav", "")] = os.path.join(root.replace("/", "\\"), file)
+    return audio_paths
 
 
 @bp.route("/difficulty")

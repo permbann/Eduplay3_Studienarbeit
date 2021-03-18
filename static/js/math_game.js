@@ -25,8 +25,10 @@ var answer_elements = [
     document.getElementById("answer2"),
     document.getElementById("answer3")];
 var try_elements = document.getElementsByClassName("fails");
+var sounds = {};
 
 $(document).ready(function () {
+    init_audio_paths();
     update_term();
     //load jumps
     $.get("/api/jumps", function (data, status) {  // jquery http get request
@@ -115,6 +117,7 @@ function validate_solution(number) {
         return;
     }
     if (solution === number) {
+        sounds["correct"].play()
         $.ajax({
             type: "PATCH",
             data: {change: 1},
@@ -124,7 +127,9 @@ function validate_solution(number) {
             }
         });
     } else {
+        sounds["wrong"].play()
         if (tries === 0) {
+            sounds["wrong2"].play()
             $.ajax({
                 type: "PATCH",
                 data: {change: -1},
@@ -173,6 +178,10 @@ function update_term() {
     /*
         Make api call to get new math term and display it.
      */
+    if (sounds["mathsounds"] !== undefined){
+        sounds["mathsounds"].play();
+    }
+
     $.get("/api/get_math", {difficulty: 10}, function (data, status) {  // jquery http get request
         console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
@@ -227,4 +236,13 @@ function update_tries(change) {
     if (decimal) {
         try_elements[try_elements.length - 1 - int_val].style.color = "rgb(245,115,88)";
     }
+}
+
+function init_audio_paths() {
+    $.get("/api/get_audio", function (data, status) {
+        for (const [key, value] of Object.entries(data)) {
+          sounds[key] = new Audio(value);
+        }
+        sounds["welcome"].play();
+    });
 }
