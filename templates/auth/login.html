@@ -1,27 +1,30 @@
 {% extends "auth/auth_forms_base.html" %}
 
 {% block body %}
-{% from "auth/form_helper.html" import flash_messages %}
-{% from "auth/form_helper.html" import render_field %}
+    {% from "auth/form_helper.html" import flash_messages %}
+    {% from "auth/form_helper.html" import render_field %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_style.css') }}">
+    <body>
+    <div class="box">
+        {{ flash_messages() }}
+        <h4>
+            <strong>
+                Login
+            </strong>
+        </h4>
+        <hr>
 
-{{ flash_messages() }}
-<h4>
-    <strong>
-        Login
-    </strong>
-</h4>
-<hr>
+        <form method="POST">
 
-<form method="POST">
+            {{ render_field(form.username, class="form-control") }}
+            {{ render_field(form.password, class="form-control") }}
 
-    {{ render_field(form.username, class="form-control") }}
-    {{ render_field(form.password, class="form-control") }}
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
 
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+        <hr>
 
-<hr>
-
-<a href="{{ url_for('auth.register') }}">Create a New Account!</a>
-
+        <a style="" href="{{ url_for('auth.register') }}">Create a New Account!</a>
+    </div>
+    </body>
 {% endblock body %}

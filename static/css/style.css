@@ -25,5 +25,5 @@ html,body {
     -webkit-background-size: cover; /* For WebKit*/
     -moz-background-size: cover;    /* Mozilla*/
     -o-background-size: cover;      /* Opera*/
-    background-size: cover;         /* Generic*/
+    background-size: 100% 100%;         /* Generic*/
 }
