@@ -23,6 +23,7 @@ var config = {
     physics: {          //include physics support. | there are other systems too: Impact Physics and Matter Physics.
         default: 'arcade',
         arcade: {
+            overlapBias: 8,
             debug: false
         }
     },
@@ -36,7 +37,6 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-
 
 function update_game_jumps_label(change = -1) {
     /*

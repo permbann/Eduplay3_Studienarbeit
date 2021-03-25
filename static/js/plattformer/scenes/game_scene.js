@@ -16,6 +16,8 @@ class GameScene extends Phaser.Scene {
     world_width = 1600;
     world_height = 2160;
     sounds = {};
+    moving_platforms;
+    enemy_list;
 
     constructor() {
         /*
@@ -30,6 +32,10 @@ class GameScene extends Phaser.Scene {
             Initialize all elements (sound, background, platforms, player, ...) of the the game.
          */
         var scene = this;
+
+        this.moving_platforms = [];
+        this.enemy_list = [];
+
         this.init_sounds();
         this.time.addEvent({
             delay: 200,                // ms
@@ -48,25 +54,18 @@ class GameScene extends Phaser.Scene {
             this.world_height - this.textures.get('ground').getSourceImage().height / 2, 'ground');
 
         this.collectables = this.physics.add.staticGroup();
-        //this.load_level(2);
         this.load_level_gen();
 
-        // this.spinning_platforms = this.physics.add.staticGroup();
-        // var plat = this.spinning_platforms.create(100, 1500, 'ground');
-        // plat.angle = 30;
-        // //plat.body.setAllowRotation(true);
-        // //plat.body.angle = -30;
-        // plat.refreshBody();
-        // // this.tweens.add({
-        // //     targets: this.spinning_platforms.create(100, 1500, 'ground'),
-        // //     duration: 2000,
-        // //     angle: 360,
-        // //     repeat: -1,
-        // // });
+
+        this.spinning_platforms = this.physics.add.group();
+        this.spinning_platforms.immovable = true;
 
         this.init_player();
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, bg.displayWidth, bg.displayHeight);
+
+        this.enemies = this.physics.add.group();
+        this.enemies.immovable = true;
 
         this.init_animations();
         this.init_colliders();
@@ -81,6 +80,13 @@ class GameScene extends Phaser.Scene {
             Stops walking sound if movement keys are no longer pressed.
             Passes steering keys state to handle_player_input function.
          */
+        for (let i = 0; i < this.moving_platforms.length; i++) {
+            this.moving_platforms[i].turn();
+        }
+        for (let i = 0; i < this.enemy_list.length; i++)
+        {
+            this.enemy_list[i].turn();
+        }
         if (game.sound.context.state === 'suspended') {
             game.sound.context.resume();
         }
@@ -90,9 +96,10 @@ class GameScene extends Phaser.Scene {
         let steering_keys = {
             'left': this.cursors.left.isDown,
             'right': this.cursors.right.isDown,
-            'up': this.cursors.up.isDown,
+            'up': Phaser.Input.Keyboard.JustDown(this.cursors.up),
             'none': !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown
         }
+
         this.handle_player_input(steering_keys);
     }
 
@@ -159,11 +166,11 @@ class GameScene extends Phaser.Scene {
         } else {
             switch (direction) {
                 case 'left':
-                    this.accelerate_player(-2, max_speed);  // mid air speed = on ground speed/10
+                    this.accelerate_player(-4, max_speed);  // mid air speed = on ground speed/10
                     this.player.anims.play(direction, true);
                     break;
                 case 'right':
-                    this.accelerate_player(2, max_speed);  // mid air speed = on ground speed/10
+                    this.accelerate_player(4, max_speed);  // mid air speed = on ground speed/10
                     this.player.anims.play(direction, true);
                     break;
                 case 'up':
@@ -228,23 +235,29 @@ class GameScene extends Phaser.Scene {
         let scene = this;
         $.getJSON("/api/genlevel", function (level_data) {
             $.each(level_data["platforms"], function (index) {
-                let x;
-                let y;
-                switch (level_data["platforms"][index].type) {
+                var platform_data = level_data["platforms"][index]
+                let x = platform_data.x + scene.textures.get('platform_basic').getSourceImage().width / 2;
+                let y = platform_data.y + scene.textures.get('platform_basic').getSourceImage().height / 2;
+                switch (platform_data.type) {
+                    case 'horizontal':
+                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.spinning_platforms, platform_data.velocity))
+                        break;
+                    case 'vertical':
+                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.spinning_platforms, platform_data.velocity))
+                        break;
                     case 'final':
-                        x = level_data["platforms"][index].x + scene.textures.get('platform_basic').getSourceImage().width / 2;
-                        y = level_data["platforms"][index].y + scene.textures.get('platform_basic').getSourceImage().height / 2;
                         scene.platforms.create(x, y, 'platform_basic');
                         scene.collectables.create(x, y - 80, 'trophy');
                         scene.collectables.getChildren()[scene.collectables.getLength() - 1].name = "trophy";
                         break;
                     default:
-                        x = level_data["platforms"][index].x + scene.textures.get('platform_basic').getSourceImage().width / 2;
-                        y = level_data["platforms"][index].y + scene.textures.get('platform_basic').getSourceImage().height / 2;
                         scene.platforms.create(x, y, 'platform_basic');
                 }
                 if (level_data["platforms"][index].has_collectable) {
                     scene.collectables.create(x, y - 80, 'collectable').alpha = 0.6;
+                }
+                if (level_data["platforms"][index].has_enemy) {
+                    scene.enemy_list.push(new Enemy(x, y - 100, scene.enemies, {"x": 40, "y": 0}));
                 }
             });
         });
@@ -260,7 +273,6 @@ class GameScene extends Phaser.Scene {
         this.player.setDrag(250);           //set friction for movement
         this.player.setBounce(0.2);         //after jumping it will bounce ever so slightly.
         this.player.setCollideWorldBounds(true);
-
     }
 
     init_sounds() {
@@ -308,6 +320,8 @@ class GameScene extends Phaser.Scene {
          */
         this.physics.add.collider(this.player, this.platforms, this.landing, null, this);
         this.physics.add.overlap(this.player, this.collectables, this.collect, null, this);
+        this.physics.add.collider(this.player, this.spinning_platforms, this.landing, null, this);
+        this.physics.add.collider(this.player, this.enemies, this.game_over, null, this);
     }
 
     collect(player, collectable) {
@@ -344,6 +358,7 @@ class GameScene extends Phaser.Scene {
         /*
             Plays landing sound on collider (player with platform) but only if the player is not in the air.
          */
+        this.player.added_velocity = {"x": 0, "y": 0};
         if (this.player.is_jumping) {
             if (this.player.body.touching.down) {  // allow sounds to play when bumping and landing
                 this.player.is_jumping = false;
@@ -351,7 +366,80 @@ class GameScene extends Phaser.Scene {
             this.sounds.landing_sound.play();
         }
     }
+
+    game_over() {
+        let scene = this;
+        scene.events.emit('failed');
+        scene.time.addEvent({
+            delay: 200,                // ms
+            callback: function () {
+                scene.stop_sounds();
+                scene.sounds.finish_sound.play();
+                scene.scene.pause();
+            },
+        });
+    }
 }
 
+class MovingPlatform {
+    constructor(x, y, group, velocity) {
+        this.platform = group.create(x, y, 'platform_basic');
+        this.starting_position = {"x": this.platform.x, "y": this.platform.y}
+        this.platform.body.immovable = true;
+        this.velocity = velocity;
+        this.direction = Math.sign(velocity.x)
+        this.platform.body.velocity.x = velocity.x;
+        this.platform.body.velocity.y = velocity.y;
+        this.platform.setFrictionX(1);
+    }
+
+    turn() {
+        if (this.direction > 0) {
+            if (this.platform.x >= this.starting_position.x + 300) {
+                this.platform.x = this.starting_position.x + 300;
+                this.platform.body.velocity.x = -Math.abs(this.velocity.x);
+            } else if (this.platform.x <= this.starting_position.x) {
+                this.platform.x = this.starting_position.x;
+                this.platform.body.velocity.x = Math.abs(this.velocity.x);
+            }
+        } else {
+            if (this.platform.x <= this.starting_position.x - 300) {
+                this.platform.x = this.starting_position.x - 300;
+                this.platform.body.velocity.x = Math.abs(this.velocity.x);
+            } else if (this.platform.x >= this.starting_position.x) {
+                this.platform.x = this.starting_position.x;
+                this.platform.body.velocity.x = -Math.abs(this.velocity.x);
+            }
+        }
+        if (this.platform.y <= this.starting_position.y - 200) {
+            this.platform.y = this.starting_position.y - 200;
+            this.platform.body.velocity.y = Math.abs(this.velocity.y);
+        } else if (this.platform.y >= this.starting_position.y) {
+            this.platform.y = this.starting_position.y;
+            this.platform.body.velocity.y = -Math.abs(this.velocity.y);
+        }
+    }
+}
+
+class Enemy {
+    constructor(x, y, group, velocity) {
+        this.sprite = group.create(x, y, 'enemy');
+        this.starting_position = {"x": this.sprite.x, "y": this.sprite.y}
+        this.sprite.body.immovable = true;
+        this.velocity = velocity;
+        this.sprite.body.velocity.x = velocity.x;
+        this.sprite.body.velocity.y = velocity.y;
+    }
+
+    turn() {
+        if (this.sprite.x >= this.starting_position.x + 200) {
+            this.sprite.x = this.starting_position.x + 200;
+            this.sprite.body.velocity.x = -Math.abs(this.velocity.x);
+        } else if (this.sprite.x <= this.starting_position.x - 200) {
+            this.sprite.x = this.starting_position.x - 200;
+            this.sprite.body.velocity.x = Math.abs(this.velocity.x);
+        }
+    }
+}
 
 export default GameScene;

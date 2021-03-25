@@ -24,12 +24,23 @@ from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_
     InventorySchema, EquippedSchema
 
 mg = MathGenerator()
+lg = LevelGenerator()
+
 bp = Blueprint('api', __name__, url_prefix='/api')
 
 
 @bp.route("/get_math", methods=['GET'])
-def items():
+def get_math():
     return mg.get_term(int(request.args.get('difficulty')))
+
+
+@bp.route("/get_audio", methods=['GET'])
+def get_audio():
+    audio_paths = dict()
+    for root, _, files in os.walk("static/assets/sounds"):
+        for file in files:
+            audio_paths[file.replace(".wav", "")] = os.path.join(root.replace("/", "\\"), file)
+    return audio_paths
 
 
 @bp.route("/difficulty")
@@ -62,7 +73,7 @@ def get_tries():
 def update_difficulty():
     update_value = int(request.form['change'])
     user = _get_current_user()
-    user.jumps = max(user.active_difficulty + update_value, 0)
+    user.active_difficulty = max(user.active_difficulty + update_value, 0)
     db.session.commit()
     return user_schema.jsonify(user)
 
@@ -94,8 +105,9 @@ def get_level(level):
 
 @bp.route('/genlevel')
 def get_level_gen():
-    generator = LevelGenerator(10, 40)
-    return generator.generate_level()
+    user = _get_current_user()
+    #  Max difficulty 12 so: enemy count increases up to 4 and platform count up to 34
+    return lg.generate_level(round((user.active_difficulty + 1) / 3 - 0.5), 10 + 2 * (user.active_difficulty + 1))
 
 
 @bp.route('/update_balance', methods=['PUT'])
