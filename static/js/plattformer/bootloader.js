@@ -30,6 +30,9 @@ class Bootloader extends Phaser.Scene {
         this.load.image('star', 'static/assets/star.png');
         this.load.image('collectable', 'static/assets/game/collectable.png');
         this.load.image('trophy', 'static/assets/game/trophy.png');
+        this.load.image('enemy', 'static/assets/game/enemy.png');
+        this.load.image('speaker', 'static/assets/game/speaker.png');
+        this.load.image('mute', 'static/assets/game/mute.png');
         this.load.spritesheet('player', 'static/assets/game/player.png', {frameWidth: 45, frameHeight: 60});
         this.load.audio('bg_music', ['static/assets/game/sounds/Lost-Jungle.mp3']);
         this.load.audio('walk_sound', ['static/assets/game/sounds/slime_walk.wav']);

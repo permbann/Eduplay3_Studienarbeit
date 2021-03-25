@@ -1,63 +1,75 @@
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Main Flask file to start the webserver.
-"""
-
-__authors__ = ["Luana Juhl", "Lukas Schult"]
-__contact__ = "it16156@lehre.dhbw-stuttgart.de"
-__credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
-__deprecated__ = False
-__email__ = "it16156@lehre.dhbw-stuttgart.de"
-__maintainer__ = "developer"
-__status__ = "Released"
-__version__ = "1.0"
-
-
 import numpy as np
 from abc import ABC, abstractmethod
+from collections import deque
 
 world_bounds = {"w": 1600, "h": 2000}
 platform_size = {"w": 100, "h": 20}
+platform_speeds = {"horizontal": {"x": 70, "y": 0}, "vertical": {"x": 0, "y": -70}}
+rng = np.random.default_rng()
 
 
 class Platform:
-    """
-    Platform used in Structures.
-    """
-    def __init__(self, pos, platform_type, has_collectable=False):
+    def __init__(self, pos, direction=1, platform_type="basic", has_collectable=False, has_enemy=False):
         """
         Initializes attributes.
         :param pos: Grid position.
         :param platform_type: String: Type of platform.
-        :param has_collectable: Boolean.
+        :param has_collectable: boolean
+        :param has_enemy: boolean
         """
         self.pos = pos
         self.type = platform_type
         self.has_collectable = has_collectable
+        self.has_enemy = has_enemy
+        if self.type == "horizontal" or self.type == "vertical":
+            self.velocity = platform_speeds[self.type].copy()
+            self.velocity["x"] *= direction
+
+    def get_grid_space(self, axis: str):
+        """
+        Returns the amount of grid spaces that the platform requires and reserves in a grid of the LevelGenerator.
+        :param axis: string x or y direction.
+        :return: grid space on axis.
+        """
+        grid_space_y = np.arange(self.pos["y"], self.pos["y"] + 15) if type != "dummy" else np.arange(self.pos.y,
+                                                                                                      self.pos["y"] + 5)
+        if axis in ["x", "X"]:
+            return self.pos["x"]
+        if axis in ["y", "Y"]:
+            return grid_space_y
+        else:
+            return None
 
     def as_dict(self):
         """
         Calculates game map position and creates a platform dictionary from class attributes.
         :return:
         """
-        return {"x": self.pos["x"] * platform_size["w"], "y": world_bounds["h"] - self.pos["y"] * platform_size["h"],
-                "type": self.type, "has_collectable": self.has_collectable}
+        if self.type in ["horizontal", "vertical"]:
+            platform_dict = {"x": int(self.pos["x"] * platform_size["w"]),
+                             "y": int(world_bounds["h"] - self.pos["y"] * platform_size["h"]),
+                             "type": self.type, "has_collectable": self.has_collectable,
+                             "has_enemy": self.has_enemy, "velocity": self.velocity}
+        else:
+            platform_dict = {"x": int(self.pos["x"] * platform_size["w"]),
+                             "y": int(world_bounds["h"] - self.pos["y"] * platform_size["h"]),
+                             "type": self.type, "has_collectable": self.has_collectable, "has_enemy": self.has_enemy}
+        return platform_dict
 
 
 class Structure(ABC):
     """
     Superclass for Structures.
     """
-    def __init__(self, start_pos, invert=False):
+
+    def __init__(self, start_pos, direction=1):
         """
         Initializes attributes.
         :param start_pos: Dictionary with x and y keys.
         :param invert: Boolean inverted orientation.
         """
         self.pos = start_pos
-        self.direction = -1 if invert else 1
+        self.direction = direction
         self.platforms = self.create_platforms()
 
     @abstractmethod
@@ -71,7 +83,8 @@ class Structure(ABC):
         """
         :return: A list of platforms transformed to dict.
         """
-        platform_list = [platform.as_dict() for platform in self.platforms]
+        platform_list = [platform.as_dict() for platform in self.platforms if
+                         platform.type not in ["dummy", "dummyend"]]
         return platform_list
 
     def get_last_pos(self):
@@ -81,75 +94,88 @@ class Structure(ABC):
         return self.platforms[-1].pos
 
 
-class S1(Structure):
+class SimpleAscend(Structure):
     """
-    Specific structure (child) class.
+        Specific structure (child) class.
     """
-    def __init__(self, start_pos, invert=False):
-        super().__init__(start_pos, invert)
+    def __init__(self, start_pos, direction=1):
+        super().__init__(start_pos, direction)
 
     def create_platforms(self):
-        platform_list = [Platform(self.pos, "basic"),
+        platform_list = [Platform({"x": self.pos["x"] + 1 * self.direction,
+                                   "y": self.pos["y"]}),
                          Platform({"x": self.pos["x"] + 2 * self.direction,
-                                   "y": self.pos["y"] + 5}, "basic")]
+                                   "y": self.pos["y"] + rng.choice([5, 6, 7])})]
         return platform_list
 
 
-class S2(Structure):
+class SimpleForward(Structure):
     """
         Specific structure (child) class.
     """
-    def __init__(self, start_pos, invert=False):
-        super().__init__(start_pos, invert)
+    def __init__(self, start_pos, direction=1):
+        super().__init__(start_pos, direction)
 
     def create_platforms(self):
-        platform_list = [Platform({"x": self.pos["x"],
-                                   "y": self.pos["y"] + 5}, "basic"),
+        platform_list = [Platform({"x": self.pos["x"] + 1 * self.direction,
+                                   "y": self.pos["y"]}),
                          Platform({"x": self.pos["x"] + 3 * self.direction,
-                                   "y": self.pos["y"] + 7}, "basic", has_collectable=True)]
+                                   "y": self.pos["y"] + rng.choice([1, -1])})]
         return platform_list
 
 
-class S3(Structure):
+class Turn(Structure):
     """
         Specific structure (child) class.
+        Marking a turn of direction to mark the start of a new row in level generation.
     """
-    def __init__(self, start_pos, invert=False):
-        super().__init__(start_pos, invert)
+
+    def __init__(self, start_pos, direction=1):
+        super().__init__(start_pos, direction)
 
     def create_platforms(self):
-        platform_list = [Platform({"x": self.pos["x"],
-                                   "y": self.pos["y"] - 2}, "basic"),
+        platform_list = [Platform({"x": self.pos["x"] + 1 * self.direction,
+                                   "y": self.pos["y"] + 9}),
                          Platform({"x": self.pos["x"] + 1 * self.direction,
-                                   "y": self.pos["y"] - 3}, "basic")]
+                                   "y": self.pos["y"] + 16}, platform_type="dummy")
+                         ]
         return platform_list
 
 
-class S4(Structure):
+class Horizontal(Structure):
     """
         Specific structure (child) class.
+        Horizontally moving platform.
     """
+
+    def __init__(self, start_pos, direction=1):
+        super().__init__(start_pos, direction)
+
+    def create_platforms(self):
+        platform_list = [Platform({"x": self.pos["x"] + 1 * self.direction, "y": self.pos["y"]}, self.direction,
+                                  "horizontal"),
+                         Platform({"x": self.pos["x"] + 2 * self.direction, "y": self.pos["y"]}, self.direction,
+                                  "dummy"),
+                         Platform({"x": self.pos["x"] + 3 * self.direction, "y": self.pos["y"]}, self.direction,
+                                  "dummy"),
+                         Platform({"x": self.pos["x"] + 4 * self.direction, "y": self.pos["y"]}, self.direction,
+                                  "dummyend")
+                         ]
+        return platform_list
+
+
+class Vertical(Structure):
+    """
+        Specific structure (child) class.
+        Vertically moving platform.
+    """
+
     def __init__(self, start_pos, invert=False):
         super().__init__(start_pos, invert)
 
     def create_platforms(self):
-        platform_list = [Platform(self.pos, "basic", has_collectable=True),
-                         Platform({"x": self.pos["x"] + 3 * self.direction,
-                                   "y": self.pos["y"]}, "basic")]
-        return platform_list
-
-
-class S5(Structure):
-    """
-        Specific structure (child) class.
-    """
-    def __init__(self, start_pos, invert=False):
-        super().__init__(start_pos, invert)
-
-    def create_platforms(self):
-        platform_list = [Platform(self.pos, "basic"),
-                         Platform({"x": self.pos["x"] + 1 * self.direction,
-                                   "y": self.pos["y"] + 7}, "basic", has_collectable=True)]
+        platform_list = [
+            Platform({"x": self.pos["x"] + 1 * self.direction, "y": self.pos["y"]}, self.direction, "vertical")]
         return platform_list
 
 
@@ -157,145 +183,169 @@ class LevelGenerator:
     """
     Procedural generator of level data.
     """
-    def __init__(self, min_platforms=20, max_platforms=40):
+
+    def __init__(self):
         """
         Initializes all values and the random number generator instance.
-        :param min_platforms: The minimum amount of platforms a level can have.
-        :param max_platforms: The amount of platforms needed to stop generation early.
         """
-        self.grid = np.zeros([int(world_bounds["h"] / platform_size["h"]),
-                              int(world_bounds["w"] / platform_size["w"])])
-        self.structures = [S1, S2, S3, S4, S5]
-        self.min_platforms = min_platforms
-        self.max_platforms = max_platforms
-        self.rng = np.random.default_rng()
+        self.reset()
+        self.structures = [SimpleAscend, Horizontal, Vertical, SimpleForward]
 
-    def register_in_grid(self, platforms):
+    def can_platform_fit(self, platform: Platform):
         """
-        Enters all positions of platforms on the grid.
-        For each platform a space of 10 below and above will be reserved as well.
-        :param platforms: List of platforms.
+        Checks if a platform can be places on zeros in the grid.
+        :param platform: platform to check.
+        :return: boolean
         """
-        for platform in platforms:
-            for i in range(max(platform.pos["y"] - 10, 0), platform.pos["y"] + 11):
-                self.grid[i][platform.pos["x"]] = 1
+        in_x, in_y = self.in_grid(platform.pos)
+        if not in_x or not in_y:
+            return False
+        x = platform.get_grid_space("x")
+        y = platform.get_grid_space("y")
 
-    def grid_space_free(self, pos):
+        try:
+            grid_space = [self.grid[i][x] for i in y]
+
+            if not all(space == 0 for space in grid_space):
+                return False
+        except IndexError:
+            return False
+        return True
+
+    def can_structure_fit(self, structure: Structure):
         """
-        Checks if a position on the grid is 0.
-        :param pos: position to check.
-        :return: True if 0 on grid position else False.
+        Checks if each platform in a structure can fit on the grid,
+        :param structure: structure to check.
+        :return: boolean
         """
-        return True if self.grid[pos["y"]][pos["x"]] == 0 else False
+        if not all(self.can_platform_fit(platform) for platform in structure.platforms):
+            return False
+        return True
+
+    def register_in_grid(self, platform: Platform):
+        """
+        Registers a platform in the grid.
+        :param platform: platform to be registered.
+        """
+        x = platform.get_grid_space("x")
+        y = platform.get_grid_space("y")
+        for i in y:
+            self.grid[i][x] = 1
 
     def in_grid(self, point):
         """
-        Checks if a given point is inside the grid dimensions.
-        :param point: Point to be checked.
-        :return: Tuple with Boolean for x and y in grid.
+            Checks if a given point is inside the grid dimensions.
+            :param point: Point to be checked.
+            :return: Tuple with Boolean for x and y in grid.
         """
         is_in_grid_x = True
         is_in_grid_y = True
-        if point["x"] not in range(0, self.grid.shape[1]):
+        if point["x"] not in np.arange(0, self.grid.shape[1]):
             is_in_grid_x = False
-        if point["y"] not in range(0, self.grid.shape[0]):
+        if point["y"] not in np.arange(0, self.grid.shape[0]):
             is_in_grid_y = False
         return is_in_grid_x, is_in_grid_y
 
-    def get_fitting_structure(self, pos, right_to_left):
+    def get_fitting_structure(self):
         """
-        Randomly chooses a Structure and checks if the new structure can fit on the grid and retries up to 10 times.
-        :param pos: Grid starting position.
-        :param right_to_left: Direction indicator.
-        :return: A fitting structure or None after 10 retries.
+        Randomly selects a Structure to be places at the active position.
+        Retries up to 10 times if the selected structures can not fit.
+        :return: A structure able to be placed on the grid.
         """
-        retries = 10
-        while retries > 0:
-            structure = self.rng.choice(self.structures)
-            s = structure(pos, right_to_left)
-            if self.in_grid(s.get_last_pos())[0] and not self.is_blocking(s):
-                return s
-            retries -= 1
+        for _ in np.arange(10):  # try 10 times
+            structure = np.random.choice(self.structures)(self.active_pos, self.direction)
+            if not self.can_structure_fit(structure):
+                continue
+            self.active_pos = structure.get_last_pos()
+            deque(map(self.register_in_grid, structure.platforms))
+            return structure
         return None
 
-    def is_blocking(self, structure):
+    def insert_turn(self):
         """
-        Checks if all platforms of a given structure are overlapping on the grid.
-        :param structure: Platform to check.
-        :return: True if any platform is overlapping else False.
+        Changes direction for the row generation in insert_rows.
+        :return: structure used in a turn.
         """
-        for platform in structure.platforms:
-            try:
-                if not self.grid_space_free(platform.pos):
-                    return True
-            except IndexError:
-                return False
-        return False
+        self.direction *= -1
+        turn = Turn(self.active_pos, self.direction)
+        self.active_pos = turn.get_last_pos()
+        deque(map(self.register_in_grid, turn.platforms))
+        return turn
 
-    def generate_level(self):
+    def insert_row(self):
         """
-        Attempts level generation until a level with the minimum amount of platforms is generated.
-        :return: A level dictionary.
+        Fills a row from grid border to grid border with structures.
+        :return: list of structures for a row.
         """
+        structures = []
         while True:
-            level = self.gen_new()
-            if len(level["platforms"]) > self.min_platforms:
-                return level
-
-    def append_multiples(self, recent_structures, new_structure):
-        """
-        Appends a structure to a List of structures of the same type or replace the current type in the structure list.
-        :param recent_structures: List of structures (can also be empty).
-        :param new_structure: Structure to be appended to the list.
-        :return: The modified list.
-        """
-        if not recent_structures:
-            recent_structures = [new_structure]
-        if isinstance(new_structure, type(recent_structures[0])):
-            recent_structures.append(new_structure)
-        else:
-            recent_structures = [new_structure]
-        return recent_structures
-
-    def gen_new(self):
-        """
-        Generates a new level.
-        :return: Level Dictionary.
-        """
-        pos = {"x": int(self.rng.choice(range(2, 8))), "y": 1}
-        level_dict = {"platforms": []}
-        right_to_left = False
-        retries = 10
-        recent_structures = []
-        while self.in_grid(pos)[1]:  # only run, if the pos value is within the world bounds height.
-            s = self.get_fitting_structure(pos, right_to_left)
-            if s is None:
-                # No fitting platform was found.
-                # Reduce retries and change the direction and offset the position by 3 in the new direction.
-                retries -= 1
-                pos["x"] = pos["x"] + 3 if right_to_left else pos["x"] - 3
-                right_to_left = not right_to_left
-            else:
-                recent_structures = self.append_multiples(recent_structures, s)
-                if len(recent_structures) > 2:
-                    # retry generating a new structure if the same structure is selected the 3. time in a row
-                    continue
-                retries = 10
-                pos = s.get_last_pos().copy()
-                step = int(self.rng.choice([1, 2]))  # cast to avid np int32 datatype
-                # randomly insert a space between structures.
-                pos["x"] = pos["x"] - step if right_to_left else pos["x"] + step
-                try:
-                    self.register_in_grid(s.platforms)
-                    level_dict["platforms"] += s.get_platforms()
-                except IndexError:
-                    pass
-            if retries == 0 or len(level_dict["platforms"]) >= self.max_platforms:
+            structure = self.get_fitting_structure()
+            if not structure:
                 break
-        # replace the last generated platform type with the final type.
+            structures.append(structure)
+        return structures
+
+    def insert_rows(self):
+        """
+        Fills a level row by row and with structures and makes turns on the grid border in x direction.
+        :return: list of Structures of all rows.
+        """
+        level_structures = []
+        while True:
+            if self.active_pos["y"] >= self.grid.shape[0] - 30:
+                break
+            structures = self.insert_row()
+            if not structures:
+                structures = [self.insert_turn()]
+            level_structures += structures
+
+        return level_structures
+
+    def generate_level(self, enemy_count: int, max_platforms=None):
+        """
+        Api Function to run the level row generation for a level and applies restrictions.
+        :param enemy_count: Restriction on how many enemies should be created in the level.
+        :param max_platforms: Restriction on the maximum amount of Platforms,
+                                that should be taken from the generated level.
+        :return: A dictionary of with a platform list that can be used in the Eduplay3 platformer.
+        """
+        structures = self.insert_rows()
+        level_dict = {"platforms": []}
+
+        # Get all platforms from the structures as dict.
+        for structure in structures:
+            level_dict["platforms"] += structure.get_platforms()
+
+        # Cut off all platforms that are exceeding the max platform count.
+        if max_platforms:
+            level_dict["platforms"] = level_dict["platforms"][:max_platforms]
+
+
         level_dict["platforms"][len(level_dict["platforms"]) - 1]["type"] = "final"
         level_dict["platforms"][len(level_dict["platforms"]) - 1]["has_collectable"] = False
-        self.grid = np.zeros([int(world_bounds["h"] / platform_size["h"]),
-                              int(world_bounds["w"] / platform_size["w"])])
+        self.reset()
+
+        # Adding enemies on separate randomly chosen platforms
+        enemy_platforms = set()
+        while len(enemy_platforms) < enemy_count:
+            enemy_platforms.add(rng.choice(np.arange(len(level_dict["platforms"]))))
+        for index in enemy_platforms:
+            level_dict["platforms"][index]["has_enemy"] = True
+
+        # Adding collectables on separate randomly chosen platforms
+        collectable_platforms = set()
+        while len(collectable_platforms) < round(max_platforms / 5):
+            collectable_platforms.add(rng.choice(np.arange(len(level_dict["platforms"]))))
+        for index in collectable_platforms:
+            level_dict["platforms"][index]["has_collectable"] = True
 
         return level_dict
+
+    def reset(self):
+        """
+        Resets the Grid back to all zeros and chooses a new starting point for the next level.
+        """
+        self.grid = np.zeros([int(world_bounds["h"] / platform_size["h"]),
+                              int(world_bounds["w"] / platform_size["w"])])
+        self.direction = 1
+        self.active_pos = {"x": int(rng.choice(range(2, 8))), "y": 2}

@@ -28,8 +28,14 @@ var try_elements = document.getElementsByClassName("fails");
 var sounds = {};
 
 $(document).ready(function () {
+    //load difficulty
+    $.get("/api/difficulty", function (data, status) {  // jquery http get request
+        difficulty = parseFloat(data['active_difficulty']);
+        document.getElementById("difficulty_label").innerHTML = difficulty;
+        update_term();
+    });
+
     init_audio_paths();
-    update_term();
     //load jumps
     $.get("/api/jumps", function (data, status) {  // jquery http get request
         jumps = parseInt(data["jumps"]);
@@ -47,11 +53,6 @@ $(document).ready(function () {
         if (decimal) {
             try_elements[try_elements.length - 1 - int_val].style.color = "rgb(245,115,88)";
         }
-    });
-    //load difficulty
-    $.get("/api/difficulty", function (data, status) {  // jquery http get request
-        difficulty = parseFloat(data['active_difficulty']);
-        document.getElementById("difficulty_label").innerHTML = difficulty;
     });
 
     // Prevent default scrolling with Space key
@@ -182,7 +183,7 @@ function update_term() {
         sounds["mathsounds"].play();
     }
 
-    $.get("/api/get_math", {difficulty: 10}, function (data, status) {  // jquery http get request
+    $.get("/api/get_math", {difficulty: difficulty}, function (data, status) {  // jquery http get request
         console.log("acquisition of new term: " + status)
         task = data["term"]; //mby out
         solution = data["solution_index"];

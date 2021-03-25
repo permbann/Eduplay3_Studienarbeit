@@ -24,6 +24,8 @@ from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_
     InventorySchema, EquippedSchema
 
 mg = MathGenerator()
+lg = LevelGenerator()
+
 bp = Blueprint('api', __name__, url_prefix='/api')
 
 
@@ -71,7 +73,7 @@ def get_tries():
 def update_difficulty():
     update_value = int(request.form['change'])
     user = _get_current_user()
-    user.jumps = max(user.active_difficulty + update_value, 0)
+    user.active_difficulty = max(user.active_difficulty + update_value, 0)
     db.session.commit()
     return user_schema.jsonify(user)
 
@@ -103,8 +105,9 @@ def get_level(level):
 
 @bp.route('/genlevel')
 def get_level_gen():
-    generator = LevelGenerator(10, 40)
-    return generator.generate_level()
+    user = _get_current_user()
+    #  Max difficulty 12 so: enemy count increases up to 4 and platform count up to 34
+    return lg.generate_level(round((user.active_difficulty + 1) / 3 - 0.5), 10 + 2 * (user.active_difficulty + 1))
 
 
 @bp.route('/update_balance', methods=['PUT'])
