@@ -15,6 +15,7 @@ class UIScene extends Phaser.Scene {
     jump_count;
     currency_text;
     currency;
+    tokens = 0;
     main_game;
     colors = {};
 
@@ -41,8 +42,10 @@ class UIScene extends Phaser.Scene {
         //  Our Text object to display the Score
         this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: this.colors.score}, this);
         this.get_jumps();
-        this.currency_text = this.add.text(10, 65, '', {font: '48px Trebuchet MS', fill: this.colors.score}, this);
-        this.get_currency();
+        this.currency_text = this.add.text(10, 65, 'Tokens: ' + this.tokens, {
+            font: '48px Trebuchet MS',
+            fill: this.colors.score
+        }, this);
 
         //  Grab a reference to the Game Scene
         this.main_game = this.scene.get('GameScene');
@@ -54,12 +57,12 @@ class UIScene extends Phaser.Scene {
         }, this);
 
         this.main_game.events.on('finished', function () {
+            this.update_currency();
             this.draw_finished();
         }, this);
 
         this.main_game.events.on('collected', function () {
-            this.update_currency();
-            this.main_game.currency = this.currency;
+            this.update_tokens();
         }, this);
 
         this.cameras.main.fadeIn(500, 0, 0, 0);
@@ -97,36 +100,30 @@ class UIScene extends Phaser.Scene {
         });
     }
 
-    get_currency() {
+    update_tokens() {
         /*
-        Makes API call to get the users currency counter and updates the ingame text.
+        Adds +1 to the local token counter after collection
          */
+        this.tokens += 1;
         let parent = this;
-        $.ajax({
-            type: 'GET',
-            url: '/api/currency',
-            success: function (response) {
-                parent.currency = parseInt(response['currency']);
-                parent.currency_text.setText('Tokens: ' + parent.currency);
-            }
-        });
+        parent.currency_text.setText('Tokens: ' + this.tokens);
     }
 
     update_currency() {
         /*
-        Makes API call to increase the currency counter by 1 and updates both currency counter elements (ingame and outside)
-         */
-        let parent = this;
+        Makes API call to update the currency with currency + collected tokens after level completion
+        */
         $.ajax({
             type: 'PATCH',
-            data: {currency: 1},
+            data: {currency: this.tokens},
             url: '/api/update_currency',
             success: function (response) {
-                parent.currency_text.setText('Tokens: ' + response['currency']);
-                parent.currency = response['currency'];
+                this.currency = parseInt(response['currency']);
+                document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + this.currency;
             }
         });
     }
+
 
     draw_finished() {
         /*
@@ -141,7 +138,7 @@ class UIScene extends Phaser.Scene {
         let shop = this.add.text(22, 310, 'Öffne die Garderobe', {
             font: '48px Trebuchet MS', fill: this.colors.retry
         }, this);
-        let currency = this.add.text(22, 260, "Gesammelte Teile: " + this.currency, {
+        let currency = this.add.text(22, 260, "Gesammelte Teile: " + this.tokens, {
             font: '38px Trebuchet MS', fill: this.colors.retry
         }, this);
 

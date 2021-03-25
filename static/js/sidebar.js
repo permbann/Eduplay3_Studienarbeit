@@ -109,3 +109,17 @@ $(document).ready(function () {
             });
         });
 });
+
+/*
+   Makes API call to get the users currency counter and updates the sidebar text.
+    */
+$.ajax({
+    type: 'GET',
+    url: '/api/currency',
+    success: function (response) {
+        currency = parseInt(response['currency']);
+        document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + currency;
+    }
+});
+
+
