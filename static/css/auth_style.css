@@ -12,3 +12,8 @@ input#confirm.form-control {color: #2b5a8c;font-weight: bold;background-color: #
 div.box {margin: 30px;background-color: #ffffff;opacity: 0.8;padding: 40px; float:top;}
 
 .btn{padding:10px 40px 10px 40px; font-size: 20px; margin-top:10px;}
+
+/*Start screen*/
+#button_div{margin:30px auto;width:600px;}
+#button_form{padding:0; margin:0; }
+#start_buttons{width:100%;}

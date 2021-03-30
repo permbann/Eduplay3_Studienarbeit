@@ -47,6 +47,16 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    @app.route("/settings", methods=['GET'])
+    @login_required
+    def settings():
+        return render_template('settings.html')
+
+    @app.route("/start", methods=['GET'])
+    @login_required
+    def start():
+        return render_template('start.html')
+
     @app.route("/", methods=['GET'])
     @login_required
     def index():

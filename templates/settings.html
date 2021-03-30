@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block header %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/mascot_select.js') }}"></script>
+    <style>
+        html
+        input:hover {
+            padding: 0px;
+            border: 5px solid #00d0d1;
+        }
+
+        input:active {
+            padding: 0px;
+            border: 5px solid #00d0d1;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <body onload="select_mascot()" style="height:95vh;">
+    <div style="margin:30px 200px auto 100px; display:flex; justify-content: center;">
+        <input type="image" id="mascot_panda" src="{{ url_for('static',  filename='images/Mascot1.png') }}" alt="Mascot"
+               style="width:30%;float:left;" onclick="update_mascot(1)">
+        <input type="image" id="mascot_dino" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot"
+               style="width:30%;float:left;margin-left:60px;" onclick="update_mascot(2)">
+        <input type="image" id="mascot_alien" src="{{ url_for('static',  filename='images/Mascot3.png') }}" alt="Mascot"
+               style="width:30%;float:left; margin-left:60px;" onclick="update_mascot(3)">
+    </div>
+    </body>
+{% endblock %}

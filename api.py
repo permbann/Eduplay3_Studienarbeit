@@ -113,6 +113,28 @@ def update_currency():
     return schema.jsonify(user)
 
 
+@bp.route('/update_mascot', methods=['PATCH'])
+def update_mascot():
+    """
+    Updates mascot in database
+    :return: new mascot
+    """
+    user = _get_current_user()
+    mascot = int(request.form['mascot'])
+    user.mascot = mascot
+    db.session.add(user)
+    db.session.commit()
+    schema = UserSchema()
+    return schema.jsonify(user)
+
+
+@bp.route('/get_mascot', methods=['GET'])
+def get_mascot():
+    user = _get_current_user()
+    schema = UserSchema()
+    return schema.jsonify(user)
+
+
 @bp.route('/add_item', methods=['PUT'])
 def add_item():
     """
@@ -230,6 +252,8 @@ def get_equipped():
     equipped = _get_all_equipped()
     schema = EquippedSchema(many=True)
     return schema.jsonify(equipped)
+
+
 
 
 def _get_current_user():

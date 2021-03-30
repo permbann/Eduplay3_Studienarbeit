@@ -1,4 +1,23 @@
 $(document).ready(function () {
+    $.get("/api/get_mascot")
+        .done(function (response) {
+            mascot = parseInt(response['mascot']);
+            switch (mascot) {
+                case 1:
+                    document.getElementById("mascot_panda").style.display = "block";
+                    break;
+                case 2:
+                    document.getElementById("mascot_dino").style.display = "block";
+                    break;
+                case 3:
+                    document.getElementById("mascot_alien").style.display = "block";
+                    break;
+            }
+        });
+});
+
+
+$(document).ready(function () {
     $.get("/api/get_equipped")
         .done(function (data) {
             $.each(data, function (key, value) {

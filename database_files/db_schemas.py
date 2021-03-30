@@ -27,7 +27,8 @@ class UserSchema(ma.Schema):
             'jumps',
             'currency',
             'tries',
-            'active_difficulty'
+            'active_difficulty',
+            'mascot'
         ]
 
 
