@@ -6,7 +6,7 @@ td{width: 25%; border: 8px solid #2b5a8c; height: 218px; align-content: center;}
 p{text-align:center;}
 
 .item_img{width: 150px; margin-left: 30px;}
-.mascot{width:200px; top:42%; left:9%; position: relative; z-index:0;}
+.mascot{width:200px; top:42%; left:9%; position: relative; z-index:0; display:none;}
 .hat_overlay{width:100px; position:relative; display:none; top:33%; left:33%; z-index:1;}
 .shoe_overlay{width:200px; position:relative; display:none; top:55.4%; left:9%; z-index:1;}
 .shirt_overlay{width:148px; position:relative; display:none; top:54%; left:19.5%; z-index:1;}
@@ -37,3 +37,5 @@ p{text-align:center;}
     position: absolute;
     width:240px; height:720px; min-width:240px; min-height:720px;
 }
+div.box {background-color: #ffffff;opacity: 0.5;padding:5px 0px 5px 5px; margin-top:600px; margin-left: 20px; width:210px;
+    z-index:2; position:absolute; text-align: center;}

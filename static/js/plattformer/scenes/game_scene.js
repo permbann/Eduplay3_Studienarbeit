@@ -340,6 +340,8 @@ class GameScene extends Phaser.Scene {
                     scene.scene.pause();
                 },
             });
+        } else {
+            this.events.emit('collected');
         }
         this.sounds.collect_sound.play();
         collectable.disableBody(true, true);

@@ -28,8 +28,9 @@ class User(db.Model):
     currency = db.Column(db.Integer, nullable=False)
     tries = db.Column(db.Float, nullable=False)
     active_difficulty = db.Column(db.Integer, nullable=False)
+    mascot = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, username, email, password, jumps=5, currency=0, tries=3, active_difficulty=0):
+    def __init__(self, username, email, password, jumps=5, currency=0, tries=3, active_difficulty=0, mascot=1):
         self.username = username
         self.email = email
         self.password = password
@@ -37,14 +38,16 @@ class User(db.Model):
         self.currency = currency
         self.tries = tries
         self.active_difficulty = active_difficulty
+        self.mascot = mascot
 
     def __str__(self):
         return f"""
         User: {self.username}
         Jumps: {self.jumps}
-        Balance: {self.currency}
+        Currency: {self.currency}
         Remaining Tries: {self.tries}
         Active Difficulty: {self.active_difficulty}
+        Mascot: {self.mascot}
         """
 
 

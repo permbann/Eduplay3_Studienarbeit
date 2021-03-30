@@ -64,7 +64,7 @@ def login():
                 session.clear()
                 session['user_id'] = user.id
                 flash('You have successfully logged in.', "success")
-                return redirect(url_for('index'))
+                return redirect(url_for('start'))
 
             else:
 

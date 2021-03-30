@@ -1,0 +1,19 @@
+/*STYLE*/
+body {background-image: url('https://data.whicdn.com/images/304123601/original.gif');background-repeat: no-repeat;
+    background-attachment: fixed;background-size: 100% 100%;margin:5% 20% 20% 20%;height: 100%; overflow: hidden;}
+h4{font-size: 30px; color:#377ba8;}
+form{font-size: 20px;color:#377ba8;}
+
+input#username.form-control {color: #2b5a8c;font-weight: bold;background-color: #8cc6e3;padding: 10px;}
+input#password.form-control {color: #2b5a8c;font-weight: bold;background-color: #8cc6e3;padding: 10px;}
+input#email.form-control {color: #2b5a8c;font-weight: bold;background-color: #8cc6e3;padding: 10px;}
+input#confirm.form-control {color: #2b5a8c;font-weight: bold;background-color: #8cc6e3;padding: 10px;}
+
+div.box {margin: 30px;background-color: #ffffff;opacity: 0.8;padding: 40px; float:top;}
+
+.btn{padding:10px 40px 10px 40px; font-size: 20px; margin-top:10px;}
+
+/*Start screen*/
+#button_div{margin:30px auto;width:600px;}
+#button_form{padding:0; margin:0; }
+#start_buttons{width:100%;}

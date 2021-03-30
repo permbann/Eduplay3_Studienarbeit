@@ -50,8 +50,8 @@ def get_difficulty():
     return schema.jsonify(user)
 
 
-@bp.route('/balance', methods=['GET'])
-def get_balance():
+@bp.route('/currency', methods=['GET'])
+def get_currency():
     user = _get_current_user()
     schema = UserSchema(only=['currency'])
     return schema.jsonify(user)
@@ -110,17 +110,39 @@ def get_level_gen():
     return lg.generate_level(round((user.active_difficulty + 1) / 3 - 0.5), 10 + 2 * (user.active_difficulty + 1))
 
 
-@bp.route('/update_balance', methods=['PUT'])
-def update_balance():
+@bp.route('/update_currency', methods=['PATCH'])
+def update_currency():
     """
-    Updates balance in database after a purchase
-    :return: new balance
+    Updates currency in database
+    :return: new currency
     """
     user = _get_current_user()
-    currency = request.form['currency']
-    user.currency = currency
+    currency = int(request.form['currency'])
+    user.currency = user.currency + currency
     db.session.add(user)
     db.session.commit()
+    schema = UserSchema()
+    return schema.jsonify(user)
+
+
+@bp.route('/update_mascot', methods=['PATCH'])
+def update_mascot():
+    """
+    Updates mascot in database
+    :return: new mascot
+    """
+    user = _get_current_user()
+    mascot = int(request.form['mascot'])
+    user.mascot = mascot
+    db.session.add(user)
+    db.session.commit()
+    schema = UserSchema()
+    return schema.jsonify(user)
+
+
+@bp.route('/get_mascot', methods=['GET'])
+def get_mascot():
+    user = _get_current_user()
     schema = UserSchema()
     return schema.jsonify(user)
 
@@ -242,6 +264,8 @@ def get_equipped():
     equipped = _get_all_equipped()
     schema = EquippedSchema(many=True)
     return schema.jsonify(equipped)
+
+
 
 
 def _get_current_user():

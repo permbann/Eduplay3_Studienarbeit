@@ -13,6 +13,13 @@ __version__ = "1.0"
 import {game} from "../main_game.js";
 
 class UIScene extends Phaser.Scene {
+    jumps_text;
+    jump_count;
+    currency_text;
+    currency;
+    tokens = 0;
+    main_game;
+    colors = {};
 
     constructor() {
         /*
@@ -27,12 +34,21 @@ class UIScene extends Phaser.Scene {
             Initialize all elements of the ui.
             Also set the event handlers for events emitted by the GameScene.
          */
+        this.colors.score = '#000000';
+        this.colors.retry = '#000000';
+        this.colors.retry_hover = '#33aa33';
+        this.colors.shop = '#444444';
+        this.colors.shop_hover = '#aa3333';
         this.load_currency();
         this.ending = false;
 
         //  Text object to display the Score
         this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: "#1A1A1A"}, this);
         this.get_jumps();
+        this.currency_text = this.add.text(10, 65, 'Tokens: ' + this.tokens, {
+            font: '48px Trebuchet MS',
+            fill: this.colors.score
+        }, this);
 
         // Setting up a mute button
         this.muted = false;
@@ -53,12 +69,18 @@ class UIScene extends Phaser.Scene {
 
         this.main_game.events.on('finished', function () {
             if(!this.ending)
+                this.update_currency();
                 this.draw_finished();
         }, this);
 
         this.main_game.events.on('failed', function () {
             if(!this.ending)
                 this.draw_finished(false);
+        }, this);
+
+
+        this.main_game.events.on('collected', function () {
+            this.update_tokens();
         }, this);
 
         this.cameras.main.fadeIn(500, 0, 0, 0);
@@ -95,6 +117,31 @@ class UIScene extends Phaser.Scene {
             }
         });
     }
+
+    update_tokens() {
+        /*
+        Adds +1 to the local token counter after collection
+         */
+        this.tokens += 1;
+        let parent = this;
+        parent.currency_text.setText('Tokens: ' + this.tokens);
+    }
+
+    update_currency() {
+        /*
+        Makes API call to update the currency with currency + collected tokens after level completion
+        */
+        $.ajax({
+            type: 'PATCH',
+            data: {currency: this.tokens},
+            url: '/api/update_currency',
+            success: function (response) {
+                this.currency = parseInt(response['currency']);
+                document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + this.currency;
+            }
+        });
+    }
+
 
     draw_finished(win = true) {
         /*
@@ -179,6 +226,14 @@ class UIScene extends Phaser.Scene {
                 this.main_game.scene.restart();
                 this.ending = false;
             }, this);
+
+        });
+        shop.setInteractive();
+        shop.on('pointerdown', () => {
+            //TODO send to shop
+            //retry.destroy();
+            shop.destroy();
+            currency.destroy();
         });
 
 

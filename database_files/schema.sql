@@ -9,7 +9,8 @@ CREATE TABLE user (
   password TEXT NOT NULL,
   jumps INTEGER NOT NULL,
   currency INTEGER NOT NULL,
-  tries DECIMAL(10, 1) NOT NULL
+  tries DECIMAL(10, 1) NOT NULL,
+  mascot INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS items (
