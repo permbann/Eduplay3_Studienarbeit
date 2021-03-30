@@ -10,6 +10,8 @@ __status__ = "Released"
 __version__ = "1.0"
  */
 
+import {game} from "../main_game.js";
+
 class UIScene extends Phaser.Scene {
     jumps_text;
     jump_count;
@@ -38,16 +40,25 @@ class UIScene extends Phaser.Scene {
         this.colors.shop = '#444444';
         this.colors.shop_hover = '#aa3333';
         this.load_currency();
+        this.ending = false;
 
-        //  Our Text object to display the Score
-        this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: this.colors.score}, this);
+        //  Text object to display the Score
+        this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: "#1A1A1A"}, this);
         this.get_jumps();
         this.currency_text = this.add.text(10, 65, 'Tokens: ' + this.tokens, {
             font: '48px Trebuchet MS',
             fill: this.colors.score
         }, this);
 
-        //  Grab a reference to the Game Scene
+        // Setting up a mute button
+        this.muted = false;
+        this.mute_button = this.add.image(730, 20, "speaker").setOrigin(0, 0);
+        this.mute_button.setInteractive();
+            this.mute_button.on('pointerdown', () => {
+                this.toggle_mute();
+            }, this);
+
+        //  Reference to the Game Scene
         this.main_game = this.scene.get('GameScene');
 
         //  Listen for events from it
@@ -57,9 +68,16 @@ class UIScene extends Phaser.Scene {
         }, this);
 
         this.main_game.events.on('finished', function () {
-            this.update_currency();
-            this.draw_finished();
+            if(!this.ending)
+                this.update_currency();
+                this.draw_finished();
         }, this);
+
+        this.main_game.events.on('failed', function () {
+            if(!this.ending)
+                this.draw_finished(false);
+        }, this);
+
 
         this.main_game.events.on('collected', function () {
             this.update_tokens();
@@ -70,7 +88,7 @@ class UIScene extends Phaser.Scene {
 
     get_jumps() {
         /*
-        Makes API call to get the users jump counter and updates the ingame text.
+            Makes API call to get the users jump counter and updates the ingame text.
          */
         let parent = this;
         $.ajax({
@@ -85,7 +103,7 @@ class UIScene extends Phaser.Scene {
 
     update_jumps() {
         /*
-        Makes API call to reduce the jump counter by 1 and updates both Jump counter elements (ingame and outside)
+            Makes API call to reduce the jump counter by 1 and updates both Jump counter elements (ingame and outside)
          */
         let parent = this;
         $.ajax({
@@ -125,32 +143,88 @@ class UIScene extends Phaser.Scene {
     }
 
 
-    draw_finished() {
+    draw_finished(win = true) {
         /*
             Creates the text objects on the screen indicating giving options of what to do next.
             Options:
-             - restart game
-             - go to shop
+              only on win:
+                 - increase difficulty
+                 - go to shop
+              - restart game
          */
-        let retry = this.add.text(22, 360, 'Nochmal', {
-            font: '58px Trebuchet MS', fill: this.colors.retry
-        }, this);
-        let shop = this.add.text(22, 310, 'Öffne die Garderobe', {
-            font: '48px Trebuchet MS', fill: this.colors.retry
-        }, this);
-        let currency = this.add.text(22, 260, "Gesammelte Teile: " + this.tokens, {
-            font: '38px Trebuchet MS', fill: this.colors.retry
-        }, this);
+        this.ending = true;
+        let retry;
+        let shop;
+        let label_text;
+        let increase_difficulty;
+        this.main_game.cameras.main.fadeOut(1000, 250, 250, 250);
 
+        if (win) {
+            // Clickable, hoverable text
+            increase_difficulty = this.add.text(400, 150, " Nächste Swierigkeitsstufe aktivieren ", {
+                font: '44px Trebuchet MS', fill: "#8888FF", backgroundColor: "#11221166"
+            }, this);
+            increase_difficulty.setOrigin(0.5);
+            this.add_text_hover(increase_difficulty, "#8888FF", "#8888BB");
+            increase_difficulty.setInteractive();
+            increase_difficulty.on('pointerdown', () => {
+                this.update_difficulty();
+                increase_difficulty.destroy();
+            });
+
+            // Plain text
+            label_text = this.add.text(400, 260, " Gesammelte Teile: " + this.balance + " ", {
+                font: '38px Trebuchet MS', fill: "#222222"
+            }, this);
+            label_text.setOrigin(0.5);
+
+            // Clickable, hoverable text
+            shop = this.add.text(400, 310, ' Öffne die Garderobe ', {
+                font: '48px Trebuchet MS', fill: "#005353", backgroundColor: "#11221166"
+            }, this);
+            shop.setOrigin(0.5);
+            this.add_text_hover(shop, "#117373", "#33CC77");
+            shop.setInteractive();
+            shop.on('pointerdown', () => {
+                retry.destroy();
+                shop.destroy();
+                label_text.destroy();
+                window.location.href = "/shop/hats";
+            });
+
+            // Plain text -> will be made Clickable and hoverable
+            retry = this.add.text(400, 420, ' Weiter zum nächsten Level ', {
+                font: '54px Trebuchet MS', fill: "#FAFAFA", backgroundColor: "#11221166"
+            }, this);
+            retry.setOrigin(0.5);
+        }
+        else {
+            // Plain text
+            label_text = this.add.text(400, 260, "Leider nicht geschafft.", {
+                font: '48px Trebuchet MS', fill: "#222222"
+            }, this);
+            label_text.setOrigin(0.5);
+
+            // Plain text -> will be made Clickable and hoverable
+            retry = this.add.text(400, 420, ' Nochmal versuchen ', {
+                font: '58px Trebuchet MS', fill: "#FAFAFA", backgroundColor: "#11221166"
+            }, this);
+            retry.setOrigin(0.5);
+        }
+
+        // Adding Clickable and hover to text
+        this.add_text_hover(retry, "#FAFAFA", "#12AA21");
         retry.setInteractive();
         retry.on('pointerdown', () => {
             retry.destroy();
-            shop.destroy();
-            currency.destroy();
+            label_text.destroy();
+            if(increase_difficulty) increase_difficulty.destroy();
+            if(shop) shop.destroy();
             this.cameras.main.fadeOut(1000, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                 this.cameras.main.fadeIn(500, 0, 0, 0);
                 this.main_game.scene.restart();
+                this.ending = false;
             }, this);
 
         });
@@ -162,8 +236,8 @@ class UIScene extends Phaser.Scene {
             currency.destroy();
         });
 
-        this.add_text_hover(retry, this.colors.retry, this.colors.retry_hover);
-        this.add_text_hover(shop, this.colors.shop, this.colors.shop_hover);
+
+
     }
 
     add_text_hover(text, color, hover_color) {
@@ -181,16 +255,47 @@ class UIScene extends Phaser.Scene {
 
     load_currency() {
         /*
-            Updates the current currency variable to the api value asynchronously.
+            Updates the current balance variable to the api value asynchronously.
         */
         let scene = this;
         $.ajax({
             type: 'GET',
-            url: '/api/currency',
+            url: '/api/balance',
             success: function (response) {
-                scene.currency = parseInt(response['currency']);
+                scene.balance = parseInt(response['currency']);
             }
         });
+    }
+
+     update_difficulty() {
+         /*
+            Makes API call to increase the difficulty by 1.
+         */
+        let parent = this;
+        $.ajax({
+            type: 'PATCH',
+            data: {change: 1},
+            url: '/api/update_difficulty',
+            success: function (response) {
+                document.getElementById("difficulty_label").innerHTML = response['active_difficulty'];
+            }
+        });
+    }
+
+    toggle_mute() {
+        /*
+            Toggles the mute of all game sounds. They will continue playing muted.
+         */
+        game.sound.mute = !game.sound.mute;
+        this.muted = !this.muted;  //game.sound.mute does not update in a reliable time
+        if(this.muted)
+        {
+            this.muted_line = this.add.image(this.mute_button.x, this.mute_button.y, "mute").setOrigin(0, 0);
+        }
+        else
+        {
+            this.muted_line.destroy()
+        }
     }
 }
 
