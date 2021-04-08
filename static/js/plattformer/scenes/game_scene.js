@@ -38,9 +38,10 @@ class GameScene extends Phaser.Scene {
 
         this.init_sounds();
         this.time.addEvent({
-            delay: 200,                // ms
+            delay: 500,                // ms
             callback: function () {
-                scene.sounds.music.play();
+                // scene.sounds.music.play();
+                scene.sounds.bg_music[Math.floor(Math.random() * scene.sounds.bg_music.length)].play();
             },
         });
 
@@ -279,7 +280,13 @@ class GameScene extends Phaser.Scene {
         /*
             Initializes all game sounds and background music for the game.
          */
-        this.sounds.music = this.sound.add('bg_music', {volume: 0.5, loop: true});
+        this.sounds.bg_music = [
+            this.sound.add('bg_music1', {volume: 0.2, loop: true}),
+            this.sound.add('bg_music2', {volume: 0.2, loop: true}),
+            this.sound.add('bg_music3', {volume: 0.2, loop: true}),
+            this.sound.add('bg_music4', {volume: 0.2, loop: true}),
+            this.sound.add('bg_music5', {volume: 0.2, loop: true}),
+        ]
         this.sounds.walk_sound = this.sound.add('walk_sound', {volume: 1, loop: true});  // delay to allow landing sound
         this.sounds.jump_sound = this.sound.add('jump_sound', {volume: 0.3});
         this.sounds.cant_jump_sound = this.sound.add('cant_jump_sound', {volume: 1});
@@ -351,8 +358,18 @@ class GameScene extends Phaser.Scene {
         /*
             Iterates over all game sounds and music and stops them.
          */
-        $.each(this.sounds, function (k, sound) {
-            sound.stop();
+        $.each(this.sounds, (k, sound) => {
+            if(k === "bg_music")
+            {
+                 for (let i = 0; i<sound.length; i ++)
+                 {
+                     sound[i].stop();
+                 }
+            }
+            else
+            {
+                sound.stop();
+            }
         }, this)
     }
 

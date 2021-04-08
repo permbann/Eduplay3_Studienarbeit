@@ -34,7 +34,11 @@ class Bootloader extends Phaser.Scene {
         this.load.image('speaker', 'static/assets/game/speaker.png');
         this.load.image('mute', 'static/assets/game/mute.png');
         this.load.spritesheet('player', 'static/assets/game/player.png', {frameWidth: 45, frameHeight: 60});
-        this.load.audio('bg_music', ['static/assets/game/sounds/Lost-Jungle.mp3']);
+        this.load.audio('bg_music1', ['static/assets/game/music/04007 miami sunset.mp3']);
+        this.load.audio('bg_music2', ['static/assets/game/music/04012 lost in space.mp3']);
+        this.load.audio('bg_music3', ['static/assets/game/music/04017 fragile.mp3']);
+        this.load.audio('bg_music4', ['static/assets/game/music/04020 polaris.mp3']);
+        this.load.audio('bg_music5', ['static/assets/game/music/04022 sadness instrumental.mp3']);
         this.load.audio('walk_sound', ['static/assets/game/sounds/slime_walk.wav']);
         this.load.audio('jump_sound', ['static/assets/game/sounds/slime_jump.wav']);
         this.load.audio('cant_jump_sound', ['static/assets/game/sounds/cant_jump.wav']);

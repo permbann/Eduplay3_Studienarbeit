@@ -228,16 +228,6 @@ class UIScene extends Phaser.Scene {
             }, this);
 
         });
-        shop.setInteractive();
-        shop.on('pointerdown', () => {
-            //TODO send to shop
-            //retry.destroy();
-            shop.destroy();
-            currency.destroy();
-        });
-
-
-
     }
 
     add_text_hover(text, color, hover_color) {
@@ -260,7 +250,7 @@ class UIScene extends Phaser.Scene {
         let scene = this;
         $.ajax({
             type: 'GET',
-            url: '/api/balance',
+            url: '/api/currency',
             success: function (response) {
                 scene.balance = parseInt(response['currency']);
             }
