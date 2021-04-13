@@ -16,12 +16,13 @@ __version__ = "1.0"
 
 import os
 import pathlib
+import random
 from flask import Blueprint, request, session
 from MathEngine import MathGenerator
 from E3LevelGenerator import LevelGenerator
-from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items, Inventory, Equipped
+from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items, Inventory, Equipped, Quotes
 from Eduplay3_Studienarbeit.database_files.db_schemas import user_schema, users_schema, UserSchema, ItemsSchema, \
-    InventorySchema, EquippedSchema
+    InventorySchema, EquippedSchema, QuoteSchema
 
 mg = MathGenerator()
 lg = LevelGenerator()
@@ -215,6 +216,13 @@ def get_accessory_cost():
     accessories = Items.query.filter(Items.item_id.like('%accessory%')).all()
     schema = ItemsSchema(many=True)
     return schema.jsonify(accessories)
+
+
+@bp.route('/quote/<category>')
+def get_quote(category):
+    quotes = Quotes.query.filter(Quotes.category == category).all()
+    schema = QuoteSchema()
+    return schema.jsonify(random.choice(quotes))
 
 
 @bp.route('/add_equipped', methods=['PUT'])

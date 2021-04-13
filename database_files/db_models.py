@@ -75,3 +75,13 @@ class Equipped(db.Model):
     shoe = db.Column(db.String, nullable=True)
     shirt = db.Column(db.String, nullable=True)
     accessory = db.Column(db.String, nullable=True)
+
+
+class Quotes(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
+    quote = db.Column(db.String, nullable=False)
+    category = db.Column(db.String, nullable=False)
+
+    def __init__(self, quote, category):
+        self.quote = quote
+        self.category = category

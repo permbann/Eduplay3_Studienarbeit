@@ -38,19 +38,16 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-function update_game_jumps_label(change = -1) {
+function update_game_jumps(change = -1) {
     /*
         Exported funciton that can be accessed by the Math-Minigame and updates the jump count on the ui.
      */
     let scene = game.scene.scenes[3]; //ui scene
     if (scene.jump_count) {
         scene.jump_count = change;
-        scene.jumps_text.setText('Sprünge: ' + scene.jump_count);
     } else {
-        if (scene.jumps_text) {
-            scene.get_jumps();
-        }
+        scene.get_jumps();
     }
 }
 export {game};
-export default update_game_jumps_label;
+export default update_game_jumps;

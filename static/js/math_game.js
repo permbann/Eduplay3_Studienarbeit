@@ -10,7 +10,7 @@ __status__ = "Released"
 __version__ = "1.0"
  */
 
-import update_game_jumps_label from './plattformer/main_game.js';
+import update_game_jumps from './plattformer/main_game.js';
 
 var task = "";
 var solution = 0;
@@ -217,7 +217,7 @@ function update_jump_count(change) {
      */
     jumps = change;
     document.getElementById("jumps_label").innerHTML = jumps;
-    update_game_jumps_label(jumps);
+    update_game_jumps(jumps);
 }
 
 function update_tries(change) {
