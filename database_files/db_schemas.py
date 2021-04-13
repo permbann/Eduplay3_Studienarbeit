@@ -61,3 +61,10 @@ class EquippedSchema(ma.Schema):
             "shirt",
             "accessory"
         ]
+
+
+class QuoteSchema(ma.Schema):
+    class Meta:
+        fields = [
+            "quote"
+        ]

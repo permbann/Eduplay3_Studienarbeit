@@ -13,13 +13,11 @@ __version__ = "1.0"
 import {game} from "../main_game.js";
 
 class UIScene extends Phaser.Scene {
-    jumps_text;
     jump_count;
     currency_text;
     currency;
     tokens = 0;
     main_game;
-    colors = {};
 
     constructor() {
         /*
@@ -34,20 +32,14 @@ class UIScene extends Phaser.Scene {
             Initialize all elements of the ui.
             Also set the event handlers for events emitted by the GameScene.
          */
-        this.colors.score = '#000000';
-        this.colors.retry = '#000000';
-        this.colors.retry_hover = '#33aa33';
-        this.colors.shop = '#444444';
-        this.colors.shop_hover = '#aa3333';
         this.load_currency();
         this.ending = false;
 
         //  Text object to display the Score
-        this.jumps_text = this.add.text(10, 10, '', {font: '48px Trebuchet MS', fill: "#1A1A1A"}, this);
         this.get_jumps();
-        this.currency_text = this.add.text(10, 65, 'Tokens: ' + this.tokens, {
+        this.currency_text = this.add.text(10, 10, 'Tokens: ' + this.tokens, {
             font: '48px Trebuchet MS',
-            fill: this.colors.score
+            fill: "#000000"
         }, this);
 
         // Setting up a mute button
@@ -96,7 +88,6 @@ class UIScene extends Phaser.Scene {
             url: '/api/jumps',
             success: function (response) {
                 parent.jump_count = parseInt(response['jumps']);
-                parent.jumps_text.setText('Sprünge: ' + parent.jump_count);
             }
         });
     }
@@ -111,7 +102,6 @@ class UIScene extends Phaser.Scene {
             data: {change: -1},
             url: '/api/update_jumps',
             success: function (response) {
-                parent.jumps_text.setText('Sprünge: ' + response['jumps']);
                 parent.jump_count = response['jumps'];
                 document.getElementById("jumps_label").innerHTML = response['jumps'];
             }
@@ -179,7 +169,7 @@ class UIScene extends Phaser.Scene {
             label_text.setOrigin(0.5);
 
             // Clickable, hoverable text
-            shop = this.add.text(400, 310, ' Öffne die Garderobe ', {
+            shop = this.add.text(400, 310, ' Zum Shop ', {
                 font: '48px Trebuchet MS', fill: "#005353", backgroundColor: "#11221166"
             }, this);
             shop.setOrigin(0.5);
