@@ -163,7 +163,7 @@ class UIScene extends Phaser.Scene {
             });
 
             // Plain text
-            label_text = this.add.text(400, 260, " Gesammelte Teile: " + this.balance + " ", {
+            label_text = this.add.text(400, 260, " Gesammelte Teile: " + this.tokens + " ", {
                 font: '38px Trebuchet MS', fill: "#222222"
             }, this);
             label_text.setOrigin(0.5);
@@ -207,6 +207,8 @@ class UIScene extends Phaser.Scene {
         retry.setInteractive();
         retry.on('pointerdown', () => {
             retry.destroy();
+            this.tokens = 0;
+            this.currency_text.setText('Tokens: ' + this.tokens);
             label_text.destroy();
             if(increase_difficulty) increase_difficulty.destroy();
             if(shop) shop.destroy();

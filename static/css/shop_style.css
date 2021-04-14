@@ -22,6 +22,8 @@ p{text-align:center;}
 .purchase_button:hover{background-color: #3fd14b;}
 
 #shop{background-color:#7e98ab; width:1040px; height:720px; border: 1px solid black;float:left;}
+#speech_bubble{width:200px;position: absolute; z-index:0;top:12%; left:9%;opacity:0.7;}
+#speech_text{width:160px; position: absolute; z-index:0;top:16%; left:20%;}
 #currency_label{margin-left:150px; font-size: 50px;}
 #table_border{border:5px solid #37354f; border-spacing:5px;}
 #leftbox{ float:left; background:Red; width:240px; height:720px; min-width:240px; min-height:720px; position: relative;}

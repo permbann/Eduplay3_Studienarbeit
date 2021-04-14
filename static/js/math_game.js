@@ -26,6 +26,8 @@ var answer_elements = [
     document.getElementById("answer3")];
 var try_elements = document.getElementsByClassName("fails");
 var sounds = {};
+var praise_count = 4;
+var enc_count = 4;
 
 $(document).ready(function () {
     //load difficulty
@@ -118,7 +120,13 @@ function validate_solution(number) {
         return;
     }
     if (solution === number) {
-        sounds["correct"].play()
+        sounds["correct"].play();
+        if (praise_count == 4) {
+            get_praise();
+            praise_count = 0;
+            enc_count = 4;
+        }
+        praise_count += 1;
         $.ajax({
             type: "PATCH",
             data: {change: 1},
@@ -128,9 +136,15 @@ function validate_solution(number) {
             }
         });
     } else {
-        sounds["wrong"].play()
+        sounds["wrong"].play();
+        if (enc_count == 4){
+        get_encouragement();
+        enc_count = 0;
+        praise_count = 4;
+        }
+        enc_count += 1;
         if (tries === 0) {
-            sounds["wrong2"].play()
+            sounds["wrong2"].play();
             $.ajax({
                 type: "PATCH",
                 data: {change: -1},

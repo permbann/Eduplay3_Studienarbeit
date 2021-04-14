@@ -136,7 +136,13 @@ def init_quotes():
         "Super gemacht! Weiter so.",
         "Mathe ist wohl deine Stärke, großartig.",
         "Geschafft, jetzt bist du ein Schritt weiter und schlauer.",
-        "Einfach toll, du wirst immer besser."
+        "Einfach toll, du wirst immer besser.",
+        "Das hast du super gemacht!",
+        "Du bist wirklich gut darin Aufgaben zu lösen!",
+        "Prima! Du bist einen Schritt näher am Ziel!",
+        "Das machst du toll!",
+        "Weiter so",
+
     ]:
         db.session.add(Quotes(praise, "praise"))
 
@@ -145,7 +151,14 @@ def init_quotes():
         "Alles ist schwierig, bevor es leicht wird.",
         "Die Aufgaben werden nicht leichter.Du wirst nur besser.",
         "Falsch zu liegen ist nicht schlimm.Übung macht den Meister.",
-        "Ich glaube an dich! Nimm dir die Zeit, die du brauchst."
+        "Ich glaube an dich!",
+        "Nimm dir die Zeit, die du brauchst.",
+        "Du kannst es Schaffen!",
+        "Versuche es noch einmal, du kannst das.",
+        "Die nächste Aufgabe klappt bestimmt!",
+        "Gib nicht auf!",
+        "Du kannst das!",
+        "Übung macht den Meister."
     ]:
         db.session.add(Quotes(encouragement, "encouragement"))
 
