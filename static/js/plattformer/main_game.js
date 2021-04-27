@@ -1,8 +1,11 @@
 /*
+
+Phaser game setup and scene loading.
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -49,5 +52,6 @@ function update_game_jumps(change = -1) {
         scene.get_jumps();
     }
 }
+
 export {game};
 export default update_game_jumps;

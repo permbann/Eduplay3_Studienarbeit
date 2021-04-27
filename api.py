@@ -1,13 +1,13 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Main Flask file to start the webserver.
+General API file for the webserver.
 """
 
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -274,8 +274,6 @@ def get_equipped():
     return schema.jsonify(equipped)
 
 
-
-
 def _get_current_user():
     """
     :return: user_id of current user
@@ -295,6 +293,7 @@ def _get_current_equipped():
     :return: equipped items of current user
     """
     return Equipped.query.filter_by(user_id=session['user_id']).first()
+
 
 def _get_all_equipped():
     """

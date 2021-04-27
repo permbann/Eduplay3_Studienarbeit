@@ -1,4 +1,18 @@
-/*STYLE*/
+/*
+
+Specific login and register page styles.
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/04/27"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+ */
+
 body {background-image: url('https://data.whicdn.com/images/304123601/original.gif');background-repeat: no-repeat;
     background-attachment: fixed;background-size: 100% 100%;margin:5% 20% 20% 20%;height: 100%; overflow: hidden;}
 h4{font-size: 30px; color:#377ba8;}
