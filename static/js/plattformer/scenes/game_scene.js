@@ -1,8 +1,12 @@
 /*
+
+General game scene.
+(Asset placement and Logic/Game loop)
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -58,8 +62,8 @@ class GameScene extends Phaser.Scene {
         this.load_level_gen();
 
 
-        this.spinning_platforms = this.physics.add.group();
-        this.spinning_platforms.immovable = true;
+        this.movable_platforms = this.physics.add.group();
+        this.movable_platforms.immovable = true;
 
         this.init_player();
         this.cameras.main.startFollow(this.player);
@@ -84,8 +88,7 @@ class GameScene extends Phaser.Scene {
         for (let i = 0; i < this.moving_platforms.length; i++) {
             this.moving_platforms[i].turn();
         }
-        for (let i = 0; i < this.enemy_list.length; i++)
-        {
+        for (let i = 0; i < this.enemy_list.length; i++) {
             this.enemy_list[i].turn();
         }
         if (game.sound.context.state === 'suspended') {
@@ -241,10 +244,10 @@ class GameScene extends Phaser.Scene {
                 let y = platform_data.y + scene.textures.get('platform_basic').getSourceImage().height / 2;
                 switch (platform_data.type) {
                     case 'horizontal':
-                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.spinning_platforms, platform_data.velocity))
+                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.movable_platforms, platform_data.velocity))
                         break;
                     case 'vertical':
-                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.spinning_platforms, platform_data.velocity))
+                        scene.moving_platforms.push(new MovingPlatform(x, y, scene.movable_platforms, platform_data.velocity))
                         break;
                     case 'final':
                         scene.platforms.create(x, y, 'platform_basic');
@@ -327,7 +330,7 @@ class GameScene extends Phaser.Scene {
          */
         this.physics.add.collider(this.player, this.platforms, this.landing, null, this);
         this.physics.add.overlap(this.player, this.collectables, this.collect, null, this);
-        this.physics.add.collider(this.player, this.spinning_platforms, this.landing, null, this);
+        this.physics.add.collider(this.player, this.movable_platforms, this.landing, null, this);
         this.physics.add.collider(this.player, this.enemies, this.game_over, null, this);
     }
 
@@ -359,15 +362,11 @@ class GameScene extends Phaser.Scene {
             Iterates over all game sounds and music and stops them.
          */
         $.each(this.sounds, (k, sound) => {
-            if(k === "bg_music")
-            {
-                 for (let i = 0; i<sound.length; i ++)
-                 {
-                     sound[i].stop();
-                 }
-            }
-            else
-            {
+            if (k === "bg_music") {
+                for (let i = 0; i < sound.length; i++) {
+                    sound[i].stop();
+                }
+            } else {
                 sound.stop();
             }
         }, this)

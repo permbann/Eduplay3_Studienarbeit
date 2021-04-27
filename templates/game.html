@@ -1,8 +1,11 @@
 <!--
+
+Main Page Layout.
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -30,9 +33,12 @@ __version__ = "1.0"
         <div id="leftbg">
             <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}"
                  alt="background">
-            <img class="mascot" id="mascot_panda" src="{{ url_for('static',  filename='images/Mascot1.png') }}" alt="Mascot">
-            <img class="mascot" id="mascot_dino" src="{{ url_for('static',  filename='images/Mascot2.png') }}" alt="Mascot">
-            <img class="mascot" id="mascot_alien" src="{{ url_for('static',  filename='images/Mascot3.png') }}" alt="Mascot">
+            <img class="mascot" id="mascot_panda" src="{{ url_for('static',  filename='images/Mascot1.png') }}"
+                 alt="Mascot">
+            <img class="mascot" id="mascot_dino" src="{{ url_for('static',  filename='images/Mascot2.png') }}"
+                 alt="Mascot">
+            <img class="mascot" id="mascot_alien" src="{{ url_for('static',  filename='images/Mascot3.png') }}"
+                 alt="Mascot">
         </div>
         <div id="hat_imgs">
             <img id="blue_cap" class="hat_overlay"
@@ -106,9 +112,9 @@ __version__ = "1.0"
             <img id="cat" class="accessory_overlay" style="top:67%; left:10%;"
                  src="{{ url_for('static',  filename='images/cat.png') }}" alt="cat"/>
         </div>
-    <div class="box">
-        <h3 id="tokens_all"></h3>
-    </div>
+        <div class="box">
+            <h3 id="tokens_all"></h3>
+        </div>
     </div>
     <div id="game"></div>
     <div id="rightbox" style="background-image:url({{ url_for('static',  filename='images/background.png') }});">

@@ -1,3 +1,19 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+LevelGenerator classes of the E3LevelGenerator module.
+"""
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/04/27"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+
 import numpy as np
 from abc import ABC, abstractmethod
 from collections import deque
@@ -98,6 +114,7 @@ class SimpleAscend(Structure):
     """
         Specific structure (child) class.
     """
+
     def __init__(self, start_pos, direction=1):
         super().__init__(start_pos, direction)
 
@@ -113,6 +130,7 @@ class SimpleForward(Structure):
     """
         Specific structure (child) class.
     """
+
     def __init__(self, start_pos, direction=1):
         super().__init__(start_pos, direction)
 
@@ -319,7 +337,6 @@ class LevelGenerator:
         # Cut off all platforms that are exceeding the max platform count.
         if max_platforms:
             level_dict["platforms"] = level_dict["platforms"][:max_platforms]
-
 
         level_dict["platforms"][len(level_dict["platforms"]) - 1]["type"] = "final"
         level_dict["platforms"][len(level_dict["platforms"]) - 1]["has_collectable"] = False

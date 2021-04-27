@@ -1,4 +1,18 @@
-/*STYLE*/
+/*
+
+Specific shop styles.
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/04/27"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+ */
+
 h1 { font-family: serif; color: #377ba8; margin: 1rem 0; }
 h2 { font-family: serif; color: #377ba8; margin: 1rem 0;}
 table{border-collapse: collapse; border-spacing: 0; table-layout: fixed; border-style: hidden; width: 100%;}

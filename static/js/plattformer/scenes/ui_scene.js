@@ -1,8 +1,12 @@
 /*
+
+UI game overlay.
+Token and Jump count handling.
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -46,9 +50,9 @@ class UIScene extends Phaser.Scene {
         this.muted = false;
         this.mute_button = this.add.image(730, 20, "speaker").setOrigin(0, 0);
         this.mute_button.setInteractive();
-            this.mute_button.on('pointerdown', () => {
-                this.toggle_mute();
-            }, this);
+        this.mute_button.on('pointerdown', () => {
+            this.toggle_mute();
+        }, this);
 
         //  Reference to the Game Scene
         this.main_game = this.scene.get('GameScene');
@@ -60,13 +64,13 @@ class UIScene extends Phaser.Scene {
         }, this);
 
         this.main_game.events.on('finished', function () {
-            if(!this.ending)
+            if (!this.ending)
                 this.update_currency();
-                this.draw_finished();
+            this.draw_finished();
         }, this);
 
         this.main_game.events.on('failed', function () {
-            if(!this.ending)
+            if (!this.ending)
                 this.draw_finished(false);
         }, this);
 
@@ -121,13 +125,14 @@ class UIScene extends Phaser.Scene {
         /*
         Makes API call to update the currency with currency + collected tokens after level completion
         */
+        let parent = this;
         $.ajax({
             type: 'PATCH',
             data: {currency: this.tokens},
             url: '/api/update_currency',
             success: function (response) {
-                this.currency = parseInt(response['currency']);
-                document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + this.currency;
+                parent.currency = parseInt(response['currency']);
+                document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + parent.currency;
             }
         });
     }
@@ -187,8 +192,7 @@ class UIScene extends Phaser.Scene {
                 font: '54px Trebuchet MS', fill: "#FAFAFA", backgroundColor: "#11221166"
             }, this);
             retry.setOrigin(0.5);
-        }
-        else {
+        } else {
             // Plain text
             label_text = this.add.text(400, 260, "Leider nicht geschafft.", {
                 font: '48px Trebuchet MS', fill: "#222222"
@@ -208,8 +212,8 @@ class UIScene extends Phaser.Scene {
         retry.on('pointerdown', () => {
             retry.destroy();
             label_text.destroy();
-            if(increase_difficulty) increase_difficulty.destroy();
-            if(shop) shop.destroy();
+            if (increase_difficulty) increase_difficulty.destroy();
+            if (shop) shop.destroy();
             this.cameras.main.fadeOut(1000, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                 this.cameras.main.fadeIn(500, 0, 0, 0);
@@ -247,10 +251,10 @@ class UIScene extends Phaser.Scene {
         });
     }
 
-     update_difficulty() {
-         /*
-            Makes API call to increase the difficulty by 1.
-         */
+    update_difficulty() {
+        /*
+           Makes API call to increase the difficulty by 1.
+        */
         let parent = this;
         $.ajax({
             type: 'PATCH',
@@ -268,12 +272,9 @@ class UIScene extends Phaser.Scene {
          */
         game.sound.mute = !game.sound.mute;
         this.muted = !this.muted;  //game.sound.mute does not update in a reliable time
-        if(this.muted)
-        {
+        if (this.muted) {
             this.muted_line = this.add.image(this.mute_button.x, this.mute_button.y, "mute").setOrigin(0, 0);
-        }
-        else
-        {
+        } else {
             this.muted_line.destroy()
         }
     }

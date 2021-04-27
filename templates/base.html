@@ -1,8 +1,11 @@
 <!--
+
+General Website Template.
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -30,11 +33,11 @@ __version__ = "1.0"
         either the username and a log out link are displayed, or links to register and log in are displayed.-->
         {% if g.user %}
             <li><a href="{{ url_for('shop.shop') }}"><h1 style="padding:0px;margin:0px;">Shop</h1></a></li>
-            <li><span style="padding-top:22px;">{{ g.user }}</span>
-            <li><a style="padding-top:22px;" href="{{ url_for('auth.logout') }}">Log Out</a>
+            <li><span style="padding-top:22px;">Eingeloggt als <b>{{ g.user }}</b></span>
+            <li><b><a style="padding-top:22px;" href="{{ url_for('auth.logout') }}">Log Out</a></b>
                 {% else %}
-            <li><a style="padding-top:22px;" href="{{ url_for('auth.register') }}">Register</a>
-            <li><a style="padding-top:22px;" href="{{ url_for('auth.login') }}">Log In</a>
+            <li><b><a style="padding-top:22px;" href="{{ url_for('auth.register') }}">Register</a></b>
+            <li><b><a style="padding-top:22px;" href="{{ url_for('auth.login') }}">Log In</a></b>
         {% endif %}
     </ul>
 </nav>
