@@ -5,7 +5,7 @@ Main Page Layout.
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/04/27"
+__date__ = "2021/02/06"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -33,6 +33,9 @@ __version__ = "1.0"
         <div id="leftbg">
             <img id="sidebar_background" src="{{ url_for('static',  filename='images/background.png') }}"
                  alt="background">
+            <img id="speech_bubble" src="{{ url_for('static',  filename='images/speechBubble.png') }}"
+                 alt="speechbubble">
+            <div id="speech_text"><h2>Hallo!</h2></div>
             <img class="mascot" id="mascot_panda" src="{{ url_for('static',  filename='images/Mascot1.png') }}"
                  alt="Mascot">
             <img class="mascot" id="mascot_dino" src="{{ url_for('static',  filename='images/Mascot2.png') }}"
@@ -118,7 +121,7 @@ __version__ = "1.0"
     </div>
     <div id="game"></div>
     <div id="rightbox" style="background-image:url({{ url_for('static',  filename='images/background.png') }});">
-        <div id="difficulty_box">Aktuelle Swierigkeitsstufe: <p id="difficulty_label"></p></div>
+        <div id="difficulty_box">Aktuelle Schwierigkeit: <p id="difficulty_label"></p></div>
         <div id="jumps_box">Du hast <p id="jumps_label"></p> Sprünge</div>
         <div id="task_box">
             <p id="task_field"></p>

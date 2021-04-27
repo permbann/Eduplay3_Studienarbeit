@@ -102,7 +102,7 @@ class GameScene extends Phaser.Scene {
             'right': this.cursors.right.isDown,
             'up': Phaser.Input.Keyboard.JustDown(this.cursors.up),
             'none': !this.cursors.left.isDown && !this.cursors.right.isDown && !this.cursors.up.isDown
-        }
+        };
 
         this.handle_player_input(steering_keys);
     }

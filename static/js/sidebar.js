@@ -32,6 +32,9 @@ $(document).ready(function () {
 });
 
 
+
+
+
 $(document).ready(function () {
     $.get("/api/get_equipped")
         .done(function (data) {
@@ -155,5 +158,31 @@ $.ajax({
         document.getElementById('tokens_all').innerHTML = "Tokens Gesamt: " + currency;
     }
 });
+
+/*
+gets a praise quote out of the database and prints it into the speechbubble
+ */
+function get_praise() {
+    $(document).ready(function () {
+        $.get("/api/quote/praise")
+            .done(function (response) {
+                quote = response;
+                document.getElementById('speech_text').innerHTML = quote.quote;
+            });
+    });
+}
+
+/*
+gets an encouraging quote out of the database and prints it into the speechbubble
+ */
+function get_encouragement() {
+    $(document).ready(function () {
+        $.get("/api/quote/encouragement")
+            .done(function (response) {
+                quote = response;
+                document.getElementById('speech_text').innerHTML = quote.quote;
+            });
+    });
+}
 
 
