@@ -1,17 +1,33 @@
+<!--
+
+Starting page/menu.
+
+__authors__ = ["Luana Juhl", "Lukas Schult"]
+__contact__ = "it16156@lehre.dhbw-stuttgart.de"
+__credits__ = ["Luana Juhl", "Lukas Schult"]
+__date__ = "2021/04/27"
+__deprecated__ = False
+__email__ = "it16156@lehre.dhbw-stuttgart.de"
+__maintainer__ = "developer"
+__status__ = "Released"
+__version__ = "1.0"
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-     <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_style.css') }}">
     <title>Eduplay 3</title>
 </head>
 <body>
 <div id="button_div">
-<form id="button_form">
-  <input type="image" id="start_buttons" src="/static/images/play_button.png" alt="Spielen" formaction="/">
-    <input type="image" id="start_buttons" src="/static/images/shop_button.png" alt="Shop" formaction="/shop/hats">
-    <input type="image" id="start_buttons" src="/static/images/settings_button.png" alt="Einstellungen" formaction="/settings">
-</form>
+    <form id="button_form">
+        <input type="image" id="start_buttons" src="/static/images/play_button.png" alt="Spielen" formaction="/">
+        <input type="image" id="start_buttons" src="/static/images/shop_button.png" alt="Shop" formaction="/shop/hats">
+        <input type="image" id="start_buttons" src="/static/images/settings_button.png" alt="Einstellungen"
+               formaction="/settings">
+    </form>
 </div>
 </body>
 </html>

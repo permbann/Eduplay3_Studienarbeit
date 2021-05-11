@@ -1,4 +1,5 @@
 from setuptools import find_packages, setup
+
 setup(
     name='E3LevelGenerator',
     packages=find_packages(include=['E3LevelGenerator']),

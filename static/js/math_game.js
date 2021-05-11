@@ -1,8 +1,11 @@
 /*
+
+Math mini game on the right.
+
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -193,7 +196,7 @@ function update_term() {
     /*
         Make api call to get new math term and display it.
      */
-    if (sounds["mathsounds"] !== undefined){
+    if (sounds["mathsounds"] !== undefined) {
         sounds["mathsounds"].play();
     }
 
@@ -256,7 +259,7 @@ function update_tries(change) {
 function init_audio_paths() {
     $.get("/api/get_audio", function (data, status) {
         for (const [key, value] of Object.entries(data)) {
-          sounds[key] = new Audio(value);
+            sounds[key] = new Audio(value);
         }
         sounds["welcome"].play();
     });

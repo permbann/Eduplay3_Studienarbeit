@@ -7,7 +7,7 @@ MathGenerator class of the MathEngine module.
 __authors__ = ["Luana Juhl", "Lukas Schult"]
 __contact__ = "it16156@lehre.dhbw-stuttgart.de"
 __credits__ = ["Luana Juhl", "Lukas Schult"]
-__date__ = "2021/02/06"
+__date__ = "2021/04/27"
 __deprecated__ = False
 __email__ = "it16156@lehre.dhbw-stuttgart.de"
 __maintainer__ = "developer"
@@ -24,6 +24,7 @@ class MathGenerator:
     A Generator of mathematical terms and their textual representaion.
     Also provides a difficulty selection to produce various terms with a selection of answers to the term.
     """
+
     def __init__(self):
         self.rng = np.random.default_rng()
 
