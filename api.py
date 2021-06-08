@@ -17,7 +17,7 @@ __version__ = "1.0"
 import os
 import pathlib
 import random
-from flask import Blueprint, request, session
+from flask import Blueprint, request, session, url_for
 from MathEngine import MathGenerator
 from E3LevelGenerator import LevelGenerator
 from Eduplay3_Studienarbeit.database_files.db_models import db, User, Items, Inventory, Equipped, Quotes
@@ -40,7 +40,8 @@ def get_audio():
     audio_paths = dict()
     for root, _, files in os.walk("static/assets/sounds"):
         for file in files:
-            audio_paths[file.replace(".wav", "")] = os.path.join(root.replace("/", "\\"), file)
+            audio_paths[file.replace(".wav", "")] = url_for('static',  filename=os.path.join(root, file).replace("static/", "").replace("\\", "/"))#"/" + os.path.join(root.replace("/", "\\"), file)
+    print(audio_paths)
     return audio_paths
 
 

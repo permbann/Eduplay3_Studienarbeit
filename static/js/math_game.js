@@ -259,8 +259,10 @@ function update_tries(change) {
 function init_audio_paths() {
     $.get("/api/get_audio", function (data, status) {
         for (const [key, value] of Object.entries(data)) {
+            console.log(key, value);
             sounds[key] = new Audio(value);
         }
         sounds["welcome"].play();
+        console.log(sounds);
     });
 }
